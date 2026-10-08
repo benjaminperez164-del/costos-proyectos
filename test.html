@@ -1,0 +1,1502 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F2F0EB">
+<meta name="description" content="Proyectos, proformas, gastos y balance mensual.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Costos de Proyectos</title>
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+:root{
+  --bg:#F2F0EB; --surface:#FBFAF7; --surface-2:#E9E6DF; --line:#DAD6CD; --line-strong:#B3ADA2;
+  --ink:#1A1C20; --ink-2:#464A50; --ink-3:#5E6268;
+  --accent:#0E7490; --accent-ink:#FFFFFF; --accent-soft:#D6EBF0; --accent-2:#8EC5D2;
+  --hero:#0B1525; --hero-ink:#F2F5F8; --hero-soft:#67E8F9; --ring:#22D3EE;
+  --mark:#E0AE1E; --mark-ink:#1A1C20; --mark-soft:#F8EDCB; --mark-text:#7A5800;
+  --ok:#2E7D4F; --ok-soft:#DDEEE2; --warn:#9A5B00; --bad:#B3261E; --bad-soft:#F7E2DF;
+  --scrim:rgba(11,21,37,.5);
+  --shadow:0 1px 2px rgba(26,28,32,.06),0 6px 18px rgba(26,28,32,.08);
+  --f-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-num:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]):not([data-app-theme]){
+  color-scheme:dark;
+  --bg:#111316; --surface:#181A1E; --surface-2:#1F2227; --line:#2A2D33; --line-strong:#41454C;
+  --ink:#E6E8EB; --ink-2:#B6BAC1; --ink-3:#8F949C;
+  --accent:#22D3EE; --accent-ink:#0B1525; --accent-soft:#0E2C33; --accent-2:#1A6573;
+  --hero:#0B1525; --hero-ink:#F2F5F8; --hero-soft:#67E8F9; --ring:#22D3EE;
+  --mark:#E9BC3F; --mark-ink:#1A1C20; --mark-soft:#3A3120; --mark-text:#F0CD6A;
+  --ok:#6CC592; --ok-soft:#1C3326; --warn:#E7A64A; --bad:#F08A80; --bad-soft:#3D2220;
+  --scrim:rgba(0,0,0,.6);
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]:not([data-app-theme]){
+  color-scheme:dark;
+  --bg:#111316; --surface:#181A1E; --surface-2:#1F2227; --line:#2A2D33; --line-strong:#41454C;
+  --ink:#E6E8EB; --ink-2:#B6BAC1; --ink-3:#8F949C;
+  --accent:#22D3EE; --accent-ink:#0B1525; --accent-soft:#0E2C33; --accent-2:#1A6573;
+  --hero:#0B1525; --hero-ink:#F2F5F8; --hero-soft:#67E8F9; --ring:#22D3EE;
+  --mark:#E9BC3F; --mark-ink:#1A1C20; --mark-soft:#3A3120; --mark-text:#F0CD6A;
+  --ok:#6CC592; --ok-soft:#1C3326; --warn:#E7A64A; --bad:#F08A80; --bad-soft:#3D2220;
+  --scrim:rgba(0,0,0,.6);
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+html:root[data-app-theme="dark"]{
+  color-scheme:dark;
+  --bg:#111316; --surface:#181A1E; --surface-2:#1F2227; --line:#2A2D33; --line-strong:#41454C;
+  --ink:#E6E8EB; --ink-2:#B6BAC1; --ink-3:#8F949C;
+  --accent:#22D3EE; --accent-ink:#0B1525; --accent-soft:#0E2C33; --accent-2:#1A6573;
+  --hero:#0B1525; --hero-ink:#F2F5F8; --hero-soft:#67E8F9; --ring:#22D3EE;
+  --mark:#E9BC3F; --mark-ink:#1A1C20; --mark-soft:#3A3120; --mark-text:#F0CD6A;
+  --ok:#6CC592; --ok-soft:#1C3326; --warn:#E7A64A; --bad:#F08A80; --bad-soft:#3D2220;
+  --scrim:rgba(0,0,0,.6);
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+html:root[data-app-theme="light"]{color-scheme:light}
+/* Selector de tema */
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line)}
+.seg button{min-height:40px;border:0;border-radius:10px;background:transparent;font-weight:600;font-size:14px;color:var(--ink-2);display:flex;align-items:center;justify-content:center;gap:6px}
+.seg button svg{width:16px;height:16px}
+.seg button[aria-checked="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--ink);font:16px/1.45 var(--f-body);-webkit-tap-highlight-color:transparent}
+.wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:0 calc(104px + env(safe-area-inset-bottom,0px))}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;letter-spacing:.01em;margin:0;text-wrap:balance}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:14px 10px;display:flex;align-items:center;gap:10px}
+.proj-btn{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;text-align:left;min-width:0;flex:1}
+.proj-ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none;color:#fff}
+.proj-ic svg{width:24px;height:24px}
+.proj-txt{display:flex;flex-direction:column;min-width:0}
+.proj-txt small{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3)}
+.proj-txt b{font-family:var(--f-display);font-size:25px;line-height:1.02;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.icon-btn{width:44px;height:44px;flex:none;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--ink)}
+.icon-btn svg{width:20px;height:20px}
+.top-title{flex:1;min-width:0}
+.top-title small{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3)}
+.top-title h1{font-size:28px;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sync{font-size:12px;color:var(--ink-3);margin:-4px 0 4px}
+
+/* Bottom nav */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav-in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);align-items:center}
+.nav button{background:none;border:0;padding:8px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--ink-3);font-size:11.5px;font-weight:600}
+.nav .ic{display:grid;place-items:center;width:52px;height:30px;border-radius:15px}
+.nav .ic svg{width:22px;height:22px}
+.nav button[aria-current="true"]{color:var(--accent);font-weight:700}
+.nav button[aria-current="true"] .ic{background:var(--accent-soft)}
+.nav button:disabled{opacity:.4}
+.nav .fab-slot{display:flex;justify-content:center}
+.nav .fab{width:58px;height:58px;margin-top:-28px;border-radius:18px;border:4px solid var(--bg);background:var(--mark);color:var(--mark-ink);display:grid;place-items:center;box-shadow:var(--shadow)}
+.nav .fab svg{width:26px;height:26px}
+
+/* Generic */
+section.view{display:flex;flex-direction:column;gap:14px;padding-top:4px}
+.label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);font-weight:700}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface);font-weight:600;text-decoration:none;color:var(--ink)}
+.btn svg{width:18px;height:18px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.dark{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.btn.markb{background:var(--mark);border-color:var(--mark);color:var(--mark-ink)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--accent)}
+.btn.dashed{border:1.5px dashed var(--accent);background:transparent;color:var(--accent);font-weight:700}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn.danger.armed{background:var(--bad);color:var(--surface)}
+.btn.block{width:100%}
+.btn.sm{min-height:36px;padding:0 12px;font-size:14px}
+.btn:disabled{opacity:.5}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.between{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.grow{flex:1 1 auto;min-width:0}
+.field{display:flex;flex-direction:column;gap:4px}
+.field>span{font-size:12px;color:var(--ink-2);font-weight:600}
+.inp{width:100%;min-height:44px;padding:8px 12px;border:1px solid var(--line-strong);border-radius:12px;background:var(--surface)}
+.inp:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--ink-3) 50%),linear-gradient(135deg,var(--ink-3) 50%,transparent 50%);background-position:calc(100% - 18px) 55%,calc(100% - 13px) 55%;background-size:5px 5px;background-repeat:no-repeat;padding-right:32px}
+.empty{padding:22px 16px;text-align:center;color:var(--ink-2);border:1.5px dashed var(--line-strong);border-radius:16px}
+.empty b{display:block;font-family:var(--f-display);font-size:21px;color:var(--ink);margin-bottom:4px}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 13px;border-radius:18px;border:1px solid var(--line-strong);background:var(--surface);font-size:14px;font-weight:600;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip.add{border-style:dashed;color:var(--accent);background:transparent}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.chips.wrapc{flex-wrap:wrap;overflow:visible}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:8px;white-space:nowrap}
+.pill svg{width:12px;height:12px}
+.pill.borrador{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+.pill.aceptada{background:var(--accent-soft);color:var(--accent)}
+.pill.parcial{background:var(--mark-soft);color:var(--mark-text)}
+.pill.pagada{background:var(--ok-soft);color:var(--ok)}
+.pill.cur{background:var(--accent);color:var(--accent-ink)}
+.notice{padding:12px 14px;border-radius:14px;background:var(--mark-soft);border:1px solid var(--mark);font-size:14px;display:flex;gap:10px;align-items:flex-start}
+.notice svg{flex:none;width:20px;height:20px;color:var(--mark-text);margin-top:1px}
+.notice.okn{background:var(--ok-soft);border-color:var(--ok)}
+.notice.okn svg{color:var(--ok)}
+.notice.info{background:var(--accent-soft);border-color:var(--accent-2)}
+.notice.info svg{color:var(--accent)}
+
+/* Hero */
+.hero{background:var(--hero);color:var(--hero-ink);border-radius:20px;padding:18px;display:flex;gap:16px;align-items:center;background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);background-size:18px 18px}
+.ring{position:relative;width:124px;height:124px;flex:none}
+.ring svg{width:124px;height:124px;display:block}
+.ring div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ring b{font-family:var(--f-num);font-size:25px;font-weight:600}
+.ring small{font-size:11px;opacity:.82;line-height:1.2}
+.hero-stats{display:flex;flex-direction:column;gap:8px;min-width:0}
+.hero-stats .k{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.78}
+.hero-stats .v{font-family:var(--f-num);font-size:23px;font-weight:600;overflow-wrap:anywhere}
+.hero-stats .v2{font-family:var(--f-num);font-size:17px;color:var(--hero-soft)}
+.hero-stats .v2.over{color:#FFB4AB}
+.hero-stats p{margin:0;font-size:12.5px;opacity:.85}
+.hero .btn{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.35);color:var(--hero-ink)}
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.quick button{min-height:76px;border-radius:16px;border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:13.5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--ink)}
+.quick button svg{width:22px;height:22px;color:var(--accent)}
+.quick button.main{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.quick button.main svg{color:var(--accent-ink)}
+.tile{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.tile-link{display:flex;align-items:center;gap:12px;padding:14px 16px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;color:var(--ink)}
+.tile-link .tl-ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--accent-soft);color:var(--accent)}
+.tile-link .tl-ic svg{width:22px;height:22px}
+.tile-link .chev{color:var(--ink-3);flex:none}
+
+/* Month bars */
+.mbars{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;align-items:end;height:110px;border-bottom:1px solid var(--line);padding-top:16px}
+.mbar{height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;background:none;border:0;padding:0;position:relative}
+.mbar i{display:block;width:100%;max-width:34px;background:var(--accent-2);border-radius:4px 4px 0 0;min-height:2px}
+.mbar.cur i{background:var(--accent)}
+.mbar.zero i{background:var(--line);border-radius:1px}
+.mbar.sel i{outline:2px solid var(--ink);outline-offset:1px}
+.mbar span{font-family:var(--f-num);font-size:10px;color:var(--ink-2);white-space:nowrap}
+.mlabels{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;font-size:11px;color:var(--ink-3);text-align:center}
+.mlabels .cur{color:var(--ink);font-weight:700}
+.mcap{font-size:13px;color:var(--ink-2);min-height:19px}
+
+/* Lists */
+.list{display:flex;flex-direction:column}
+.list .li{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);background:none;border-left:0;border-right:0;border-top:0;text-align:left;width:100%;color:var(--ink)}
+.list .li:last-child{border-bottom:0}
+.li-ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:none}
+.li-ic svg{width:19px;height:19px}
+.li-main{flex:1;min-width:0}
+.li-main b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li-main small{display:flex;flex-wrap:wrap;gap:0 6px;color:var(--ink-3);font-size:12.5px;align-items:center}
+.li-amt{font-family:var(--f-num);font-weight:600;white-space:nowrap}
+.group-h{display:flex;justify-content:space-between;align-items:baseline;padding:2px 2px 6px}
+.group-h .num{font-size:13px;color:var(--ink-2)}
+.c-mat{background:var(--accent-soft);color:var(--accent)}
+.c-mo{background:var(--mark-soft);color:var(--mark-text)}
+.c-her{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+.c-tr{background:var(--ok-soft);color:var(--ok)}
+.c-per{background:var(--bad-soft);color:var(--bad)}
+.c-ser{background:var(--accent-soft);color:var(--accent)}
+.c-otr{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+
+/* hbars */
+.hbars{display:flex;flex-direction:column;gap:12px;padding:14px 16px}
+.hbar{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center;font-size:14px}
+.hbar .dot{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;color:#fff}
+.hbar .dot svg{width:14px;height:14px}
+.hbar .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hbar .track{grid-column:1/-1;height:10px;border-radius:5px;background:var(--surface-2);overflow:hidden;display:flex}
+.hbar .track i{display:block;height:100%;border-radius:5px}
+.hbar small{color:var(--ink-3)}
+.meter{height:10px;border-radius:5px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent);border-radius:5px}
+.meter.over i{background:var(--bad)}
+
+/* Proforma editor */
+.pf-chips .chip{max-width:220px;overflow:hidden;text-overflow:ellipsis}
+.items{display:flex;flex-direction:column;gap:8px}
+.item{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.item-top{display:flex;align-items:center;gap:8px}
+.item-name{flex:1;min-width:0;border:0;border-bottom:1px dashed transparent;background:transparent;font-weight:600;font-size:16px;padding:2px 0}
+.item-name:focus{outline:none;border-bottom-color:var(--accent)}
+.item-name[readonly]{pointer-events:none}
+.item .lt{font-family:var(--f-num);font-weight:600;font-size:16px;white-space:nowrap}
+.item-ctl{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.step{width:40px;height:40px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);display:grid;place-items:center;flex:none}
+.step svg{width:16px;height:16px}
+.qty{width:72px;min-height:40px;text-align:center;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);font-family:var(--f-num);font-size:17px;font-weight:600;padding:4px}
+.unitp{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-3)}
+.unitp input{width:58px;min-height:36px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);padding:2px 6px;font-size:14px;text-align:center}
+.unitp input.pr{width:84px;font-family:var(--f-num);text-align:right}
+.x{flex:none;width:36px;height:36px;border-radius:8px;border:0;background:transparent;color:var(--ink-3);display:grid;place-items:center}
+.x svg{width:18px;height:18px}
+.x:hover{background:var(--bad-soft);color:var(--bad)}
+.stale{font-size:12px;color:var(--warn);font-weight:600}
+.locked .step,.locked .x{display:none}
+.totbar{position:sticky;bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:4;background:var(--hero);color:var(--hero-ink);border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow)}
+.totbar .tl{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13.5px}
+.totbar .tl .num{opacity:.9}
+.totbar .grand{border-top:1px solid rgba(255,255,255,.2);padding-top:8px}
+.totbar .grand span:first-child{font-family:var(--f-display);font-size:22px;font-weight:700;letter-spacing:.06em}
+.totbar .grand .num{font-size:26px;font-weight:600;color:var(--hero-soft);opacity:1}
+.iva-ctl{display:flex;align-items:center;gap:8px}
+.iva-ctl input[type=number]{width:56px;min-height:30px;padding:2px 6px;text-align:right;border-radius:8px;border:1px solid rgba(255,255,255,.35);background:transparent;color:inherit}
+.switch{position:relative;width:40px;height:24px;flex:none}
+.switch input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:1}
+.switch span{position:absolute;inset:0;border-radius:12px;background:rgba(255,255,255,.28);transition:background .15s}
+.switch span::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .15s}
+.switch input:checked+span{background:var(--mark)}
+.switch input:checked+span::after{transform:translateX(16px)}
+.switch input:focus-visible+span{outline:2px solid var(--hero-soft);outline-offset:2px}
+.state-card{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.steps{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-3);flex-wrap:wrap}
+.steps b{color:var(--ink)}
+.steps i{width:18px;height:2px;background:var(--line-strong);display:inline-block}
+
+/* Proforma document */
+.doc{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:20px 16px;box-shadow:var(--shadow)}
+.doc-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:3px solid var(--ink);padding-bottom:10px}
+.doc-head h2{font-size:32px;letter-spacing:.08em;line-height:1}
+.doc-head .meta{text-align:right;font-size:13px;color:var(--ink-2)}
+.doc-sub{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:14px;padding-block:10px;margin:0}
+.doc-sub dt{color:var(--ink-3);font-weight:600}
+.doc-sub dd{margin:0}
+.tablewrap{overflow-x:auto;margin-inline:-4px}
+table.pf{width:100%;border-collapse:collapse;font-size:14px;min-width:460px}
+table.pf th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2);text-align:left;padding:8px 6px;border-bottom:1px solid var(--ink)}
+table.pf td{padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.pf .r{text-align:right}
+table.pf td.num{white-space:nowrap}
+.doc-tot{margin-left:auto;max-width:280px;display:flex;flex-direction:column;gap:6px;padding-top:12px}
+.doc-tot .tline{display:flex;justify-content:space-between}
+.doc-tot .grand{border-top:3px double var(--ink);padding-top:8px;font-weight:700}
+.doc-foot{margin:14px 0 0;font-size:12px;color:var(--ink-3)}
+
+/* Projects */
+.projs{display:flex;flex-direction:column;gap:10px}
+.proj{padding:16px;display:flex;flex-direction:column;gap:12px}
+.proj.current{border:2px solid var(--accent);padding:15px}
+.proj-top{display:flex;gap:12px;align-items:center}
+.proj-top .proj-ic{width:48px;height:48px;border-radius:14px}
+.proj-top b{font-family:var(--f-display);font-size:23px;line-height:1.05;display:block}
+.proj-top small{color:var(--ink-3);font-size:13px}
+.proj-actions{display:flex;gap:8px}
+.proj-actions .btn{flex:1;min-height:40px}
+.swatches{display:flex;gap:10px;flex-wrap:wrap}
+.swatch{width:40px;height:40px;border-radius:12px;border:0;position:relative}
+.swatch[aria-checked="true"]{box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--ink)}
+.icons{display:flex;gap:8px;flex-wrap:wrap}
+.icopt{width:46px;height:46px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface);display:grid;place-items:center;color:var(--ink-2)}
+.icopt svg{width:24px;height:24px}
+.icopt[aria-checked="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.pcard{position:relative}
+.pcard .pmain{display:flex;flex-direction:column;gap:10px;width:100%;text-align:left;background:none;border:0;border-radius:16px;padding:14px 60px 14px 14px;color:var(--ink)}
+.pcard .pmain:active{background:var(--surface-2)}
+.pcard .proj-top{width:100%}
+.pcard .proj-top .proj-ic{width:44px;height:44px;border-radius:12px}
+.pcard .meter{width:100%;display:block;height:8px}
+.pcard .pedit{position:absolute;top:12px;right:12px;width:40px;height:40px}
+.pdot{width:20px;height:20px;border-radius:6px;display:grid;place-items:center;flex:none}
+.pdot svg{width:13px;height:13px}
+.pj-pick{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:6px 12px;border:1px solid var(--line-strong);border-radius:12px;background:var(--surface);text-align:left;font-weight:600;color:var(--ink)}
+.pj-pick .grow{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pj-chg{display:inline-flex;align-items:center;gap:4px;font-size:13px;color:var(--accent);font-weight:700;flex:none}
+.pj-chg svg{width:14px;height:14px}
+.pj-pick[aria-expanded="true"] .pj-chg svg{transform:rotate(180deg)}
+.pj-menu{margin-top:6px;padding:6px;display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto}
+.pj-menu .li{padding:10px;border-radius:10px;border-bottom:0}
+.pj-menu .li:hover{background:var(--surface-2)}
+.pj-menu .pdot,.pj-pick .pdot{width:26px;height:26px;border-radius:8px}
+.pj-menu .pdot svg,.pj-pick .pdot svg{width:16px;height:16px}
+/* Balance */
+.monthnav{display:flex;align-items:center;gap:8px}
+.monthnav h2{flex:1;text-align:center;font-size:26px;text-transform:capitalize}
+.bal-total{padding:16px;display:flex;flex-direction:column;gap:4px;text-align:center}
+.bal-total .num{font-size:34px;font-weight:600;line-height:1.1}
+.delta{font-size:13px;color:var(--ink-2)}
+
+/* Etapas */
+.tline-list{padding:16px 16px 4px;display:flex;flex-direction:column}
+.et{display:grid;grid-template-columns:28px minmax(0,1fr);column-gap:12px}
+.et-rail{display:flex;flex-direction:column;align-items:center}
+.et-dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--line-strong);background:var(--surface);flex:none;display:grid;place-items:center;color:var(--surface)}
+.et-dot svg{width:12px;height:12px}
+.et.cur .et-dot{background:var(--accent);border:4px solid var(--accent-soft)}
+.et.done .et-dot{background:var(--ok);border-color:var(--ok)}
+.et-line{flex:1;width:2px;background:var(--line);min-height:12px}
+.et.cur .et-line,.et.done .et-line{background:var(--accent)}
+.et:last-child .et-line{display:none}
+.et-body{padding-bottom:18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.et-body b{font-family:var(--f-display);font-size:20px;line-height:1.1}
+.et-body .meta{font-size:13px;color:var(--ink-3)}
+
+/* Sheet */
+.scrim{position:fixed;inset:0;background:var(--scrim);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:720px;max-height:92vh;display:flex;flex-direction:column;border-radius:24px 24px 0 0;padding-bottom:env(safe-area-inset-bottom,0px)}
+.grab{width:40px;height:4px;border-radius:2px;background:var(--line-strong);margin:8px auto 0}
+.sheet-h{display:flex;align-items:center;justify-content:space-between;padding:8px 16px 8px;gap:8px}
+.sheet-h h3{font-size:23px}
+.sheet-b{padding:4px 16px 18px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-grid .full{grid-column:1/-1}
+.pick .li{cursor:pointer}
+.pick .li:hover{background:var(--surface-2)}
+.err{margin:0;color:var(--bad);font-size:14px}
+.sticky-save{position:sticky;bottom:-18px;background:var(--surface);padding:10px 0 4px;margin-bottom:-4px;z-index:2}
+.et-acts{display:flex;gap:4px 12px;flex-wrap:wrap}
+.et-acts button{background:none;border:0;padding:6px 0;font-weight:700;font-size:14px;color:var(--accent);min-height:36px}
+
+/* Expense keypad */
+.amount{display:flex;flex-direction:column;align-items:center;gap:4px}
+.amount output{font-family:var(--f-num);font-size:44px;font-weight:600;line-height:1.05}
+.amount output.zero{color:var(--ink-3)}
+.amount input{width:100%;text-align:center;border:0;border-bottom:1.5px solid var(--line);font-size:16px;font-weight:500;padding:8px 4px;background:transparent}
+.amount input:focus{outline:none;border-bottom-color:var(--accent)}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.keys button{min-height:50px;border-radius:12px;border:0;background:var(--surface-2);font:500 22px var(--f-num);color:var(--ink);display:grid;place-items:center}
+.keys button:active{background:var(--line)}
+.keys svg{width:24px;height:24px}
+.mini3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mini3 .opt{position:relative;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:13.5px;display:flex;align-items:center;justify-content:center;gap:6px;overflow:hidden;color:var(--ink)}
+.mini3 .opt svg{width:16px;height:16px;color:var(--accent);flex:none}
+.mini3 .opt input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
+.mini3 .opt input[type=date]{opacity:0}
+.mini3 .opt span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini3 .opt.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+details.more{border:1px solid var(--line);border-radius:12px;padding:0 12px}
+details.more summary{min-height:44px;display:flex;align-items:center;font-weight:600;font-size:14px;cursor:pointer;color:var(--ink-2)}
+details.more[open]{padding-bottom:12px}
+.thumb{display:flex;align-items:center;gap:10px}
+.thumb img{width:64px;height:64px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.photo-full{width:100%;border-radius:12px;border:1px solid var(--line)}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;display:flex;gap:12px;align-items:center;font-size:14px;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
+.toast button{background:none;border:0;color:var(--mark);font-weight:700}
+
+@media (max-width:380px){
+  .hero{flex-direction:column;align-items:flex-start}
+  .unitp{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top" id="top"></header>
+  <div class="sync" id="sync">Cargando datos…</div>
+  <main id="app"></main>
+</div>
+
+<nav class="nav" aria-label="Secciones">
+  <div class="nav-in">
+    <button data-tab="inicio" aria-current="true"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg></span>Inicio</button>
+    <button data-tab="proyectos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="4" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="4" width="7.5" height="7.5" rx="2"/><rect x="3" y="14.5" width="7.5" height="5.5" rx="2"/><rect x="13.5" y="14.5" width="7.5" height="5.5" rx="2"/></svg></span>Proyectos</button>
+    <span class="fab-slot"><button class="fab" id="fab" type="button" aria-label="Registrar gasto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M12 5v14M5 12h14"/></svg></button></span>
+    <button data-tab="gastos"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg></span>Gastos</button>
+    <button data-tab="precios"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12 12 20l-8-8V4h8z"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></span>Precios</button>
+  </div>
+</nav>
+
+<input type="file" id="import-file" accept="application/json,.json" hidden>
+<datalist id="units"><option value="u"><option value="saco"><option value="funda"><option value="m³"><option value="m²"><option value="m"><option value="ml"><option value="kg"><option value="qq"><option value="varilla"><option value="plancha"><option value="galón"><option value="litro"><option value="rollo"><option value="caja"><option value="lb"><option value="viaje"><option value="día"><option value="hora"><option value="global"></datalist>
+<datalist id="matcats"><option value="Obra gris"><option value="Acero"><option value="Mampostería"><option value="Agregados"><option value="Eléctrico"><option value="Sanitario"><option value="Cubierta"><option value="Acabados"><option value="Carpintería"><option value="Insumos"><option value="Herramientas"><option value="Mano de obra"><option value="Servicios"></datalist>
+<datalist id="provs"></datalist>
+<script>
+(function(){
+"use strict";
+/* ================= constants ================= */
+const GASTO_CATS=["Materiales","Mano de obra","Herramientas y equipo","Transporte y fletes","Permisos y trámites","Servicios (agua, luz)","Otros"];
+const CAT_SHORT={"Materiales":"Materiales","Mano de obra":"Mano de obra","Herramientas y equipo":"Herramientas","Transporte y fletes":"Fletes","Permisos y trámites":"Trámites","Servicios (agua, luz)":"Servicios","Otros":"Otros"};
+const COLS=["proyectos","materiales","proformas","gastos","config"];
+const SCOPED=["materiales","proformas","gastos"];
+const COLORS=["#1F5FAD","#C26A2E","#7A55B0","#2E8B57","#B08A00","#C2416B"];
+const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const MES3=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const SV=(p,w=2,extra="")=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"${extra}>${p}</svg>`;
+const PICONS={
+  casa:'<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+  edificio:'<path d="M5 21V4h10v17M15 9h4v12M3 21h18M8 8h2M8 12h2M8 16h2"/>',
+  local:'<path d="M4 9l1.5-5h13L20 9M4 9v11h16V9M4 9h16M9 20v-6h6v6"/>',
+  terreno:'<path d="M5 21V8l2-3 2 3v13M15 21V8l2-3 2 3v13M3 11h18M3 17h18"/>',
+  cultivo:'<path d="M6 19c0-8 5-14 14-14 0 9-5 14-13 14"/><path d="M6 19l8-8M3 21h6"/>',
+  taller:'<path d="M15 4a5 5 0 0 0-4.6 6.9L4 17.3V20h2.7l6.4-6.4A5 5 0 0 0 20 9l-3 1-2-2 1-3z"/>'
+};
+const I={
+  plus:'<path d="M12 5v14M5 12h14"/>',minus:'<path d="M5 12h14"/>',x:'<path d="M6 6l12 12M18 6 6 18"/>',
+  back:'<path d="M15 5l-7 7 7 7"/>',chevR:'<path d="M9 5l7 7-7 7"/>',chevL:'<path d="M15 5l-7 7 7 7"/>',
+  cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
+  camera:'<path d="M4 8h3l2-3h6l2 3h3v12H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  doc:'<path d="M7 3h7l4 4v14H7z"/><path d="M10 13h5M12.5 10.5v5"/>',
+  tag:'<path d="M20 12 12 20l-8-8V4h8z"/><circle cx="8.5" cy="8.5" r="1.5"/>',
+  card:'<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M12 10v5M9.5 12.5h5"/>',
+  balance:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',alert:'<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
+  layers:'<path d="M12 3 2 8l10 5 10-5z"/><path d="M2 13l10 5 10-5"/>',
+  share:'<path d="M4 12v8h16v-8M12 3v13M7 8l5-5 5 5"/>',dl:'<path d="M12 3v13M7 11l5 5 5-5M4 21h16"/>',
+  more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+  wa:'<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 1c-1-.5-2-1.5-2.5-2.5l1-1-1-2z"/>',
+  backspace:'<path d="M9 5h11v14H9l-6-7z"/><path d="M12 9l5 6M17 9l-5 6"/>',
+  up:'<path d="M6 15l6-6 6 6"/>',down:'<path d="M6 9l6 6 6-6"/>',edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>'
+};
+const CAT_IC={"Materiales":['<path d="M4 8h16v12H4zM8 8V5h8v3"/>',"c-mat"],"Mano de obra":[I.user,"c-mo"],"Herramientas y equipo":[PICONS.taller,"c-her"],"Transporte y fletes":['<path d="M3 6h11v10H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',"c-tr"],"Permisos y trámites":['<path d="M7 3h7l4 4v14H7z"/><path d="M10 12h5M10 16h5"/>',"c-per"],"Servicios (agua, luz)":['<path d="M13 3 5 14h6l-1 7 8-11h-6z"/>',"c-ser"],"Otros":[I.more,"c-otr"]};
+const catIcon=c=>{const x=CAT_IC[c]||CAT_IC.Otros;return `<span class="li-ic ${x[1]}">${SV(x[0])}</span>`};
+
+/* ================= state ================= */
+const S={proyectos:new Map(),materiales:new Map(),proformas:new Map(),gastos:new Map(),config:new Map(),
+  view:"inicio",backTo:"inicio",proj:null,pfId:null,pfMode:"edit",matQ:"",gastoCat:"Todas",balMonth:null,chartSel:null,loaded:false};
+const IN_ARTIFACT=!!(window.claude&&window.claude.use);
+let db=null, downloads=null, assets=null, readOnly=false, migrated=false;
+const app=document.getElementById("app");
+
+/* ================= helpers ================= */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money=n=>{n=Number(n)||0;const s=Math.abs(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});return (n<0?"-":"")+"$"+s};
+const kfmt=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1).replace(/\.0$/,"")+"k":String(Math.round(n));
+const num=v=>{if(typeof v==="number")return isFinite(v)?v:0;const n=parseFloat(String(v??"").replace(",","."));return isFinite(n)?n:0};
+const qtyFmt=n=>Number(n).toLocaleString("en-US",{maximumFractionDigits:3});
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const pad=n=>String(n).padStart(2,"0");
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())};
+const thisMonth=()=>today().slice(0,7);
+const fdate=s=>{if(!s)return"";const [y,m,d]=s.split("-");return d+"/"+m+"/"+y};
+const fdateShort=s=>{if(!s)return"";if(s===today())return"Hoy";const [y,m,d]=s.split("-");return (+d)+" "+MES3[+m-1]+(y!==today().slice(0,4)?" "+y:"")};
+const monthName=mk=>{const [y,m]=mk.split("-");return MESES[+m-1]+" "+y};
+const shiftMonth=(mk,d)=>{let [y,m]=mk.split("-").map(Number);m+=d;while(m<1){m+=12;y--}while(m>12){m-=12;y++}return y+"-"+pad(m)};
+const cfg=()=>S.config.get("app")||{};
+const round2=n=>Math.round((n+Number.EPSILON)*100)/100;
+const slug=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^\w\- ]+/g,"").trim().replace(/\s+/g,"-").toLowerCase()||"archivo";
+const canDownload=()=>!!downloads||!IN_ARTIFACT;
+const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+
+/* theme (per viewer) */
+const getTheme=()=>{const t=lsGet("costos:theme");return t==="oscuro"||t==="auto"?t:"claro"};
+function applyTheme(){
+  const t=getTheme(),r=document.documentElement;
+  if(t==="auto")r.removeAttribute("data-app-theme");else r.setAttribute("data-app-theme",t==="oscuro"?"dark":"light");
+  const m=document.querySelector('meta[name="theme-color"]');
+  if(m){const dark=t==="oscuro"||(t==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches);m.setAttribute("content",dark?"#111316":"#F2F0EB")}
+}
+function setTheme(t){lsSet("costos:theme",t);applyTheme()}
+
+/* project scoping */
+const proj=()=>S.proj&&S.proyectos.get(S.proj);
+const inProj=(col,pid=S.proj)=>[...S[col].entries()].filter(([,d])=>d.proyectoId===pid);
+const sortedProjects=()=>[...S.proyectos.entries()].sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
+const projColor=pid=>{const p=S.proyectos.get(pid);if(p&&p.color)return p.color;const i=sortedProjects().findIndex(([k])=>k===pid);return COLORS[(i<0?0:i)%COLORS.length]};
+const projIcon=pid=>{const p=S.proyectos.get(pid);return PICONS[(p&&p.icono)||"casa"]||PICONS.casa};
+const projBadge=(pid,cls="proj-ic")=>`<span class="${cls}" style="background:${projColor(pid)};color:#fff">${SV(projIcon(pid))}</span>`;
+function pfTotals(p){
+  const sub=round2((p.items||[]).reduce((a,it)=>a+num(it.cantidad)*num(it.precio),0));
+  const pct=num(p.ivaPct??15);
+  const iva=p.conIva?round2(sub*pct/100):0;
+  return {sub,iva,pct,total:round2(sub+iva)};
+}
+const pagosOf=pfId=>[...S.gastos.entries()].filter(([,g])=>g.proformaId===pfId).sort((a,b)=>(a[1].fecha||"").localeCompare(b[1].fecha||""));
+const paidOf=pfId=>round2(pagosOf(pfId).reduce((a,[,g])=>a+num(g.monto),0));
+function estadoOf(id){
+  const p=S.proformas.get(id);if(!p||p.estado!=="aceptada")return"borrador";
+  const t=pfTotals(p).total,pd=paidOf(id);
+  if(t>0&&pd>=t-0.005)return"pagada";if(pd>0)return"parcial";return"aceptada";
+}
+const ESTADO_TXT={borrador:"Borrador",aceptada:"Aceptada",parcial:"Pago parcial",pagada:"Pagada"};
+const estadoPill=id=>{const e=estadoOf(id);return `<span class="pill ${e}">${e==="pagada"?SV(I.check,3):""}${ESTADO_TXT[e]}</span>`};
+const spentOf=(pid=S.proj)=>round2(inProj("gastos",pid).reduce((a,[,g])=>a+num(g.monto),0));
+const acceptedPf=(pid=S.proj)=>inProj("proformas",pid).filter(([,p])=>p.estado==="aceptada");
+const acceptedSum=(pid=S.proj)=>round2(acceptedPf(pid).reduce((a,[,p])=>a+pfTotals(p).total,0));
+const manualBudget=(pid=S.proj)=>{const p=S.proyectos.get(pid);const v=p&&num(p.presupuestoManual);return v>0?round2(v):0};
+const budgetOf=(pid=S.proj)=>manualBudget(pid)||acceptedSum(pid);
+const sortedPf=(pid=S.proj)=>inProj("proformas",pid).sort((a,b)=>(b[1].updatedAt||0)-(a[1].updatedAt||0));
+const etapasOf=(pid=S.proj)=>{const p=S.proyectos.get(pid);return (p&&Array.isArray(p.etapas))?p.etapas:[]};
+const etapaName=(eid,pid=S.proj)=>{const e=etapasOf(pid).find(x=>x.id===eid);return e?e.nombre:""};
+function provList(){const m=new Map();[...S.gastos.values()].forEach(g=>{const v=(g.proveedor||"").trim();if(v)m.set(v.toLowerCase(),[v,(m.get(v.toLowerCase())||[v,0])[1]+1])});return [...m.values()].sort((a,b)=>b[1]-a[1]).map(x=>x[0])}
+
+/* ================= storage ================= */
+const pending={}, chains={};
+const LS="costos:";
+function persistLocal(col){try{localStorage.setItem(LS+col,JSON.stringify(Object.fromEntries(S[col])))}catch(e){toast("No se pudo guardar en este teléfono (memoria llena o bloqueada).")}}
+function loadLocal(){for(const c of COLS){try{const o=JSON.parse(localStorage.getItem(LS+c)||"{}");S[c]=new Map(Object.entries(o))}catch(e){}}}
+function write(col,id,{del=false,delay=0}={}){
+  if(!db){persistLocal(col);return}
+  const path=col+"/"+id;
+  if(pending[path])clearTimeout(pending[path]);
+  const run=()=>{delete pending[path];
+    chains[path]=(chains[path]||Promise.resolve()).then(()=>{
+      const ref=db.collection(col).doc(id);
+      if(del)return ref.delete();
+      const v=S[col].get(id); if(!v)return ref.delete();
+      return ref.set(JSON.parse(JSON.stringify(v)));
+    }).catch(onWriteErr);};
+  if(delay)pending[path]=setTimeout(run,delay);else run();
+}
+function flushAll(){for(const p in pending){const i=p.indexOf("/");clearTimeout(pending[p]);delete pending[p];write(p.slice(0,i),p.slice(i+1))}}
+let errShown=0;
+function onWriteErr(e){
+  if(Date.now()-errShown<4000)return;errShown=Date.now();
+  const code=e&&e.code;
+  if(code==="invalid_argument"){readOnly=true;toast("No tienes permiso para guardar cambios aquí.");}
+  else if(code==="quota_exceeded")toast("Se llegó al límite de registros. Borra algunos que ya no uses.");
+  else toast("No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.");
+}
+function put(col,id,data,delay=0){data.updatedAt=Date.now();S[col].set(id,data);write(col,id,{delay})}
+function del(col,id){S[col].delete(id);write(col,id,{del:true})}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")flushAll()});
+
+/* ================= photos ================= */
+function idbOpen(){return new Promise((res,rej)=>{const r=indexedDB.open("costos-fotos",1);r.onupgradeneeded=()=>r.result.createObjectStore("f");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function idbDo(mode,fn){const d=await idbOpen();return new Promise((res,rej)=>{const t=d.transaction("f",mode);const r=fn(t.objectStore("f"));t.oncomplete=()=>res(r&&r.result);t.onerror=()=>rej(t.error)})}
+const canPhoto=()=>!!assets||(!IN_ARTIFACT&&"indexedDB" in window);
+async function compressImage(file){
+  const url=URL.createObjectURL(file);
+  try{
+    const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=url});
+    const sc=Math.min(1,1400/Math.max(img.naturalWidth,img.naturalHeight));
+    const c=document.createElement("canvas");c.width=Math.round(img.naturalWidth*sc);c.height=Math.round(img.naturalHeight*sc);
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+    return await new Promise(res=>c.toBlob(b=>res(b||file),"image/jpeg",0.72));
+  }finally{URL.revokeObjectURL(url)}
+}
+const Photos={
+  async save(blob){
+    if(assets){const r=await assets.upload(blob);return {asset:r.id,url:r.url}}
+    if(!IN_ARTIFACT){const id=uid();await idbDo("readwrite",s=>s.put(blob,id));return {idb:id}}
+    throw new Error("sin almacenamiento");
+  },
+  async url(f){
+    if(!f)return null;
+    if(f.asset)return f.url||("/_blob/"+f.asset);
+    if(f.idb){try{const b=await idbDo("readonly",s=>s.get(f.idb));return b?URL.createObjectURL(b):null}catch(e){return null}}
+    return null;
+  },
+  async remove(f){
+    try{if(f&&f.idb)await idbDo("readwrite",s=>s.delete(f.idb));if(f&&f.asset&&assets)await assets.delete(f.asset)}catch(e){}
+  }
+};
+
+/* ================= render scheduling ================= */
+let dirty=false;
+function editing(){const a=document.activeElement;return a&&app.contains(a)&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)}
+function requestRender(){if(editing()||$(".scrim")){dirty=true;return}render()}
+app.addEventListener("focusout",()=>setTimeout(()=>{if(dirty&&!editing()&&!$(".scrim")){dirty=false;render()}},50));
+
+/* ================= toast / confirm / sheet ================= */
+let toastT=null;
+function toast(msg,action){
+  $$(".toast").forEach(t=>t.remove());
+  const t=document.createElement("div");t.className="toast";t.setAttribute("role","status");
+  t.innerHTML="<span>"+esc(msg)+"</span>"+(action?'<button type="button">'+esc(action.label)+"</button>":"");
+  if(action)t.querySelector("button").onclick=()=>{action.fn();t.remove()};
+  document.body.appendChild(t);clearTimeout(toastT);toastT=setTimeout(()=>t.remove(),action?6000:3500);
+}
+function armDanger(btn,label,fn){
+  btn.addEventListener("click",()=>{
+    if(btn.classList.contains("armed")){fn();return}
+    const orig=btn.innerHTML;btn.classList.add("armed");btn.textContent=label;
+    setTimeout(()=>{if(btn.isConnected){btn.classList.remove("armed");btn.innerHTML=orig}},3500);
+  });
+}
+function openSheet(title,bodyHTML,onMount){
+  closeSheet(true);
+  const s=document.createElement("div");s.className="scrim";
+  s.innerHTML='<div class="sheet" role="dialog" aria-modal="true" aria-label="'+esc(title)+'"><div class="grab"></div><div class="sheet-h"><h3>'+esc(title)+'</h3><button class="icon-btn" type="button" aria-label="Cerrar" data-close>'+SV(I.x,2.2)+'</button></div><div class="sheet-b">'+bodyHTML+"</div></div>";
+  s.addEventListener("click",e=>{if(e.target===s||e.target.closest("[data-close]"))closeSheet()});
+  document.body.appendChild(s);onMount&&onMount(s);
+  return s;
+}
+function closeSheet(silent){const s=$(".scrim");if(s){s.remove();if(dirty&&!silent){dirty=false;render()}}}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
+
+/* ================= files ================= */
+async function saveFile(filename,data,mime){
+  if(downloads){
+    try{const r=await downloads.save({filename,data});if(r.status==="saved")toast("Archivo listo: "+filename)}
+    catch(e){if(e&&e.code!=="declined")toast("No se pudo descargar el archivo.")}
+    return;
+  }
+  if(IN_ARTIFACT){toast("Esta vista no permite descargar archivos.");return}
+  try{
+    const blob=new Blob([data],{type:mime||"text/plain"}),a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();
+    setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast("Descargando "+filename);
+  }catch(e){toast("No se pudo descargar el archivo.")}
+}
+async function copyText(txt){
+  try{await navigator.clipboard.writeText(txt);toast("Copiado. Pégalo en WhatsApp o donde necesites.")}
+  catch(e){openSheet("Copiar texto",'<textarea class="inp num" rows="14" id="cp-t" readonly style="font-size:13px"></textarea><p style="margin:0;font-size:14px;color:var(--ink-2)">Mantén presionado el texto y elige “Copiar”.</p>',s=>{const ta=$("#cp-t",s);ta.value=txt;ta.focus();ta.select()})}
+}
+const csvCell=v=>{v=String(v??"");return /[",;\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+const toCSV=rows=>"﻿"+rows.map(r=>r.map(csvCell).join(",")).join("\r\n");
+let jspdfP=null;
+function loadJsPDF(){
+  if(window.jspdf)return Promise.resolve(window.jspdf);
+  if(!jspdfP)jspdfP=new Promise((res,rej)=>{const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";s.onload=()=>window.jspdf?res(window.jspdf):rej(new Error("x"));s.onerror=()=>{jspdfP=null;rej(new Error("x"))};document.head.appendChild(s)});
+  return jspdfP;
+}
+/* ================= header ================= */
+const TABS=["inicio","proyectos","gastos","precios"];
+const PARENT={proyecto:"proyectos",proformas:"proyecto",proforma:"proformas",doc:"proforma",etapas:"proyecto"};
+const navTab=v=>TABS.includes(v)?v:"proyectos";
+function renderHeader(){
+  const top=$("#top"),p=proj(),v=S.view;
+  const back=`<button class="icon-btn" type="button" id="hd-back" aria-label="Volver">${SV(I.back,2.2)}</button>`;
+  let h;
+  if(v==="inicio")h=`<div class="top-title"><small>Todos los proyectos</small><h1>Balance del mes</h1></div>`;
+  else if(v==="proyectos")h=`<div class="top-title"><h1>Mis proyectos</h1></div>`;
+  else if(v==="proyecto"&&p)h=`${back}<div class="top-title"><small>Proyecto</small><h1>${esc(p.nombre)}</h1></div><button class="icon-btn" type="button" id="hd-edit" aria-label="Editar proyecto">${SV(I.edit)}</button>`;
+  else if((v==="gastos"||v==="precios")&&p)h=`<button class="proj-btn" type="button" id="hd-proj" aria-label="Cambiar de proyecto">${projBadge(S.proj)}<span class="proj-txt"><small>Proyecto</small><b>${esc(p.nombre)} ▾</b></span></button>`;
+  else{const T={proformas:"Proformas",proforma:"Proforma",doc:"Proforma",etapas:"Avance por etapas"};h=`${back}<div class="top-title">${p?`<small>${esc(p.nombre)}</small>`:""}<h1>${T[v]||""}</h1></div>`}
+  top.innerHTML=h;
+  const bk=$("#hd-back");if(bk)bk.onclick=goBack;
+  const pj=$("#hd-proj");if(pj)pj.onclick=()=>setTab("proyectos");
+  const ed=$("#hd-edit");if(ed)ed.onclick=()=>openProjectForm(S.proj);
+}
+
+/* ================= projects ================= */
+function resolveProject(){
+  if(S.proj&&S.proyectos.has(S.proj))return S.proj;
+  const c=cfg();
+  if(c.proyectoActual&&S.proyectos.has(c.proyectoActual))return S.proj=c.proyectoActual;
+  const f=sortedProjects()[0];S.proj=f?f[0]:null;return S.proj;
+}
+function selectProject(id){
+  flushAll();S.proj=id;S.pfId=null;S.pfMode="edit";S.gastoCat="Todas";S.matQ="";
+  put("config","app",{...cfg(),proyectoActual:id});
+  openView("proyecto");
+}
+function copyPrices(fromId,toId){
+  const have=new Set(inProj("materiales",toId).map(([,m])=>m.nombre.trim().toLowerCase()));
+  let n=0;
+  inProj("materiales",fromId).forEach(([,m])=>{if(have.has(m.nombre.trim().toLowerCase()))return;
+    const c=JSON.parse(JSON.stringify(m));c.proyectoId=toId;c.createdAt=Date.now();put("materiales",uid(),c);n++});
+  return n;
+}
+function openProjectForm(pid){
+  const p=pid?S.proyectos.get(pid):{nombre:"",descripcion:""};
+  let color=pid?projColor(pid):COLORS[S.proyectos.size%COLORS.length], icono=(p&&p.icono)||"casa";
+  const others=sortedProjects().filter(([k])=>k!==pid&&inProj("materiales",k).length);
+  const counts=pid?{g:inProj("gastos",pid).length,pf:inProj("proformas",pid).length,m:inProj("materiales",pid).length}:null;
+  openSheet(pid?"Editar proyecto":"Nuevo proyecto",`<form id="pjf" class="form-grid" novalidate>
+    <label class="field full"><span>Nombre del proyecto</span><input class="inp" id="pj-n" value="${esc(p.nombre)}" placeholder="Ej. Casa Urdaneta, Local comercial"></label>
+    <label class="field full"><span>Descripción (opcional)</span><input class="inp" id="pj-d" value="${esc(p.descripcion||"")}" placeholder="Ubicación, cliente, etapa…"></label>
+    <div class="field full"><span>Color</span><div class="swatches" role="radiogroup" aria-label="Color">${COLORS.map(c=>`<button type="button" class="swatch" role="radio" aria-checked="${c===color}" aria-label="Color ${c}" data-c="${c}" style="background:${c}"></button>`).join("")}</div></div>
+    <div class="field full"><span>Ícono</span><div class="icons" role="radiogroup" aria-label="Ícono">${Object.keys(PICONS).map(k=>`<button type="button" class="icopt" role="radio" aria-checked="${k===icono}" aria-label="${k}" data-i="${k}">${SV(PICONS[k])}</button>`).join("")}</div></div>
+    ${!pid&&others.length?`<label class="field full"><span>Lista de precios</span><select class="inp" id="pj-copy"><option value="">Empezar con la lista vacía</option>${others.map(([k,o])=>`<option value="${k}">Copiar precios de “${esc(o.nombre)}” (${inProj("materiales",k).length})</option>`).join("")}</select></label>`:""}
+    ${pid?`<div class="field full"><span>Presupuesto</span><button type="button" class="btn" id="pj-bud" style="justify-content:space-between"><span>${manualBudget(pid)?"Monto fijo":"Según proformas aceptadas"}</span><span class="num">${budgetOf(pid)?money(budgetOf(pid)):"Sin definir"}</span></button></div>`:`<label class="field full"><span>Presupuesto total (opcional)</span><input class="inp num" id="pj-b" type="number" inputmode="decimal" step="any" min="0" placeholder="Déjalo vacío para usar tus proformas"></label>`}
+    <p class="full err" id="pj-err" hidden></p>
+    <button class="btn primary full" type="submit">${pid?"Guardar cambios":"Crear proyecto"}</button>
+    ${pid?`<button class="btn danger full" type="button" id="pj-del">Eliminar proyecto</button><p class="full" style="margin:0;font-size:13px;color:var(--ink-3)">Se borrarán también sus ${counts.g} gastos, ${counts.pf} proformas y ${counts.m} precios. Esto no se puede deshacer; si quieres, descarga antes un respaldo.</p>`:""}
+  </form>`,s=>{
+    if(!pid)$("#pj-n",s).focus();
+    const pjb=$("#pj-bud",s);if(pjb)pjb.onclick=()=>{
+      const cur={...S.proyectos.get(pid),nombre:$("#pj-n",s).value.trim()||p.nombre,descripcion:$("#pj-d",s).value.trim(),color,icono};put("proyectos",pid,cur);openBudgetForm(pid)};
+    $$(".swatch",s).forEach(b=>b.onclick=()=>{color=b.dataset.c;$$(".swatch",s).forEach(x=>x.setAttribute("aria-checked",x===b))});
+    $$(".icopt",s).forEach(b=>b.onclick=()=>{icono=b.dataset.i;$$(".icopt",s).forEach(x=>x.setAttribute("aria-checked",x===b))});
+    $("#pjf",s).onsubmit=e=>{e.preventDefault();
+      const nombre=$("#pj-n",s).value.trim();
+      if(!nombre){const er=$("#pj-err",s);er.textContent="Escribe el nombre del proyecto.";er.hidden=false;return}
+      const descripcion=$("#pj-d",s).value.trim();
+      if(pid){put("proyectos",pid,{...S.proyectos.get(pid),nombre,descripcion,color,icono});closeSheet(true);render();toast("Proyecto actualizado");return}
+      const pb=round2(num($("#pj-b",s).value));
+      const id=uid();put("proyectos",id,{nombre,descripcion,color,icono,etapas:[],presupuestoManual:pb>0?pb:null,createdAt:Date.now()});
+      const from=$("#pj-copy",s);let n=0;if(from&&from.value)n=copyPrices(from.value,id);
+      closeSheet(true);selectProject(id);toast("Proyecto “"+nombre+"” creado"+(n?" con "+n+" precios":""));
+    };
+    const d=$("#pj-del",s);if(d)armDanger(d,"¿Eliminar todo? Toca otra vez",()=>{
+      const nm=p.nombre;
+      inProj("gastos",pid).forEach(([,g])=>{if(g.foto)Photos.remove(g.foto)});
+      SCOPED.forEach(c=>inProj(c,pid).forEach(([k])=>del(c,k)));del("proyectos",pid);
+      if(S.proj===pid){S.proj=null;S.pfId=null}
+      closeSheet(true);resolveProject();if(S.proj)put("config","app",{...cfg(),proyectoActual:S.proj});
+      S.view="proyectos";render();toast("“"+nm+"” eliminado");
+    });
+  });
+}
+function renderProyectos(){
+  const list=sortedProjects();
+  const lastBk=lsGet(LS+"lastBackup");
+  const plural=(n,s,p)=>n+" "+(n===1?s:p);
+  app.innerHTML=`<section class="view">
+    <button class="btn primary block" id="pj-add" style="min-height:50px">${SV(I.plus,2.4)}Nuevo proyecto</button>
+    ${list.length?"":'<div class="empty"><b>Crea tu primer proyecto</b>Por ejemplo “Mi casa”, “Local comercial” o “Siembra de cacao”.</div>'}
+    <div class="projs">${list.map(([k,p])=>{const sp=spentOf(k),b=budgetOf(k),pct=b?Math.min(100,sp/b*100):0,ng=inProj("gastos",k).length,np=inProj("proformas",k).length;
+      return `<article class="card pcard">
+        <button class="pmain" type="button" data-open="${k}" aria-label="Abrir ${esc(p.nombre)}">
+          <span class="proj-top">${projBadge(k)}<span class="grow"><b>${esc(p.nombre)}</b><small>${plural(ng,"gasto","gastos")} · ${plural(np,"proforma","proformas")}</small></span></span>
+          ${b?`<span class="meter${sp>b?" over":""}"><i style="width:${pct}%;background:${sp>b?"var(--bad)":projColor(k)}"></i></span>`:""}
+          <span class="between" style="font-size:13.5px;width:100%"><span><span class="num" style="font-weight:600">${money(sp)}</span> <span style="color:var(--ink-3)">gastado</span></span><span style="color:var(--ink-3)">${b?"de <span class=\"num\">"+money(b)+"</span>":"sin presupuesto"}</span></span>
+        </button>
+        <button class="icon-btn pedit" type="button" data-edit="${k}" aria-label="Editar ${esc(p.nombre)}">${SV(I.edit)}</button>
+      </article>`}).join("")}</div>
+    <div class="card tile">
+      <span class="label">Apariencia</span>
+      <div class="seg" role="radiogroup" aria-label="Tema de la app">${[["claro","Claro",'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'],["oscuro","Oscuro",'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>'],["auto","Automático",'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>']].map(([k,l,ic])=>`<button type="button" role="radio" data-theme-opt="${k}" aria-checked="${getTheme()===k}">${SV(ic)}${l}</button>`).join("")}</div>
+      <p style="margin:0;font-size:13px;color:var(--ink-3)">Automático sigue el modo claro u oscuro de tu teléfono.</p>
+    </div>
+    <div class="card tile">
+      <div class="row">${SV(lastBk?I.check:I.info,2,` width="20" height="20" style="color:${lastBk?"var(--ok)":"var(--warn)"}"`)}<span style="font-size:14px"><b>${lastBk?"Último respaldo: "+fdate(lastBk):"Aún no has descargado un respaldo"}</b></span></div>
+      <p style="margin:0;font-size:13.5px;color:var(--ink-2)">${db?"Tus datos se guardan en tu cuenta de Claude. Igual puedes descargar una copia.":"Tus datos se guardan solo en este navegador. Descarga un respaldo de vez en cuando para no perderlos si cambias de teléfono."}</p>
+      <div class="row">${canDownload()?'<button class="btn grow" id="bk-exp">Descargar respaldo</button>':""}<button class="btn grow" id="bk-imp">Importar respaldo</button></div>
+    </div>
+  </section>`;
+  $$("[data-theme-opt]",app).forEach(b=>b.onclick=()=>{setTheme(b.dataset.themeOpt);$$("[data-theme-opt]",app).forEach(x=>x.setAttribute("aria-checked",x===b))});
+  $("#pj-add").onclick=()=>openProjectForm(null);
+  $$("[data-open]",app).forEach(b=>b.onclick=()=>selectProject(b.dataset.open));
+  $$("[data-edit]",app).forEach(b=>b.onclick=()=>openProjectForm(b.dataset.edit));
+  const ex=$("#bk-exp");if(ex)ex.onclick=exportBackup;
+  $("#bk-imp").onclick=()=>$("#import-file").click();
+}
+function exportBackup(){
+  flushAll();
+  const data={};["proyectos",...SCOPED].forEach(c=>data[c]=Object.fromEntries(S[c]));
+  saveFile("respaldo-costos-"+today()+".json",JSON.stringify({app:"costos-proyectos",version:3,exportedAt:new Date().toISOString(),data},null,1),"application/json");
+  lsSet(LS+"lastBackup",today());setTimeout(()=>{if(S.view==="proyectos")render()},400);
+}
+$("#import-file").addEventListener("change",e=>{
+  const f=e.target.files&&e.target.files[0];e.target.value="";if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    let j;try{j=JSON.parse(r.result)}catch(err){toast("Ese archivo no es un respaldo válido.");return}
+    const d=j&&j.app==="costos-proyectos"&&j.data;
+    if(!d||typeof d!=="object"){toast("Ese archivo no es un respaldo de esta app.");return}
+    const n=c=>Object.keys(d[c]||{}).length;
+    openSheet("Importar respaldo",`<p style="margin:0">El archivo trae <b>${n("proyectos")}</b> proyectos, <b>${n("gastos")}</b> gastos, <b>${n("proformas")}</b> proformas y <b>${n("materiales")}</b> precios.</p>
+      <p style="margin:0;font-size:14px;color:var(--ink-2)">Se agregan a lo que ya tienes. Si un registro ya existe, se reemplaza por la versión del respaldo. Las fotos de facturas no viajan en el respaldo.</p>
+      <button class="btn primary" id="imp-go">Importar</button>`,s=>{
+      $("#imp-go",s).onclick=()=>{
+        ["proyectos",...SCOPED].forEach(c=>Object.entries(d[c]||{}).forEach(([id,v])=>{
+          if(!v||typeof v!=="object"||!/^[\w\-.~:@+]{1,200}$/.test(id))return;
+          if(c!=="proyectos"&&!v.proyectoId)return;
+          if(c==="gastos"&&v.foto&&v.foto.idb)delete v.foto;
+          S[c].set(id,v);write(c,id);
+        }));
+        closeSheet(true);resolveProject();render();toast("Respaldo importado");
+      };
+    });
+  };
+  r.readAsText(f);
+});
+function migrate(){
+  if(migrated)return;migrated=true;
+  const legacy=SCOPED.flatMap(c=>[...S[c].entries()].filter(([,d])=>!d.proyectoId).map(([id])=>[c,id]));
+  if(!legacy.length)return;
+  let target;
+  if(!S.proyectos.size){
+    const c=cfg();target="casa";
+    put("proyectos",target,{nombre:c.obra||"Mi casa",descripcion:"",color:COLORS[0],icono:"casa",etapas:[],createdAt:1});
+  }else target=sortedProjects()[0][0];
+  legacy.forEach(([c,id])=>{const d=S[c].get(id);d.proyectoId=target;S[c].set(id,d);write(c,id)});
+  if(!cfg().proyectoActual)put("config","app",{...cfg(),proyectoActual:target});
+  S.proj=target;
+}
+
+function openBudgetForm(pid=S.proj){
+  const p=S.proyectos.get(pid),man=manualBudget(pid),sum=acceptedSum(pid),n=acceptedPf(pid).length;
+  let mode=man?"fijo":"auto";
+  openSheet("Presupuesto de "+p.nombre,`<form id="bf" novalidate style="display:flex;flex-direction:column;gap:12px">
+    <div class="seg" role="radiogroup" aria-label="Tipo de presupuesto" style="grid-template-columns:1fr 1fr">
+      <button type="button" role="radio" data-m="fijo" aria-checked="${mode==="fijo"}">Monto fijo</button>
+      <button type="button" role="radio" data-m="auto" aria-checked="${mode==="auto"}">Según proformas</button>
+    </div>
+    <div id="bf-fijo"${mode==="fijo"?"":" hidden"}><label class="field"><span>Presupuesto total del proyecto ($)</span><input class="inp num" id="bf-v" type="number" inputmode="decimal" step="any" min="0" value="${man||""}" placeholder="${sum?sum.toFixed(2):"0.00"}" style="font-size:22px;font-weight:600;min-height:54px"></label>
+      <p style="margin:6px 0 0;font-size:13px;color:var(--ink-3)">Úsalo cuando ya sabes cuánto piensas invertir en total.${sum?" Tus proformas aceptadas suman "+money(sum)+".":""}</p></div>
+    <div id="bf-auto"${mode==="auto"?"":" hidden"}><div class="notice info">${SV(I.info)}<span>${n?`El presupuesto es la suma de tus ${n} proforma${n===1?"":"s"} aceptada${n===1?"":"s"}: <b class="num">${money(sum)}</b>. Cambia cuando aceptas, editas o eliminas una proforma.`:"Todavía no tienes proformas aceptadas. Cuando aceptes una, su total será el presupuesto."}</span></div></div>
+    <p class="err" id="bf-err" hidden></p>
+    <button class="btn primary" type="submit">Guardar presupuesto</button>
+  </form>`,s=>{
+    $$("[data-m]",s).forEach(b=>b.onclick=()=>{mode=b.dataset.m;$$("[data-m]",s).forEach(x=>x.setAttribute("aria-checked",x===b));$("#bf-fijo",s).hidden=mode!=="fijo";$("#bf-auto",s).hidden=mode!=="auto";if(mode==="fijo")$("#bf-v",s).focus()});
+    $("#bf",s).onsubmit=e=>{e.preventDefault();
+      let v=null;
+      if(mode==="fijo"){v=round2(num($("#bf-v",s).value));if(v<=0){const er=$("#bf-err",s);er.textContent="Escribe un monto mayor a 0.";er.hidden=false;return}}
+      const q={...S.proyectos.get(pid),presupuestoManual:v};put("proyectos",pid,q);closeSheet(true);render();
+      toast(v?"Presupuesto fijado en "+money(v):"El presupuesto ahora sigue tus proformas aceptadas");
+    };
+  });
+}
+
+/* ================= INICIO ================= */
+function monthSeries(pid,n=6){
+  const end=thisMonth(),out=[];
+  for(let i=n-1;i>=0;i--){const mk=shiftMonth(end,-i);const gs=inProj("gastos",pid).filter(([,g])=>(g.fecha||"").startsWith(mk));out.push({mk,v:round2(gs.reduce((a,[,g])=>a+num(g.monto),0)),n:gs.length})}
+  return out;
+}
+function qtyAlerts(pid=S.proj){
+  const pres=new Map();
+  acceptedPf(pid).forEach(([id,p])=>{const full=estadoOf(id)==="pagada";(p.items||[]).forEach(it=>{if(!it.materialId)return;const r=pres.get(it.materialId)||{q:0,bought:0,nombre:it.nombre,unidad:it.unidad||"u",precio:num(it.precio)};r.q+=num(it.cantidad);if(full)r.bought+=num(it.cantidad);pres.set(it.materialId,r)})});
+  inProj("gastos",pid).forEach(([,g])=>{if(g.materialId&&pres.has(g.materialId)&&!g.proformaId)pres.get(g.materialId).bought+=num(g.cantidad)});
+  const out=[];
+  pres.forEach((r,mid)=>{const m=S.materiales.get(mid);const precio=m?num(m.precio):r.precio;
+    if(r.bought>0&&r.bought<r.q-1e-9)out.push({tipo:"falta",txt:`${r.nombre}: compraste ${qtyFmt(r.bought)} de ${qtyFmt(r.q)} ${r.unidad}`,sub:`Faltan ${qtyFmt(r.q-r.bought)} ${r.unidad} (≈ ${money((r.q-r.bought)*precio)} al precio de tu lista).`});
+    else if(r.bought>r.q+1e-9)out.push({tipo:"exceso",txt:`${r.nombre}: compraste ${qtyFmt(r.bought-r.q)} ${r.unidad} más de lo presupuestado`,sub:`Presupuesto: ${qtyFmt(r.q)} ${r.unidad} · Comprado: ${qtyFmt(r.bought)} ${r.unidad}.`});
+  });
+  return out;
+}
+function etapaStats(pid=S.proj){
+  const pfs=inProj("proformas",pid),gs=inProj("gastos",pid);
+  return etapasOf(pid).map(e=>{
+    const budget=round2(pfs.filter(([,p])=>p.etapaId===e.id&&p.estado==="aceptada").reduce((a,[,p])=>a+pfTotals(p).total,0));
+    const draft=round2(pfs.filter(([,p])=>p.etapaId===e.id&&p.estado!=="aceptada").reduce((a,[,p])=>a+pfTotals(p).total,0));
+    const spent=round2(gs.filter(([,g])=>g.etapaId===e.id).reduce((a,[,g])=>a+num(g.monto),0));
+    const st=e.hecha?"done":spent>0?"cur":"pend";
+    return {...e,budget,draft,spent,st};
+  });
+}
+function renderInicio(){
+  const p=proj(),spent=spentOf(),budget=budgetOf(),acc=acceptedPf();
+  const pct=budget?spent/budget*100:0,left=round2(budget-spent),C=339.29;
+  const dash=Math.min(pct,100)/100*C;
+  const series=monthSeries(S.proj),max=Math.max(...series.map(x=>x.v),0);
+  const maxIdx=max>0?series.findIndex(x=>x.v===max):-1;
+  const sel=S.chartSel&&series.find(x=>x.mk===S.chartSel)||series[series.length-1];
+  const recent=inProj("gastos").sort((a,b)=>(b[1].fecha||"").localeCompare(a[1].fecha||"")||(b[1].createdAt||0)-(a[1].createdAt||0)).slice(0,4);
+  const mk=thisMonth(),monthAll=round2([...S.gastos.values()].filter(g=>(g.fecha||"").startsWith(mk)).reduce((a,g)=>a+num(g.monto),0));
+  const ets=etapaStats(),alerts=qtyAlerts();
+  const curEt=ets.find(e=>e.st==="cur")||ets.find(e=>e.st==="pend");
+  const byCat=GASTO_CATS.map(k=>[k,round2(inProj("gastos").filter(([,g])=>g.categoria===k).reduce((a,[,g])=>a+num(g.monto),0))]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
+  app.innerHTML=`<section class="view">
+    <div class="hero">
+      ${budget?`<div class="ring" role="img" aria-label="${Math.round(pct)}% del presupuesto usado"><svg viewBox="0 0 128 128"><circle cx="64" cy="64" r="54" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="12"/><circle cx="64" cy="64" r="54" fill="none" stroke="${pct>100?"#FF8A80":"var(--ring)"}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${dash.toFixed(1)} ${C}" transform="rotate(-90 64 64)"/></svg><div><b>${Math.round(pct)}%</b><small>del presupuesto</small></div></div>`:""}
+      <div class="hero-stats">
+        <div><div class="k">Gastado</div><div class="v">${money(spent)}</div></div>
+        ${budget?`<div><div class="k">${left<0?"Excedido":"Disponible"}</div><div class="v2${left<0?" over":""}">${money(Math.abs(left))}</div></div>
+        <p>de ${money(budget)} · ${manualBudget()?"presupuesto fijo":acc.length+" proforma"+(acc.length===1?"":"s")+" aceptada"+(acc.length===1?"":"s")}</p>
+        <button class="btn sm" id="in-budget" type="button" style="align-self:flex-start;white-space:nowrap" aria-label="Editar presupuesto">${SV(I.edit)}Editar</button>`
+        :`<p>Fija el presupuesto del proyecto para ver cuánto te queda: escribe un monto o acepta una proforma.</p><button class="btn sm" id="in-budget" type="button" style="align-self:flex-start">${SV(I.edit)}Fijar presupuesto</button>`}
+      </div>
+    </div>
+    <div class="quick">
+      <button type="button" class="main" id="q-gasto">${SV(I.card)}Gasto</button>
+      <button type="button" id="q-pf">${SV(I.doc)}Proformas</button>
+      <button type="button" id="q-precio">${SV(I.tag)}Precios</button>
+    </div>
+    ${alerts.length?`<button type="button" class="notice" id="in-alert" style="text-align:left;width:100%;color:var(--ink)">${SV(I.alert)}<span style="display:flex;flex-direction:column;gap:2px"><b>${esc(alerts[0].txt)}</b><span style="color:var(--ink-2)">${esc(alerts[0].sub)}${alerts.length>1?" · y "+(alerts.length-1)+" aviso"+(alerts.length>2?"s":"")+" más":""}</span></span></button>`:""}
+    <button class="tile-link" type="button" id="in-bal"><span class="tl-ic">${SV(I.cal)}</span><span class="grow"><b style="display:block">Balance de ${MESES[+mk.slice(5)-1]}</b><small style="color:var(--ink-3)">Todos tus proyectos</small></span><span class="num" style="font-weight:600">${money(monthAll)}</span><span class="chev">${SV(I.chevR,2,' width="18" height="18"')}</span></button>
+    ${ets.length?`<button class="tile-link" type="button" id="in-et"><span class="tl-ic">${SV(I.layers)}</span><span class="grow" style="display:flex;flex-direction:column;gap:6px"><span class="between"><b>${curEt?esc(curEt.nombre):"Etapas completas"}</b><small style="color:var(--ink-3)">${ets.filter(e=>e.st==="done").length}/${ets.length} etapas</small></span>${curEt&&curEt.budget?`<span class="meter"><i style="width:${Math.min(100,curEt.spent/curEt.budget*100)}%"></i></span><small style="color:var(--ink-3)">${money(curEt.spent)} de ${money(curEt.budget)}</small>`:curEt?`<small style="color:var(--ink-3)">${money(curEt.spent)} gastado</small>`:""}</span><span class="chev">${SV(I.chevR,2,' width="18" height="18"')}</span></button>`
+      :`<button class="tile-link" type="button" id="in-et"><span class="tl-ic">${SV(I.layers)}</span><span class="grow"><b style="display:block">Organiza por etapas</b><small style="color:var(--ink-3)">Divide el proyecto en las fases que tú definas, cada una con su presupuesto</small></span><span class="chev">${SV(I.chevR,2,' width="18" height="18"')}</span></button>`}
+    <div class="card tile">
+      <div class="between"><span class="label">Gasto por mes</span><span style="font-size:12px;color:var(--ink-3)">${MES3[+series[0].mk.slice(5)-1]} – ${MES3[+series[5].mk.slice(5)-1]} ${series[5].mk.slice(0,4)}</span></div>
+      <div class="mbars" id="mbars">${series.map((x,i)=>{const h=max?Math.max(2,x.v/max*84):2;const isCur=i===series.length-1;const showV=x.v>0&&(i===maxIdx||isCur||x.mk===sel.mk);
+        return `<button type="button" class="mbar${isCur?" cur":""}${x.v?"":" zero"}${x.mk===sel.mk?" sel":""}" data-mk="${x.mk}" aria-label="${monthName(x.mk)}: ${money(x.v)}">${showV?`<span>${kfmt(x.v)}</span>`:""}<i style="height:${h}px"></i></button>`}).join("")}</div>
+      <div class="mlabels">${series.map((x,i)=>`<span class="${i===series.length-1?"cur":""}">${MES3[+x.mk.slice(5)-1]}</span>`).join("")}</div>
+      <div class="mcap" aria-live="polite"><b style="text-transform:capitalize">${monthName(sel.mk)}</b>: <span class="num">${money(sel.v)}</span> · ${sel.n} gasto${sel.n===1?"":"s"}</div>
+    </div>
+    <div>
+      <div class="group-h"><span class="label">Últimos gastos</span>${recent.length?'<button class="btn ghost sm" id="in-all" type="button">Ver todos</button>':""}</div>
+      ${recent.length?`<div class="card list">${recent.map(([id,g])=>gastoRow(id,g)).join("")}</div>`:'<div class="empty">Todavía no hay gastos. Toca el botón <b style="display:inline;font:inherit;font-weight:700">+</b> para registrar el primero.</div>'}
+    </div>
+    ${byCat.length>1?`<div><div class="group-h"><span class="label">Por categoría</span></div><div class="card hbars">${byCat.map(([k,v])=>`<div class="hbar"><span class="nm">${esc(k)}</span><span></span><span class="num">${money(v)} <small>${Math.round(v/spent*100)}%</small></span><span class="track"><i style="width:${v/byCat[0][1]*100}%;background:var(--accent)"></i></span></div>`).join("")}</div></div>`:""}
+  </section>`;
+  $("#q-gasto").onclick=()=>openGastoForm(null);
+  $("#q-pf").onclick=()=>openView("proformas");
+  $("#q-precio").onclick=()=>setTab("precios");
+  $("#in-bal").onclick=()=>setTab("inicio");
+  $("#in-et").onclick=()=>openView("etapas");
+  const al=$("#in-alert");if(al)al.onclick=()=>openView("etapas");
+  $("#in-budget").onclick=()=>openBudgetForm();
+  const all=$("#in-all");if(all)all.onclick=()=>setTab("gastos");
+  $$(".mbar",app).forEach(b=>b.onclick=()=>{S.chartSel=b.dataset.mk;renderInicio()});
+  bindGastoRows(app);
+}
+function gastoRow(id,g,opts={}){
+  const bits=[fdateShort(g.fecha),esc(CAT_SHORT[g.categoria]||g.categoria)];
+  if(opts.proj)bits.unshift(esc((S.proyectos.get(g.proyectoId)||{}).nombre||""));
+  if(g.proveedor)bits.push(esc(g.proveedor));
+  const tags=(g.proformaId?' <span class="pill aceptada" style="padding:1px 6px">Proforma</span>':"")+(g.foto?` <span title="Tiene foto de factura" style="display:inline-flex;color:var(--ink-3)">${SV(I.camera,2,' width="14" height="14"')}</span>`:"");
+  return `<button class="li" type="button" data-gasto="${id}">${opts.proj?projBadge(g.proyectoId,"li-ic"):catIcon(g.categoria)}<span class="li-main"><b>${esc(g.concepto)}</b><small>${bits.join(" · ")}${tags}</small></span><span class="li-amt">${money(g.monto)}</span></button>`;
+}
+function bindGastoRows(root){$$("[data-gasto]",root).forEach(b=>b.onclick=()=>openGastoForm(b.dataset.gasto))}
+
+/* ================= GASTO FORM (keypad) ================= */
+function openGastoForm(gid,preset){
+  if(!S.proj){toast("Primero crea un proyecto.");return}
+  const g=gid?S.gastos.get(gid):{fecha:today(),concepto:"",categoria:"Materiales",monto:"",proveedor:"",nota:"",proyectoId:S.proj,...(preset||{})};
+  const pid=g.proyectoId;
+  let amt=g.monto?String(round2(num(g.monto))):"";
+  let cat=g.categoria||"Materiales", etapa=g.etapaId||"", fecha=g.fecha||today();
+  let newPhoto=null, removePhoto=false;
+  const ets=etapasOf(pid), mats=inProj("materiales",pid).sort((a,b)=>a[1].nombre.localeCompare(b[1].nombre,"es"));
+  const pf=g.proformaId&&S.proformas.get(g.proformaId);
+  const provs=provList();
+  $("#provs").innerHTML=provs.map(v=>`<option value="${esc(v)}">`).join("");
+  const s=openSheet(gid?"Editar gasto":(S.proyectos.size>1&&!pf?"Nuevo gasto":"Nuevo gasto · "+((S.proyectos.get(pid)||{}).nombre||"")),`<form id="gf" novalidate style="display:flex;flex-direction:column;gap:14px">
+    ${pf?`<div class="notice info">${SV(I.doc)}<span>Pago de la proforma <b>${esc(pf.nombre)}</b></span></div>`:""}
+    ${!gid&&!pf&&S.proyectos.size>1?`<div class="field"><span>Proyecto</span>
+      <button type="button" class="pj-pick" id="gf-pj-btn" aria-expanded="false" aria-controls="gf-pj">${projBadge(pid,"pdot")}<span class="grow">${esc((S.proyectos.get(pid)||{}).nombre||"")}</span><span class="pj-chg">Cambiar ${SV(I.down,2.4)}</span></button>
+      <div class="pj-menu card" id="gf-pj" hidden>
+        ${S.proyectos.size>6?`<input class="inp" id="gf-pj-q" placeholder="Buscar proyecto…" aria-label="Buscar proyecto" autocomplete="off">`:""}
+        <div class="list" id="gf-pj-list">${sortedProjects().map(([k,x])=>`<button type="button" class="li" data-pj="${k}" data-name="${esc(x.nombre.toLowerCase())}">${projBadge(k,"pdot")}<span class="li-main"><b>${esc(x.nombre)}</b></span>${k===pid?SV(I.check,2.6,' width="18" height="18" style="color:var(--accent)"'):""}</button>`).join("")}</div>
+      </div></div>`:""}
+    <div class="amount"><output id="gf-amt" class="${amt?"":"zero"}" aria-live="polite">${money(num(amt))}</output>
+      <label class="sr" for="gf-c">Concepto</label><input id="gf-c" value="${esc(g.concepto)}" placeholder="¿En qué gastaste? (ej. 20 sacos de cemento)" autocomplete="off"></div>
+    <div class="keys" id="gf-keys">${["1","2","3","4","5","6","7","8","9",".","0"].map(k=>`<button type="button" data-k="${k}">${k}</button>`).join("")}<button type="button" data-k="del" aria-label="Borrar">${SV(I.backspace)}</button></div>
+    <div class="field"><span>Categoría</span><div class="chips wrapc" id="gf-cats">${GASTO_CATS.map(c=>`<button type="button" class="chip" data-c="${esc(c)}" aria-pressed="${c===cat}">${esc(CAT_SHORT[c])}</button>`).join("")}</div></div>
+    ${ets.length?`<div class="field"><span>Etapa</span><div class="chips wrapc" id="gf-ets"><button type="button" class="chip" data-e="" aria-pressed="${!etapa}">Sin etapa</button>${ets.map(e=>`<button type="button" class="chip" data-e="${e.id}" aria-pressed="${e.id===etapa}">${esc(e.nombre)}</button>`).join("")}</div></div>`:""}
+    <div class="mini3" style="grid-template-columns:${canPhoto()?"1fr 1fr":"1fr"}">
+      <label class="opt" id="gf-date-l">${SV(I.cal)}<span id="gf-date-t">${fdateShort(fecha)}</span><input type="date" id="gf-f" value="${esc(fecha)}" aria-label="Fecha del gasto"></label>
+      ${canPhoto()?`<label class="opt${g.foto?" on":""}" id="gf-ph-l">${SV(I.camera)}<span id="gf-ph-t">${g.foto?"Factura ✓":"Foto factura"}</span><input type="file" id="gf-ph" accept="image/*" aria-label="Foto de la factura"></label>`:""}
+    </div>
+    <div id="gf-thumb" class="thumb" hidden></div>
+    <label class="field"><span>Pagado a</span><input class="inp" id="gf-p" list="provs" value="${esc(g.proveedor||"")}" placeholder="Ferretería, maestro, volquetero…" autocomplete="off"></label>
+    <details class="more"${g.materialId||g.nota?" open":""}><summary>Más detalles (material, cantidad, nota)</summary>
+      <div class="form-grid">
+        ${mats.length?`<label class="field full"><span>Material de tu lista</span><select class="inp" id="gf-mat"><option value="">— Ninguno —</option>${mats.map(([k,m])=>`<option value="${k}"${k===g.materialId?" selected":""}>${esc(m.nombre)} (${esc(m.unidad||"u")})</option>`).join("")}</select></label>
+        <label class="field"><span>Cantidad comprada</span><input class="inp num" id="gf-q" type="number" inputmode="decimal" step="any" min="0" value="${esc(g.cantidad??"")}"></label>
+        <p style="margin:0;font-size:12.5px;color:var(--ink-3);align-self:end">Sirve para controlar lo comprado contra la proforma.</p>`:""}
+        <label class="field full"><span>Nota</span><input class="inp" id="gf-n" value="${esc(g.nota||"")}" placeholder="N° de factura, forma de pago…"></label>
+      </div>
+    </details>
+    <p class="err" id="gf-err" hidden></p>
+    ${gid?'<button class="btn danger block" type="button" id="gf-del">Eliminar gasto</button>':""}
+    <div class="sticky-save"><button class="btn primary block" type="submit" style="min-height:54px;font-size:17px">Guardar gasto</button></div>
+  </form>`);
+  const pjb=$("#gf-pj-btn",s);if(pjb)pjb.onclick=()=>{const m=$("#gf-pj",s),open=m.hidden;m.hidden=!open;pjb.setAttribute("aria-expanded",String(open));const q=$("#gf-pj-q",s);if(open&&q)q.focus()};
+  const pjq=$("#gf-pj-q",s);if(pjq)pjq.oninput=()=>{const t=pjq.value.trim().toLowerCase();$$("#gf-pj-list [data-pj]",s).forEach(x=>x.hidden=!!t&&!x.dataset.name.includes(t))};
+  const pjc=$("#gf-pj",s);if(pjc)pjc.onclick=e=>{const c=e.target.closest("[data-pj]");if(!c||c.dataset.pj===pid)return;
+    openGastoForm(null,{...(preset||{}),proyectoId:c.dataset.pj,monto:num(amt)||"",concepto:$("#gf-c",s).value,categoria:cat,fecha,proveedor:$("#gf-p",s).value,etapaId:null});};
+  const out=$("#gf-amt",s);
+  const showAmt=()=>{out.textContent=money(num(amt));out.classList.toggle("zero",!num(amt))};
+  const press=k=>{
+    if(k==="del")amt=amt.slice(0,-1);
+    else if(k==="."){if(!amt.includes("."))amt=(amt||"0")+"."}
+    else{if(/\.\d\d$/.test(amt))return;if(amt==="0")amt="";if(amt.replace(".","").length>=9)return;amt+=k}
+    showAmt();
+  };
+  $("#gf-keys",s).onclick=e=>{const b=e.target.closest("[data-k]");if(b)press(b.dataset.k)};
+  s.addEventListener("keydown",e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if(/^[0-9.]$/.test(e.key)){press(e.key);e.preventDefault()}else if(e.key==="Backspace"){press("del");e.preventDefault()}});
+  $("#gf-cats",s).onclick=e=>{const b=e.target.closest("[data-c]");if(!b)return;cat=b.dataset.c;$$("#gf-cats .chip",s).forEach(x=>x.setAttribute("aria-pressed",x===b))};
+  const eb=$("#gf-ets",s);if(eb)eb.onclick=e=>{const b=e.target.closest("[data-e]");if(!b)return;etapa=b.dataset.e;$$("#gf-ets .chip",s).forEach(x=>x.setAttribute("aria-pressed",x===b))};
+  $("#gf-f",s).onchange=e=>{fecha=e.target.value||today();$("#gf-date-t",s).textContent=fdateShort(fecha)};
+  const thumb=$("#gf-thumb",s);
+  const showThumb=async(src,isNew)=>{
+    if(!src){thumb.hidden=true;thumb.innerHTML="";return}
+    thumb.hidden=false;thumb.innerHTML=`<img alt="Foto de la factura" src="${src}"><span class="grow" style="font-size:13.5px;color:var(--ink-2)">${isNew?"Foto lista para guardar":"Factura adjunta"}</span><button type="button" class="btn sm" id="gf-ph-view">Ver</button><button type="button" class="btn sm danger" id="gf-ph-rm">Quitar</button>`;
+    $("#gf-ph-view",s).onclick=()=>{const w=document.createElement("div");w.className="scrim";w.style.zIndex=25;w.style.alignItems="center";w.innerHTML=`<div style="max-width:720px;width:100%;padding:16px;display:flex;flex-direction:column;gap:10px"><img class="photo-full" alt="Foto de la factura" src="${src}"><button class="btn dark" type="button">Cerrar</button></div>`;w.onclick=()=>w.remove();document.body.appendChild(w)};
+    $("#gf-ph-rm",s).onclick=()=>{newPhoto=null;removePhoto=!!g.foto;showThumb(null);const l=$("#gf-ph-l",s);if(l){l.classList.remove("on");$("#gf-ph-t",s).textContent="Foto factura"}};
+  };
+  if(g.foto)Photos.url(g.foto).then(u=>{if(u&&s.isConnected)showThumb(u,false)});
+  const ph=$("#gf-ph",s);
+  if(ph)ph.onchange=async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
+    try{newPhoto=await compressImage(f);removePhoto=!!g.foto;showThumb(URL.createObjectURL(newPhoto),true);$("#gf-ph-l",s).classList.add("on");$("#gf-ph-t",s).textContent="Factura ✓"}
+    catch(err){toast("No se pudo leer esa imagen.")}};
+  $("#gf",s).onsubmit=async e=>{e.preventDefault();
+    const monto=round2(num(amt)),er=$("#gf-err",s);
+    if(monto<=0){er.textContent="Escribe el monto con el teclado.";er.hidden=false;return}
+    const btn=e.submitter||$("#gf button[type=submit]",s);btn.disabled=true;
+    const concepto=$("#gf-c",s).value.trim()||cat;
+    const matSel=$("#gf-mat",s);
+    const data={...(gid?S.gastos.get(gid):{createdAt:Date.now(),proyectoId:pid}),...(gid?{}:preset||{}),concepto,monto,fecha,categoria:cat,etapaId:etapa||null,
+      proveedor:$("#gf-p",s).value.trim(),nota:$("#gf-n",s).value.trim(),
+      materialId:matSel&&matSel.value||null,cantidad:matSel&&matSel.value?num($("#gf-q",s).value):null};
+    try{
+      if(newPhoto){const f=await Photos.save(newPhoto);if(g.foto)Photos.remove(g.foto);data.foto=f}
+      else if(removePhoto){Photos.remove(g.foto);delete data.foto}
+    }catch(err){toast("La foto no se pudo guardar; el gasto se guardó sin ella.")}
+    put("gastos",gid||uid(),data);
+    closeSheet(true);render();
+    const nm=(S.proyectos.get(pid)||{}).nombre;
+    toast(gid?"Gasto actualizado":`Gasto de ${money(monto)} registrado en ${nm}`);
+  };
+  const d=$("#gf-del",s);if(d)armDanger(d,"¿Eliminar? Toca otra vez",()=>{const old=S.gastos.get(gid);if(old&&old.foto)Photos.remove(old.foto);del("gastos",gid);closeSheet(true);render();toast("Gasto eliminado")});
+}
+
+/* ================= GASTOS TAB ================= */
+function renderGastos(){
+  const all=inProj("gastos").sort((a,b)=>(b[1].fecha||"").localeCompare(a[1].fecha||"")||(b[1].createdAt||0)-(a[1].createdAt||0));
+  const list=S.gastoCat==="Todas"?all:all.filter(([,g])=>g.categoria===S.gastoCat);
+  const sum=round2(list.reduce((a,[,g])=>a+num(g.monto),0));
+  const months={};list.forEach(([k,g])=>{const key=(g.fecha||"").slice(0,7);(months[key]=months[key]||[]).push([k,g])});
+  const usedCats=GASTO_CATS.filter(c=>all.some(([,g])=>g.categoria===c));
+  app.innerHTML=`<section class="view">
+    <div class="between" style="align-items:flex-end"><div><span class="label">${S.gastoCat==="Todas"?"Total gastado en el proyecto":esc(S.gastoCat)}</span><div class="num" style="font-size:30px;font-weight:600;line-height:1.1">${money(sum)}</div><small style="color:var(--ink-3)">${list.length} registro${list.length===1?"":"s"}</small></div>
+    <button class="btn primary" id="g-add">+ Gasto</button></div>
+    ${usedCats.length>1?`<div class="chips">${["Todas",...usedCats].map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===S.gastoCat}">${esc(c==="Todas"?c:CAT_SHORT[c])}</button>`).join("")}</div>`:""}
+    ${all.length?"":'<div class="empty"><b>Sin gastos registrados</b>Cada vez que pagues algo de este proyecto, regístralo con el botón +.</div>'}
+    ${Object.keys(months).map(mk=>{const tot=round2(months[mk].reduce((a,[,g])=>a+num(g.monto),0));
+      return `<div><div class="group-h"><span class="label">${mk?monthName(mk):"Sin fecha"}</span><span class="num">${money(tot)}</span></div>
+      <div class="card list">${months[mk].map(([id,g])=>gastoRow(id,g)).join("")}</div></div>`}).join("")}
+    ${all.length&&canDownload()?'<button class="btn ghost" id="g-csv">Descargar gastos del proyecto (Excel CSV)</button>':""}
+  </section>`;
+  $("#g-add").onclick=()=>openGastoForm(null);
+  $$(".chip",app).forEach(b=>b.onclick=()=>{S.gastoCat=b.dataset.c;renderGastos()});
+  bindGastoRows(app);
+  const csv=$("#g-csv");if(csv)csv.onclick=()=>{
+    const rows=[["Fecha","Concepto","Categoría","Etapa","Pagado a","Monto","Nota"],...all.map(([,g])=>[fdate(g.fecha),g.concepto,g.categoria,etapaName(g.etapaId),g.proveedor||"",num(g.monto).toFixed(2),g.nota||""])];
+    saveFile("gastos-"+slug(proj().nombre)+"-"+today()+".csv",toCSV(rows),"text/csv");
+  };
+}
+
+/* ================= BALANCE (all projects) ================= */
+function renderBalance(){
+  if(!S.proyectos.size){app.innerHTML=`<section class="view"><div class="empty"><b>Bienvenido</b>Crea tu primer proyecto para empezar a registrar precios, proformas y gastos.</div><button class="btn primary block" id="bl-new">${SV(I.plus,2.4)}Crear proyecto</button></section>`;$("#bl-new").onclick=()=>openProjectForm(null);return}
+  const mk=S.balMonth||thisMonth(),prev=shiftMonth(mk,-1);
+  const gs=[...S.gastos.entries()].filter(([,g])=>(g.fecha||"").startsWith(mk)&&S.proyectos.has(g.proyectoId));
+  const total=round2(gs.reduce((a,[,g])=>a+num(g.monto),0));
+  const prevTotal=round2([...S.gastos.values()].filter(g=>(g.fecha||"").startsWith(prev)&&S.proyectos.has(g.proyectoId)).reduce((a,g)=>a+num(g.monto),0));
+  const byProj=sortedProjects().map(([k,p])=>[k,p,round2(gs.filter(([,g])=>g.proyectoId===k).reduce((a,[,g])=>a+num(g.monto),0)),gs.filter(([,g])=>g.proyectoId===k).length]).filter(x=>x[2]>0).sort((a,b)=>b[2]-a[2]);
+  const byCat=GASTO_CATS.map(k=>[k,round2(gs.filter(([,g])=>g.categoria===k).reduce((a,[,g])=>a+num(g.monto),0))]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
+  const diff=round2(total-prevTotal);
+  const isCur=mk===thisMonth();
+  app.innerHTML=`<section class="view">
+    <div class="monthnav"><button class="icon-btn" type="button" id="bm-prev" aria-label="Mes anterior">${SV(I.chevL,2.2)}</button><h2>${monthName(mk)}</h2><button class="icon-btn" type="button" id="bm-next" aria-label="Mes siguiente"${isCur?" disabled":""}>${SV(I.chevR,2.2)}</button></div>
+    <div class="card bal-total"><span class="label">Gastado en todos los proyectos</span><span class="num">${money(total)}</span>
+      <span class="delta">${gs.length} gasto${gs.length===1?"":"s"} · ${prevTotal||total?(diff===0?"igual que ":(diff>0?"+":"−")+money(Math.abs(diff)).slice(0)+" vs ")+MESES[+prev.slice(5)-1]:"sin gastos registrados"}</span>
+      ${isCur?'<span class="delta" style="color:var(--ink-3)">Mes en curso: se cierra el último día del mes.</span>':""}</div>
+    ${byProj.length?`<div><div class="group-h"><span class="label">Por proyecto</span></div><div class="card hbars">${byProj.map(([k,p,v,n])=>`<div class="hbar">${projBadge(k,"dot")}<span class="nm"><b>${esc(p.nombre)}</b> <small>· ${n} gasto${n===1?"":"s"}</small></span><span class="num">${money(v)} <small>${Math.round(v/total*100)}%</small></span><span class="track"><i style="width:${v/byProj[0][2]*100}%;background:${projColor(k)}"></i></span></div>`).join("")}</div></div>`:""}
+    ${byCat.length?`<div><div class="group-h"><span class="label">Por categoría</span></div><div class="card hbars">${byCat.map(([k,v])=>`<div class="hbar"><span class="nm">${esc(k)}</span><span></span><span class="num">${money(v)} <small>${Math.round(v/total*100)}%</small></span><span class="track"><i style="width:${v/byCat[0][1]*100}%;background:var(--accent)"></i></span></div>`).join("")}</div></div>`:""}
+    ${gs.length?`<div><div class="group-h"><span class="label">Detalle del mes</span></div><div class="card list">${gs.sort((a,b)=>(b[1].fecha||"").localeCompare(a[1].fecha||"")).map(([id,g])=>gastoRow(id,g,{proj:true})).join("")}</div></div>`
+      :`<div class="empty"><b>Sin gastos en ${MESES[+mk.slice(5)-1]}</b>Los gastos se agrupan por la fecha en que los registras.</div>`}
+    ${gs.length?`<div class="row"><button class="btn grow" id="bm-copy">${SV(I.share)}Copiar resumen</button>${canDownload()?`<button class="btn grow" id="bm-csv">${SV(I.dl)}Excel (CSV)</button>`:""}</div>`:""}
+  </section>`;
+  $("#bm-prev").onclick=()=>{S.balMonth=prev;renderBalance()};
+  $("#bm-next").onclick=()=>{if(!isCur){S.balMonth=shiftMonth(mk,1);renderBalance()}};
+  bindGastoRows(app);
+  const cp=$("#bm-copy");if(cp)cp.onclick=()=>{
+    let t=`*Balance de ${monthName(mk)}*\nTotal: ${money(total)} (${gs.length} gastos)\n\n*Por proyecto*\n`;
+    byProj.forEach(([,p,v])=>t+=`• ${p.nombre}: ${money(v)}\n`);
+    t+=`\n*Por categoría*\n`;byCat.forEach(([k,v])=>t+=`• ${k}: ${money(v)}\n`);
+    copyText(t.trim());
+  };
+  const csv=$("#bm-csv");if(csv)csv.onclick=()=>{
+    const rows=[["Fecha","Proyecto","Concepto","Categoría","Pagado a","Monto"],...gs.map(([,g])=>[fdate(g.fecha),(S.proyectos.get(g.proyectoId)||{}).nombre||"",g.concepto,g.categoria,g.proveedor||"",num(g.monto).toFixed(2)]),[],["","","","","Total",total.toFixed(2)]];
+    saveFile("balance-"+mk+".csv",toCSV(rows),"text/csv");
+  };
+}
+
+/* ================= ETAPAS ================= */
+function renderEtapas(){
+  const ets=etapaStats(),alerts=qtyAlerts();
+  const sinEt=round2(inProj("gastos").filter(([,g])=>!g.etapaId||!ets.some(e=>e.id===g.etapaId)).reduce((a,[,g])=>a+num(g.monto),0));
+  if(!ets.length){
+    app.innerHTML=`<section class="view">
+      <div class="empty"><b>Divide el proyecto en etapas</b>Tú decides cuáles son y cómo se llaman. Cada etapa tiene su presupuesto (las proformas aceptadas que le asignes) y suma los gastos que marques en ella.</div>
+      <form id="et-quick" class="row" style="flex-wrap:nowrap" novalidate><label class="sr" for="et-q">Nombre de la primera etapa</label><input class="inp" id="et-q" placeholder="Nombre de la primera etapa" autocomplete="off"><button class="btn primary" type="submit">Crear</button></form>
+      ${alerts.length?alertsHTML(alerts):""}
+    </section>`;
+    $("#et-quick").onsubmit=e=>{e.preventDefault();const n=$("#et-q").value.trim();if(!n){$("#et-q").focus();return}
+      put("proyectos",S.proj,{...proj(),etapas:[{id:uid(),nombre:n,hecha:false}]});render();toast("Etapa “"+n+"” creada. Agrega más desde “Editar etapas”.")};
+    return;
+  }
+  const freePf=inProj("proformas").filter(([,p])=>!p.etapaId||!ets.some(e=>e.id===p.etapaId));
+  app.innerHTML=`<section class="view">
+    ${alerts.length?alertsHTML(alerts):""}
+    <div class="card tline-list">${ets.map(e=>{const pct=e.budget?Math.min(100,e.spent/e.budget*100):0;
+      return `<div class="et ${e.st}"><div class="et-rail"><span class="et-dot">${e.st==="done"?SV(I.check,3.2):""}</span><span class="et-line"></span></div>
+      <div class="et-body"><b>${esc(e.nombre)}</b>
+        ${e.st==="cur"?'<span class="pill cur" style="align-self:flex-start">En curso</span>':e.st==="done"?'<span class="pill pagada" style="align-self:flex-start">Completada</span>':""}
+        ${e.budget?`<div class="meter${e.spent>e.budget?" over":""}"><i style="width:${pct}%"></i></div><div class="between" style="font-size:13px"><span><span class="num" style="font-weight:600">${money(e.spent)}</span> <span style="color:var(--ink-3)">de</span> <span class="num">${money(e.budget)}</span></span><span class="num" style="font-weight:600">${Math.round(e.spent/e.budget*100)}%</span></div>`
+          :`<span class="meta">${e.spent?money(e.spent)+" gastado · ":""}${e.draft?"Proforma en borrador: "+money(e.draft)+" · acéptala para fijar el presupuesto":"Sin proforma"}</span>`}
+        <div class="et-acts"><button type="button" data-done="${e.id}">${e.hecha?"Reabrir":"✓ Completada"}</button>${!e.budget&&!e.draft?`${freePf.length?`<button type="button" data-asg="${e.id}">Asignar proforma</button>`:""}<button type="button" data-newpf="${e.id}">+ Proforma</button>`:""}</div>
+      </div></div>`}).join("")}</div>
+    ${sinEt?`<div class="notice info">${SV(I.info)}<span><b>${money(sinEt)}</b> en gastos sin etapa. Ábrelos desde Gastos y elige su etapa para que sumen aquí.</span></div>`:""}
+    <form id="et-add" class="row" style="flex-wrap:nowrap" novalidate><label class="sr" for="et-n">Nueva etapa</label><input class="inp" id="et-n" placeholder="Nueva etapa" autocomplete="off"><button class="btn" type="submit" style="white-space:nowrap">+ Agregar</button></form>
+    <button class="btn block" id="et-edit">${SV(I.edit)}Editar etapas</button>
+  </section>`;
+  $$("[data-done]",app).forEach(b=>b.onclick=()=>{const p=proj();p.etapas=p.etapas.map(e=>e.id===b.dataset.done?{...e,hecha:!e.hecha}:e);put("proyectos",S.proj,p);render()});
+  $$("[data-newpf]",app).forEach(b=>b.onclick=()=>{S.view="proformas";newProforma(etapaName(b.dataset.newpf),[],b.dataset.newpf)});
+  $$("[data-asg]",app).forEach(b=>b.onclick=()=>{const eid=b.dataset.asg;
+    openSheet("Asignar a "+etapaName(eid),`<div class="card list pick">${freePf.map(([k,p])=>`<button class="li" type="button" data-pick="${k}"><span class="li-main"><b>${esc(p.nombre)}</b><small>${ESTADO_TXT[estadoOf(k)]}</small></span><span class="li-amt">${money(pfTotals(p).total)}</span></button>`).join("")}</div>
+      <p style="margin:0;font-size:13px;color:var(--ink-3)">Los pagos ya registrados de esa proforma también pasan a esta etapa.</p>`,s=>{
+      $$("[data-pick]",s).forEach(x=>x.onclick=()=>{const k=x.dataset.pick,p=S.proformas.get(k);p.etapaId=eid;put("proformas",k,p);
+        pagosOf(k).forEach(([gid,g])=>{if(!g.etapaId){g.etapaId=eid;put("gastos",gid,g)}});closeSheet(true);render();toast("Proforma asignada a "+etapaName(eid))});
+    });
+  });
+  $("#et-add").onsubmit=e=>{e.preventDefault();const n=$("#et-n").value.trim();if(!n){$("#et-n").focus();return}
+    const p=proj();put("proyectos",S.proj,{...p,etapas:[...etapasOf(),{id:uid(),nombre:n,hecha:false}]});render();toast("Etapa “"+n+"” agregada")};
+  $("#et-edit").onclick=openEtapasEditor;
+}
+function alertsHTML(alerts){return `<div style="display:flex;flex-direction:column;gap:8px">${alerts.map(a=>`<div class="notice">${SV(I.alert)}<span style="display:flex;flex-direction:column;gap:2px"><b>${esc(a.txt)}</b><span style="color:var(--ink-2)">${esc(a.sub)}</span></span></div>`).join("")}</div>`}
+function openEtapasEditor(){
+  let list=etapasOf().map(e=>({...e}));
+  const s=openSheet("Etapas del proyecto",`<div id="ee-list" style="display:flex;flex-direction:column;gap:8px"></div>
+    <button class="btn dashed" id="ee-add" type="button">+ Agregar etapa</button>
+    <button class="btn primary" id="ee-save" type="button">Guardar etapas</button>
+    <p style="margin:0;font-size:13px;color:var(--ink-3)">Si quitas una etapa, sus gastos y proformas quedan “sin etapa”.</p>`);
+  const draw=()=>{$("#ee-list",s).innerHTML=list.map((e,i)=>`<div class="row" style="flex-wrap:nowrap"><label class="sr" for="ee-${i}">Etapa ${i+1}</label><input class="inp" id="ee-${i}" data-i="${i}" value="${esc(e.nombre)}" placeholder="Nombre de la etapa"><button type="button" class="icon-btn" data-up="${i}" aria-label="Subir"${i?"":" disabled"}>${SV(I.up)}</button><button type="button" class="icon-btn" data-rm="${i}" aria-label="Quitar">${SV(I.x)}</button></div>`).join("")||'<p style="margin:0;color:var(--ink-3)">Sin etapas.</p>'};
+  draw();
+  $("#ee-list",s).addEventListener("input",e=>{const i=e.target.dataset.i;if(i!=null)list[+i].nombre=e.target.value});
+  $("#ee-list",s).addEventListener("click",e=>{const u=e.target.closest("[data-up]"),r=e.target.closest("[data-rm]");
+    if(u){const i=+u.dataset.up;if(i>0){[list[i-1],list[i]]=[list[i],list[i-1]];draw()}}
+    if(r){list.splice(+r.dataset.rm,1);draw()}});
+  $("#ee-add",s).onclick=()=>{list.push({id:uid(),nombre:"",hecha:false});draw();const ins=$$("#ee-list input",s);ins[ins.length-1].focus()};
+  $("#ee-save",s).onclick=()=>{const clean=list.map(e=>({...e,nombre:e.nombre.trim()})).filter(e=>e.nombre);put("proyectos",S.proj,{...proj(),etapas:clean});closeSheet(true);render();toast("Etapas guardadas")};
+}
+/* ================= PROFORMAS ================= */
+function currentPf(){
+  if(S.pfId&&S.proformas.has(S.pfId)&&S.proformas.get(S.pfId).proyectoId===S.proj)return S.pfId;
+  S.pfId=null;return null;
+}
+function renderPfList(){
+  const list=inProj("proformas").sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0));
+  const acc=acceptedSum();
+  app.innerHTML=`<section class="view">
+    <button class="btn primary block" id="pf-create" style="min-height:52px">${SV(I.plus,2.4)}Crear proforma</button>
+    ${list.length?`<div class="between" style="padding:0 2px"><span class="label">${list.length} proforma${list.length===1?"":"s"}</span>${acc?`<span style="font-size:13px;color:var(--ink-3)">Aceptadas: <b class="num" style="color:var(--ink)">${money(acc)}</b></span>`:""}</div>
+    <div class="card list">${list.map(([k,p])=>{const t=pfTotals(p),n=(p.items||[]).length,et=p.etapaId&&etapaName(p.etapaId);
+      return `<button class="li" type="button" data-open-pf="${k}"><span class="li-ic c-mat">${SV(I.doc)}</span><span class="li-main"><b>${esc(p.nombre)}</b><small>${fdateShort(p.fecha)} · ${n} ítem${n===1?"":"s"}${et?" · "+esc(et):""}</small><span style="display:flex;margin-top:4px">${estadoPill(k)}</span></span><span class="li-amt">${money(t.total)}</span></button>`}).join("")}</div>`:""}
+  </section>`;
+  $("#pf-create").onclick=()=>newProforma();
+  $$("[data-open-pf]",app).forEach(b=>b.onclick=()=>{S.pfId=b.dataset.openPf;S.pfMode="edit";rememberPf(S.pfId);openView("proforma")});
+}
+function newProforma(name,items,etapaId){
+  const id=uid();
+  put("proformas",id,{proyectoId:S.proj,nombre:name||"Proforma "+(inProj("proformas").length+1),fecha:today(),items:items||[],conIva:true,ivaPct:15,notas:"",estado:"borrador",etapaId:etapaId||null,createdAt:Date.now()});
+  S.pfId=id;S.pfMode="edit";rememberPf(id);openView("proforma");
+  setTimeout(()=>{const n=$("#pf-name");n&&n.select()},30);
+}
+function rememberPf(id){const p=proj();if(p&&p.lastPf!==id)put("proyectos",S.proj,{...p,lastPf:id},1500)}
+function renderProformas(){
+  const id=currentPf();
+  if(!id){S.view="proformas";renderHeader();return renderPfList()}
+  const p=S.proformas.get(id),t=pfTotals(p),est=estadoOf(id),locked=est!=="borrador";
+  const paid=paidOf(id),pagos=pagosOf(id),ets=etapasOf();
+  const stale=!locked?(p.items||[]).filter(it=>it.materialId&&S.materiales.has(it.materialId)&&num(S.materiales.get(it.materialId).precio)!==num(it.precio)).length:0;
+  const waText=encodeURIComponent(pfText(p));
+  app.innerHTML=`<section class="view">
+    <div class="card state-card">
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start">${estadoPill(id)}${locked?`<h2 style="font-size:25px;line-height:1.1">${esc(p.nombre)}</h2>`:`<label class="sr" for="pf-name">Nombre de la proforma</label><input class="inp" id="pf-name" value="${esc(p.nombre)}" style="font-family:var(--f-display);font-size:21px;font-weight:700;min-height:42px">`}</div>
+      <div class="row" style="font-size:13.5px;color:var(--ink-2)">
+        ${locked?`<span>${fdate(p.fecha)}</span>${p.etapaId&&etapaName(p.etapaId)?"<span>· "+esc(etapaName(p.etapaId))+"</span>":""}`
+        :`<label class="field" style="flex:1 1 130px"><span>Fecha</span><input class="inp" type="date" id="pf-date" value="${esc(p.fecha||"")}"></label>${ets.length?`<label class="field" style="flex:1 1 160px"><span>Etapa</span><select class="inp" id="pf-et"><option value="">Sin etapa</option>${ets.map(e=>`<option value="${e.id}"${e.id===p.etapaId?" selected":""}>${esc(e.nombre)}</option>`).join("")}</select></label>`:""}`}
+      </div>
+      ${est==="borrador"?`<div class="steps"><b>1 Borrador</b><i></i>2 Aceptada<i></i>3 Pagada</div>
+        <p style="margin:0;font-size:13.5px;color:var(--ink-2)">Cuando confirmes esta proforma con el proveedor, acéptala: su total pasa a ser presupuesto del proyecto.</p>
+        <button class="btn primary" id="pf-accept"${t.total>0?"":" disabled"}>${SV(I.check)}Aceptar proforma</button>`
+      :est==="pagada"?`<div class="notice okn">${SV(I.check)}<span><b>Pagada por completo.</b> ${money(paid)} ya está sumado en tus gastos.</span></div>`
+      :`<div class="steps">1 Borrador<i></i><b>2 Aceptada</b><i></i>3 Pagada</div>
+        <div class="meter"><i style="width:${t.total?Math.min(100,paid/t.total*100):0}%;background:var(--ok)"></i></div>
+        <div class="between" style="font-size:13.5px"><span>Pagado <b class="num">${money(paid)}</b> de <span class="num">${money(t.total)}</span></span><span style="color:var(--ink-3)">Saldo <b class="num" style="color:var(--ink)">${money(round2(t.total-paid))}</b></span></div>
+        <div class="row"><button class="btn markb grow" id="pf-pay">${SV(I.card)}${paid?"Registrar otro pago":"Marcar como pagada"}</button>${pagos.length?"":'<button class="btn" id="pf-unaccept">Volver a borrador</button>'}</div>`}
+      ${pagos.length?`<div><span class="label">Pagos registrados</span><div class="list" style="margin-top:4px">${pagos.map(([gid,g])=>`<button class="li" type="button" data-gasto="${gid}" style="padding:8px 0">${catIcon(g.categoria)}<span class="li-main"><b>${esc(g.concepto)}</b><small>${fdateShort(g.fecha)}${g.proveedor?" · "+esc(g.proveedor):""}</small></span><span class="li-amt">${money(g.monto)}</span></button>`).join("")}</div></div>`:""}
+    </div>
+    ${stale?`<div class="notice">${SV(I.alert)}<span style="flex:1">${stale} ${stale===1?"precio cambió":"precios cambiaron"} en tu lista.</span><button class="btn sm" id="pf-sync">Actualizar</button></div>`:""}
+    <div class="items${locked?" locked":""}" id="items">${(p.items||[]).map((it,i)=>itemHTML(it,i,locked)).join("")||'<div class="empty"><b>Sin ítems todavía</b>Agrega materiales de tu lista de precios.</div>'}</div>
+    ${locked?"":'<button class="btn dashed block" id="add-item" style="min-height:50px">+ Agregar material de la lista</button>'}
+    <label class="field"><span>Notas</span><textarea class="inp" id="pf-notes" rows="2" placeholder="Condiciones, proveedor, observaciones…"${locked?" readonly":""}>${esc(p.notas||"")}</textarea></label>
+    <div class="totbar" id="totbar">
+      <div class="tl"><span>Subtotal · ${(p.items||[]).length} ítem${(p.items||[]).length===1?"":"s"}</span><span class="num" data-sub>${money(t.sub)}</span></div>
+      <div class="tl"><span class="iva-ctl"><label class="switch"><input type="checkbox" id="iva-on" ${p.conIva?"checked":""} aria-label="Aplicar IVA"${locked?" disabled":""}><span></span></label>IVA <input id="iva-pct" type="number" inputmode="decimal" step="any" value="${esc(t.pct)}" aria-label="Porcentaje de IVA"${locked?" readonly":""}>%</span><span class="num" data-iva>${money(t.iva)}</span></div>
+      <div class="tl grand"><span>TOTAL</span><span class="num" data-total>${money(t.total)}</span></div>
+      <div class="row" style="flex-wrap:nowrap">
+        <a class="btn markb grow" id="pf-wa" href="https://wa.me/?text=${waText}" target="_blank" rel="noopener">${SV(I.wa)}WhatsApp</a>
+        <button class="btn grow" id="pf-pdf" style="background:transparent;border-color:rgba(255,255,255,.4);color:var(--hero-ink)">${SV(I.dl)}PDF</button>
+        <button class="btn" id="pf-more" aria-label="Más opciones" style="background:transparent;border-color:rgba(255,255,255,.4);color:var(--hero-ink);padding:0 12px">${SV(I.more)}</button>
+      </div>
+    </div>
+  </section>`;
+  bindProforma(id,locked);
+}
+function itemHTML(it,i,locked){
+  const lt=num(it.cantidad)*num(it.precio);
+  const m=it.materialId&&S.materiales.get(it.materialId);
+  const stale=!locked&&m&&num(m.precio)!==num(it.precio);
+  const ro=locked?" readonly":"";
+  return `<div class="item card" data-i="${i}">
+    <div class="item-top"><label class="sr" for="it-n-${i}">Descripción</label><input class="item-name" id="it-n-${i}" data-f="nombre" value="${esc(it.nombre)}"${ro}><span class="lt" data-lt>${money(lt)}</span><button class="x" type="button" data-rm aria-label="Quitar ítem">${SV(I.x)}</button></div>
+    <div class="item-ctl">
+      <button class="step" type="button" data-step="-1" aria-label="Restar uno">${SV(I.minus,2.4)}</button>
+      <label class="sr" for="it-q-${i}">Cantidad</label><input class="qty" id="it-q-${i}" data-f="cantidad" type="number" inputmode="decimal" step="any" min="0" value="${esc(it.cantidad)}"${ro}>
+      <button class="step" type="button" data-step="1" aria-label="Sumar uno">${SV(I.plus,2.4)}</button>
+      <span class="unitp"><label class="sr" for="it-u-${i}">Unidad</label><input id="it-u-${i}" data-f="unidad" list="units" value="${esc(it.unidad||"u")}"${ro}>×<label class="sr" for="it-p-${i}">Precio unitario</label><input class="pr num" id="it-p-${i}" data-f="precio" type="number" inputmode="decimal" step="any" min="0" value="${esc(it.precio)}"${ro}></span>
+    </div>
+    ${stale?`<span class="stale">En tu lista ahora cuesta ${money(m.precio)}</span>`:""}
+  </div>`;
+}
+function refreshTotals(p){
+  const t=pfTotals(p),box=$("#totbar");if(!box)return;
+  box.querySelector("[data-sub]").textContent=money(t.sub);
+  box.querySelector("[data-iva]").textContent=money(t.iva);
+  box.querySelector("[data-total]").textContent=money(t.total);
+  const wa=$("#pf-wa");if(wa)wa.href="https://wa.me/?text="+encodeURIComponent(pfText(p));
+}
+function bindProforma(id,locked){
+  const p=()=>S.proformas.get(id);
+  const save=(delay=600)=>{const v=p();if(v)put("proformas",id,v,delay)};
+  const nm=$("#pf-name");if(nm)nm.oninput=e=>{p().nombre=e.target.value;save()};
+  const dt=$("#pf-date");if(dt)dt.onchange=e=>{p().fecha=e.target.value;save(0)};
+  const et=$("#pf-et");if(et)et.onchange=e=>{p().etapaId=e.target.value||null;save(0)};
+  const nt=$("#pf-notes");if(!locked)nt.oninput=e=>{p().notas=e.target.value;save()};
+  const ac=$("#pf-accept");if(ac)ac.onclick=()=>{flushAll();const v=p();v.estado="aceptada";v.aceptadaEn=today();put("proformas",id,v);render();toast("Proforma aceptada: "+money(pfTotals(v).total)+" sumado al presupuesto")};
+  const ua=$("#pf-unaccept");if(ua)ua.onclick=()=>{const v=p();v.estado="borrador";delete v.aceptadaEn;put("proformas",id,v);render();toast("La proforma volvió a borrador")};
+  const pay=$("#pf-pay");if(pay)pay.onclick=()=>openPagoForm(id);
+  bindGastoRows(app);
+  const sync=$("#pf-sync");
+  if(sync)sync.onclick=()=>{p().items.forEach(it=>{const m=it.materialId&&S.materiales.get(it.materialId);if(m)it.precio=num(m.precio)});save(0);render();toast("Precios actualizados")};
+  const add=$("#add-item");if(add)add.onclick=()=>openMaterialPicker(id);
+  $("#pf-pdf").onclick=()=>exportPDF(p());
+  $("#pf-more").onclick=()=>openPfMenu(id);
+  if(locked)return;
+  const items=$("#items");
+  items.addEventListener("input",e=>{
+    const f=e.target.dataset.f;if(!f)return;
+    const card=e.target.closest(".item"),i=+card.dataset.i,it=p().items[i];
+    it[f]=(f==="cantidad"||f==="precio")?num(e.target.value):e.target.value;
+    card.querySelector("[data-lt]").textContent=money(num(it.cantidad)*num(it.precio));
+    refreshTotals(p());save();
+  });
+  items.addEventListener("click",e=>{
+    const st=e.target.closest("[data-step]");
+    if(st){const card=st.closest(".item"),i=+card.dataset.i,it=p().items[i];it.cantidad=Math.max(0,round2(num(it.cantidad)+(+st.dataset.step)));
+      card.querySelector('[data-f="cantidad"]').value=it.cantidad;card.querySelector("[data-lt]").textContent=money(num(it.cantidad)*num(it.precio));refreshTotals(p());save(500);return}
+    const rm=e.target.closest("[data-rm]");if(!rm)return;
+    const i=+rm.closest(".item").dataset.i,removed=p().items.splice(i,1)[0];save(0);render();
+    toast("Ítem quitado",{label:"Deshacer",fn:()=>{const v=p();if(!v)return;v.items.splice(i,0,removed);save(0);render()}});
+  });
+  $("#iva-on").onchange=e=>{p().conIva=e.target.checked;refreshTotals(p());save(0)};
+  $("#iva-pct").oninput=e=>{p().ivaPct=num(e.target.value);refreshTotals(p());save()};
+}
+function openPagoForm(pfId){
+  const p=S.proformas.get(pfId),t=pfTotals(p),saldo=round2(t.total-paidOf(pfId));
+  const partial=paidOf(pfId)>0;
+  openGastoForm(null,{proformaId:pfId,proyectoId:p.proyectoId,monto:saldo,concepto:(partial?"Pago: ":"Proforma: ")+p.nombre,categoria:"Materiales",etapaId:p.etapaId||null});
+  const h=$(".sheet-h h3");if(h)h.textContent=partial?"Registrar otro pago":"Marcar como pagada";
+}
+function openPfMenu(id){
+  const p=S.proformas.get(id),est=estadoOf(id);
+  openSheet("Opciones de la proforma",`<div class="card list pick">
+    <button class="li" type="button" data-a="doc">${catIcon("Permisos y trámites")}<span class="li-main"><b>Ver como documento</b><small>Vista lista para compartir</small></span></button>
+    <button class="li" type="button" data-a="copy">${catIcon("Otros")}<span class="li-main"><b>Copiar como texto</b><small>Para pegar en cualquier chat</small></span></button>
+    ${canDownload()?`<button class="li" type="button" data-a="csv">${catIcon("Materiales")}<span class="li-main"><b>Descargar Excel (CSV)</b></span></button>`:""}
+    <button class="li" type="button" data-a="dup">${catIcon("Materiales")}<span class="li-main"><b>Duplicar</b><small>Crea una copia en borrador</small></span></button>
+    ${est==="aceptada"?`<button class="li" type="button" data-a="unaccept">${catIcon("Otros")}<span class="li-main"><b>Volver a borrador</b><small>Para editar ítems</small></span></button>`:""}
+  </div>
+  <button class="btn danger" type="button" id="pm-del">Eliminar proforma</button>
+  ${est!=="borrador"&&paidOf(id)>0?'<p style="margin:0;font-size:13px;color:var(--ink-3)">Los pagos ya registrados se quedan en tus gastos.</p>':""}`,s=>{
+    $$("[data-a]",s).forEach(b=>b.onclick=()=>{const a=b.dataset.a;closeSheet(true);
+      if(a==="doc"){S.pfId=id;openView("doc")}
+      else if(a==="copy")copyText(pfText(p));
+      else if(a==="csv")saveFile("proforma-"+slug(p.nombre)+".csv",pfCSV(p),"text/csv");
+      else if(a==="dup"){const v=JSON.parse(JSON.stringify(p));newProforma(v.nombre+" (copia)",v.items,v.etapaId);toast("Proforma duplicada")}
+      else if(a==="unaccept"){p.estado="borrador";delete p.aceptadaEn;put("proformas",id,p);render()}
+    });
+    armDanger($("#pm-del",s),"¿Eliminar? Toca otra vez",()=>{const nm=p.nombre;del("proformas",id);S.pfId=null;closeSheet(true);S.view="proformas";render();toast("“"+nm+"” eliminada")});
+  });
+}
+function addItemToPf(pfId,item){
+  const p=S.proformas.get(pfId);p.items=p.items||[];p.items.push(item);put("proformas",pfId,p);
+  closeSheet(true);render();
+  setTimeout(()=>{const cards=$$("#items .item");const last=cards[cards.length-1];if(last){last.scrollIntoView({block:"center"});const q=last.querySelector('[data-f="cantidad"]');q&&q.select()}},40);
+}
+function openMaterialPicker(pfId){
+  openSheet("Agregar material",`<input class="inp" id="mp-q" placeholder="Buscar material…" autocomplete="off" aria-label="Buscar material">
+    <div class="card list pick" id="mp-list"></div>
+    <button class="btn" id="mp-free" type="button">Ítem que no está en la lista</button>`,s=>{
+    const q=$("#mp-q",s),list=$("#mp-list",s);
+    const draw=()=>{
+      const term=q.value.trim().toLowerCase();
+      const mats=inProj("materiales").filter(([,m])=>!term||(m.nombre+" "+(m.categoria||"")).toLowerCase().includes(term)).sort((a,b)=>a[1].nombre.localeCompare(b[1].nombre,"es"));
+      list.innerHTML=mats.map(([k,m])=>`<button class="li" type="button" data-id="${k}"><span class="li-main"><b>${esc(m.nombre)}</b><small>${esc(m.categoria||"Sin categoría")} · por ${esc(m.unidad||"u")}</small></span><span class="li-amt">${money(m.precio)}</span></button>`).join("")
+        ||`<div class="li"><span class="li-main"><b>${term?"No hay coincidencias":"Tu lista de precios está vacía"}</b><small>${term?"Puedes crearlo ahora con su precio.":"Crea materiales con su precio para elegirlos aquí."}</small></span></div>`;
+      list.insertAdjacentHTML("beforeend",`<button class="li" type="button" data-create><span class="li-main"><b style="color:var(--accent)">+ Crear ${term?"“"+esc(q.value.trim())+"”":"material nuevo"} en la lista de precios</b></span></button>`);
+    };
+    draw();q.oninput=draw;
+    list.onclick=e=>{
+      const b=e.target.closest("[data-id]");
+      if(b){const m=S.materiales.get(b.dataset.id);addItemToPf(pfId,{id:uid(),materialId:b.dataset.id,nombre:m.nombre,unidad:m.unidad||"u",precio:num(m.precio),cantidad:1});return}
+      if(e.target.closest("[data-create]"))openMaterialForm(null,{nombre:q.value.trim()},(mid)=>{const m=S.materiales.get(mid);addItemToPf(pfId,{id:uid(),materialId:mid,nombre:m.nombre,unidad:m.unidad||"u",precio:num(m.precio),cantidad:1})});
+    };
+    $("#mp-free",s).onclick=()=>addItemToPf(pfId,{id:uid(),materialId:null,nombre:q.value.trim()||"Ítem nuevo",unidad:"u",precio:0,cantidad:1});
+    if(window.matchMedia("(min-width:700px)").matches)q.focus();
+  });
+}
+function pfText(p){
+  const t=pfTotals(p),pr=S.proyectos.get(p.proyectoId);
+  let s="*PROFORMA – "+p.nombre+"*\n";
+  if(pr)s+="Proyecto: "+pr.nombre+"\n";
+  s+="Fecha: "+fdate(p.fecha)+"\n\n";
+  (p.items||[]).forEach((it,i)=>{s+=(i+1)+". "+it.nombre+"\n   "+qtyFmt(num(it.cantidad))+" "+(it.unidad||"u")+" × "+money(it.precio)+" = "+money(num(it.cantidad)*num(it.precio))+"\n"});
+  s+="\nSubtotal: "+money(t.sub)+"\n";
+  if(p.conIva)s+="IVA "+t.pct+"%: "+money(t.iva)+"\n";
+  s+="*TOTAL: "+money(t.total)+"*";
+  if(p.notas)s+="\n\nNotas: "+p.notas;
+  return s;
+}
+function pfCSV(p){
+  const t=pfTotals(p);
+  const rows=[["N°","Descripción","Unidad","Cantidad","P. unitario","Total"]];
+  (p.items||[]).forEach((it,i)=>rows.push([i+1,it.nombre,it.unidad||"u",num(it.cantidad),num(it.precio).toFixed(2),(num(it.cantidad)*num(it.precio)).toFixed(2)]));
+  rows.push([],["","","","","Subtotal",t.sub.toFixed(2)]);
+  if(p.conIva)rows.push(["","","","","IVA "+t.pct+"%",t.iva.toFixed(2)]);
+  rows.push(["","","","","TOTAL",t.total.toFixed(2)]);
+  return toCSV(rows);
+}
+async function exportPDF(p){
+  if(!canDownload()){toast("Esta vista no permite descargar archivos.");return}
+  toast("Preparando PDF…");
+  let lib;try{lib=await loadJsPDF()}catch(e){toast("No se pudo preparar el PDF. Revisa tu conexión a internet.");return}
+  const {jsPDF}=lib,d=new jsPDF({unit:"mm",format:"a4"}),t=pfTotals(p),pr=S.proyectos.get(p.proyectoId),est=estadoOf(S.pfId);
+  const L=18,R=192;let y=22;
+  d.setFont("helvetica","bold");d.setFontSize(24);d.text("PROFORMA",L,y);
+  d.setFont("helvetica","normal");d.setFontSize(10);d.text("Fecha: "+fdate(p.fecha),R,y-6,{align:"right"});d.text("Estado: "+ESTADO_TXT[est],R,y,{align:"right"});
+  y+=4;d.setLineWidth(.8);d.line(L,y,R,y);y+=8;
+  d.setFontSize(11);
+  if(pr){d.setFont("helvetica","bold");d.text("Proyecto:",L,y);d.setFont("helvetica","normal");d.text(pr.nombre,L+22,y);y+=6}
+  d.setFont("helvetica","bold");d.text("Detalle:",L,y);d.setFont("helvetica","normal");d.text(d.splitTextToSize(p.nombre,R-L-22),L+22,y);y+=10;
+  const head=()=>{d.setFillColor(235,238,233);d.rect(L,y-5,R-L,8,"F");d.setFont("helvetica","bold");d.setFontSize(9);
+    d.text("N°",L+2,y);d.text("DESCRIPCIÓN",L+12,y);d.text("UNID.",112,y);d.text("CANT.",138,y,{align:"right"});d.text("P. UNIT.",163,y,{align:"right"});d.text("TOTAL",R-2,y,{align:"right"});y+=8;d.setFont("helvetica","normal");d.setFontSize(10)};
+  head();
+  (p.items||[]).forEach((it,i)=>{
+    const lines=d.splitTextToSize(it.nombre,92);const h=Math.max(1,lines.length)*5;
+    if(y+h>272){d.addPage();y=22;head()}
+    d.text(String(i+1),L+2,y);d.text(lines,L+12,y);d.text(String(it.unidad||"u"),112,y);
+    d.text(qtyFmt(num(it.cantidad)),138,y,{align:"right"});d.text(money(it.precio),163,y,{align:"right"});d.text(money(num(it.cantidad)*num(it.precio)),R-2,y,{align:"right"});
+    y+=h+1;d.setDrawColor(213,217,210);d.setLineWidth(.2);d.line(L,y-3,R,y-3);y+=2;
+  });
+  if(y>250){d.addPage();y=22}
+  y+=4;const X=130;
+  d.text("Subtotal",X,y);d.text(money(t.sub),R-2,y,{align:"right"});y+=6;
+  if(p.conIva){d.text("IVA "+t.pct+"%",X,y);d.text(money(t.iva),R-2,y,{align:"right"});y+=6}
+  d.setLineWidth(.6);d.setDrawColor(27,35,32);d.line(X,y-3,R,y-3);y+=3;
+  d.setFont("helvetica","bold");d.setFontSize(13);d.text("TOTAL",X,y);d.text(money(t.total),R-2,y,{align:"right"});
+  d.setFont("helvetica","normal");d.setFontSize(9);y+=12;
+  if(p.notas){const nl=d.splitTextToSize("Notas: "+p.notas,R-L);if(y+nl.length*4>285){d.addPage();y=22}d.text(nl,L,y);y+=nl.length*4+4}
+  d.setTextColor(110);d.text("Valores en dólares (USD)."+(p.conIva?"":" Precios sin IVA."),L,Math.min(y,288));
+  saveFile("proforma-"+slug(p.nombre)+".pdf",d.output("arraybuffer"),"application/pdf");
+}
+function renderPfDoc(){
+  const id=currentPf();if(!id){S.view="proformas";renderHeader();return renderPfList()}
+  const p=S.proformas.get(id),t=pfTotals(p),pr=S.proyectos.get(p.proyectoId);
+  const rows=(p.items||[]).map((it,i)=>`<tr><td class="num">${i+1}</td><td>${esc(it.nombre)}</td><td>${esc(it.unidad||"u")}</td><td class="r num">${qtyFmt(num(it.cantidad))}</td><td class="r num">${money(it.precio)}</td><td class="r num">${money(num(it.cantidad)*num(it.precio))}</td></tr>`).join("")||'<tr><td colspan="6" style="color:var(--ink-3)">Sin ítems</td></tr>';
+  app.innerHTML=`<section class="view">
+    <article class="doc">
+      <div class="doc-head"><h2>PROFORMA</h2><div class="meta">Fecha<br><b class="num">${fdate(p.fecha)}</b></div></div>
+      <dl class="doc-sub">${pr?`<dt>Proyecto</dt><dd>${esc(pr.nombre)}</dd>`:""}<dt>Detalle</dt><dd>${esc(p.nombre)}</dd><dt>Estado</dt><dd>${ESTADO_TXT[estadoOf(id)]}</dd></dl>
+      <div class="tablewrap"><table class="pf"><thead><tr><th>N°</th><th>Descripción</th><th>Unid.</th><th class="r">Cant.</th><th class="r">P. unit.</th><th class="r">Total</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="doc-tot">
+        <div class="tline"><span>Subtotal</span><span class="num">${money(t.sub)}</span></div>
+        ${p.conIva?`<div class="tline"><span>IVA ${t.pct}%</span><span class="num">${money(t.iva)}</span></div>`:""}
+        <div class="tline grand"><span>TOTAL</span><span class="num">${money(t.total)}</span></div>
+      </div>
+      ${p.notas?`<p class="doc-foot"><b>Notas:</b> ${esc(p.notas)}</p>`:""}
+      <p class="doc-foot">Valores en dólares (USD).${p.conIva?"":" Precios sin IVA."}</p>
+    </article>
+    <div class="row"><button class="btn grow" id="doc-copy">Copiar texto</button>${canDownload()?'<button class="btn grow" id="doc-pdf">Descargar PDF</button>':""}</div>
+  </section>`;
+  $("#doc-copy").onclick=()=>copyText(pfText(p));
+  const pdf=$("#doc-pdf");if(pdf)pdf.onclick=()=>exportPDF(p);
+}
+
+/* ================= PRECIOS ================= */
+function openMaterialForm(mid,prefill,after){
+  const m=mid?S.materiales.get(mid):{nombre:"",unidad:"u",precio:"",categoria:"",...prefill};
+  const used=mid?inProj("proformas").filter(([,p])=>(p.items||[]).some(it=>it.materialId===mid)).length:0;
+  openSheet(mid?"Editar precio":"Nuevo material",`<form id="mf" class="form-grid" novalidate>
+    <label class="field full"><span>Material o servicio</span><input class="inp" id="mf-n" required value="${esc(m.nombre)}" placeholder="Ej. Cemento Holcim 50 kg"></label>
+    <label class="field"><span>Unidad</span><input class="inp" id="mf-u" list="units" value="${esc(m.unidad||"u")}"></label>
+    <label class="field"><span>Precio unitario $</span><input class="inp num" id="mf-p" type="number" inputmode="decimal" step="any" min="0" value="${esc(m.precio)}" placeholder="0.00"></label>
+    <label class="field full"><span>Categoría</span><input class="inp" id="mf-c" list="matcats" value="${esc(m.categoria||"")}" placeholder="Ej. Obra gris"></label>
+    <label class="field full"><span>Proveedor (opcional)</span><input class="inp" id="mf-v" list="provs" value="${esc(m.proveedor||"")}" placeholder="Ej. Ferretería El Constructor"></label>
+    <p class="full err" id="mf-err" hidden></p>
+    <button class="btn primary full" type="submit">Guardar</button>
+    ${mid?`<button class="btn danger full" type="button" id="mf-del">Eliminar de la lista</button><p class="full" style="margin:0;font-size:13px;color:var(--ink-3)">${used?`Se usa en ${used} proforma${used>1?"s":""}. Si lo eliminas, esas proformas conservan el ítem con su precio.`:"No se usa en ninguna proforma."}</p>`:""}
+  </form>`,s=>{
+    $("#provs").innerHTML=provList().map(v=>`<option value="${esc(v)}">`).join("");
+    if(!m.nombre)$("#mf-n",s).focus();else if(!mid)$("#mf-p",s).focus();
+    $("#mf",s).onsubmit=e=>{e.preventDefault();
+      const nombre=$("#mf-n",s).value.trim(),precio=$("#mf-p",s).value,er=$("#mf-err",s);
+      if(!nombre){er.textContent="Escribe el nombre del material.";er.hidden=false;return}
+      if(precio===""||num(precio)<0){er.textContent="Escribe el precio unitario (puede ser 0).";er.hidden=false;return}
+      const id=mid||uid();
+      put("materiales",id,{...(mid?S.materiales.get(mid):{createdAt:Date.now(),proyectoId:S.proj}),nombre,unidad:$("#mf-u",s).value.trim()||"u",precio:Math.round(num(precio)*1000)/1000,categoria:$("#mf-c",s).value.trim(),proveedor:$("#mf-v",s).value.trim()});
+      closeSheet(true);
+      if(after)after(id);else{render();toast(mid?"Precio actualizado":"Material agregado")}
+    };
+    const d=$("#mf-del",s);if(d)armDanger(d,"¿Eliminar? Toca otra vez",()=>{del("materiales",mid);closeSheet(true);render();toast("Material eliminado")});
+  });
+}
+function openCopyPrices(){
+  const others=sortedProjects().filter(([k])=>k!==S.proj&&inProj("materiales",k).length);
+  openSheet("Copiar precios",`<p style="margin:0;font-size:14px;color:var(--ink-2)">Elige de qué proyecto traer la lista. Los materiales con el mismo nombre que ya tienes no se duplican.</p>
+    <div class="card list pick">${others.map(([k,p])=>`<button class="li" type="button" data-from="${k}">${projBadge(k,"li-ic")}<span class="li-main"><b>${esc(p.nombre)}</b><small>${inProj("materiales",k).length} precios</small></span></button>`).join("")}</div>`,s=>{
+    $$("[data-from]",s).forEach(b=>b.onclick=()=>{const n=copyPrices(b.dataset.from,S.proj);closeSheet(true);render();toast(n?n+" precios copiados":"No había precios nuevos para copiar")});
+  });
+}
+function renderPrecios(){
+  const term=S.matQ.trim().toLowerCase();
+  const all=inProj("materiales");
+  const mats=all.filter(([,m])=>!term||(m.nombre+" "+(m.categoria||"")+" "+(m.proveedor||"")).toLowerCase().includes(term));
+  const groups={};mats.forEach(([k,m])=>{(groups[m.categoria||"Sin categoría"]=groups[m.categoria||"Sin categoría"]||[]).push([k,m])});
+  const keys=Object.keys(groups).sort((a,b)=>a.localeCompare(b,"es"));
+  const canCopy=sortedProjects().some(([k])=>k!==S.proj&&inProj("materiales",k).length);
+  app.innerHTML=`<section class="view">
+    <div><h2 style="font-size:27px">Lista de precios</h2><p style="margin:2px 0 0;color:var(--ink-2)">El precio de cada material o servicio de este proyecto. Luego solo eliges y pones la cantidad.</p></div>
+    <div class="row"><input class="inp grow" id="mat-q" style="flex:1 1 180px" placeholder="Buscar…" aria-label="Buscar material" value="${esc(S.matQ)}"><button class="btn primary" id="mat-add">+ Material</button></div>
+    ${all.length?"":'<div class="empty"><b>Aún no hay precios</b>Agrega cada material con el precio que te dieron.</div>'}
+    ${canCopy?'<button class="btn ghost" id="mat-copy">Copiar precios de otro proyecto</button>':""}
+    ${keys.map(k=>`<div><div class="group-h"><span class="label">${esc(k)}</span><span class="num">${groups[k].length}</span></div>
+      <div class="card list">${groups[k].sort((a,b)=>a[1].nombre.localeCompare(b[1].nombre,"es")).map(([id,m])=>`<button class="li" type="button" data-id="${id}"><span class="li-main"><b>${esc(m.nombre)}</b><small>por ${esc(m.unidad||"u")}${m.proveedor?" · "+esc(m.proveedor):""}</small></span><span class="li-amt">${money(m.precio)}</span></button>`).join("")}</div></div>`).join("")}
+    ${term&&!mats.length?'<div class="empty">No hay materiales que coincidan.</div>':""}
+  </section>`;
+  $("#mat-q").oninput=e=>{S.matQ=e.target.value;const pos=e.target.selectionStart;renderPrecios();const n=$("#mat-q");n.focus();n.setSelectionRange(pos,pos)};
+  $("#mat-add").onclick=()=>openMaterialForm(null,{});
+  const cp=$("#mat-copy");if(cp)cp.onclick=openCopyPrices;
+  $$(".li[data-id]",app).forEach(b=>b.onclick=()=>openMaterialForm(b.dataset.id));
+}
+
+/* ================= router ================= */
+const VIEWS={inicio:renderBalance,proyectos:renderProyectos,proyecto:renderInicio,proformas:renderPfList,proforma:renderProformas,gastos:renderGastos,precios:renderPrecios,etapas:renderEtapas,doc:renderPfDoc};
+function render(){
+  if(!S.loaded){app.innerHTML='<section class="view"><div class="empty">Cargando tus datos…</div></section>';return}
+  resolveProject();
+  if(!S.proj&&!["inicio","proyectos"].includes(S.view))S.view="proyectos";
+  if(!VIEWS[S.view])S.view="inicio";
+  renderHeader();
+  const tab=navTab(S.view);
+  $$(".nav button[data-tab]").forEach(b=>{b.setAttribute("aria-current",String(b.dataset.tab===tab));b.disabled=!S.proj&&(b.dataset.tab==="gastos"||b.dataset.tab==="precios")});
+  $("#fab").disabled=!S.proj;
+  VIEWS[S.view]();
+}
+function setTab(t){
+  flushAll();closeSheet(true);S.view=t;
+  try{sessionStorage.setItem(LS+"tab",t)}catch(e){}
+  render();window.scrollTo(0,0);
+}
+function openView(v){flushAll();closeSheet(true);S.view=v;render();window.scrollTo(0,0)}
+function goBack(){openView(PARENT[S.view]||"inicio")}
+$$(".nav button[data-tab]").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+$("#fab").onclick=()=>openGastoForm(null);
+try{const t=sessionStorage.getItem(LS+"tab");if(t&&TABS.includes(t))S.view=t}catch(e){}
+
+/* ================= boot ================= */
+applyTheme();
+render();
+function finishLoad(){S.loaded=true;migrate();render()}
+async function boot(){
+  if(IN_ARTIFACT){
+    const safe=async n=>{try{return await window.claude.use(n)}catch(e){return null}};
+    [downloads,assets,db]=await Promise.all([safe("downloads"),safe("assets"),safe("db")]);
+  }
+  const syncEl=$("#sync");
+  syncEl.hidden=true;
+  if(!db){loadLocal();finishLoad();return}
+  const got=new Set();
+  COLS.forEach(col=>{
+    db.collection(col).onSnapshot(snap=>{
+      const m=new Map();
+      snap.docs.forEach(d=>{const p=col+"/"+d.id;m.set(d.id,pending[p]&&S[col].has(d.id)?S[col].get(d.id):JSON.parse(JSON.stringify(d.data())))});
+      for(const [id,v] of S[col])if(pending[col+"/"+id]&&!m.has(id))m.set(id,v);
+      S[col]=m;if(!snap.metadata.fromCache)got.add(col);
+      if(!S.loaded&&got.size===COLS.length){finishLoad();return}
+      if(S.loaded)requestRender();
+    },()=>{syncEl.hidden=false;syncEl.textContent="Sin conexión con la nube. Recarga la página.";});
+  });
+  setTimeout(()=>{if(!S.loaded){S.loaded=true;render();syncEl.hidden=false;syncEl.textContent="La conexión está lenta; algunos datos pueden tardar en aparecer."}},12000);
+}
+if(!IN_ARTIFACT&&"serviceWorker" in navigator&&location.protocol==="https:"){navigator.serviceWorker.register("sw.js").catch(()=>{})}
+boot();
+
+})();
+</script>
+</body>
+</html>
