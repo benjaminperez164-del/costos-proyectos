@@ -320,6 +320,12 @@ table.pf td.num{white-space:nowrap}
 .pj-menu .li:hover{background:var(--surface-2)}
 .pj-menu .pdot,.pj-pick .pdot{width:26px;height:26px;border-radius:8px}
 .pj-menu .pdot svg,.pj-pick .pdot svg{width:16px;height:16px}
+.icons2{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px 6px}
+.icopt2{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:0;padding:0;font-size:11.5px;font-weight:600;color:var(--ink-2)}
+.icopt2 span{width:52px;height:52px;border-radius:14px;border:1px solid var(--line-strong);background:var(--surface);display:grid;place-items:center;color:var(--ink-2)}
+.icopt2 span svg{width:24px;height:24px}
+.icopt2[aria-checked="true"]{color:var(--ink);font-weight:700}
+.icopt2[aria-checked="true"] span{background:var(--ink);border-color:var(--ink);color:var(--bg)}
 /* Balance */
 .monthnav{display:flex;align-items:center;gap:8px}
 .monthnav h2{flex:1;text-align:center;font-size:26px;text-transform:capitalize}
@@ -419,8 +425,11 @@ details.more[open]{padding-bottom:12px}
 /* ================= constants ================= */
 const GASTO_CATS=["Materiales","Mano de obra","Herramientas y equipo","Transporte y fletes","Permisos y trámites","Servicios (agua, luz)","Otros"];
 const CAT_SHORT={"Materiales":"Materiales","Mano de obra":"Mano de obra","Herramientas y equipo":"Herramientas","Transporte y fletes":"Fletes","Permisos y trámites":"Trámites","Servicios (agua, luz)":"Servicios","Otros":"Otros"};
-const COLS=["proyectos","materiales","proformas","gastos","config"];
-const SCOPED=["materiales","proformas","gastos"];
+const PERSONAL_CATS=["Vivienda","Servicios básicos","Alimentación","Transporte","Salud","Educación","Deudas y cuotas","Entretenimiento","Ropa","Otros"];
+Object.assign(CAT_SHORT,{"Vivienda":"Vivienda","Servicios básicos":"Servicios","Alimentación":"Alimentación","Transporte":"Transporte","Salud":"Salud","Educación":"Educación","Deudas y cuotas":"Deudas","Entretenimiento":"Entretenim.","Ropa":"Ropa"});
+const PERSONAL_ID="personal";
+const COLS=["proyectos","materiales","proformas","gastos","ingresos","config"];
+const SCOPED=["materiales","proformas","gastos","ingresos"];
 const COLORS=["#1F5FAD","#C26A2E","#7A55B0","#2E8B57","#B08A00","#C2416B"];
 const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 const MES3=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
@@ -431,8 +440,17 @@ const PICONS={
   local:'<path d="M4 9l1.5-5h13L20 9M4 9v11h16V9M4 9h16M9 20v-6h6v6"/>',
   terreno:'<path d="M5 21V8l2-3 2 3v13M15 21V8l2-3 2 3v13M3 11h18M3 17h18"/>',
   cultivo:'<path d="M6 19c0-8 5-14 14-14 0 9-5 14-13 14"/><path d="M6 19l8-8M3 21h6"/>',
-  taller:'<path d="M15 4a5 5 0 0 0-4.6 6.9L4 17.3V20h2.7l6.4-6.4A5 5 0 0 0 20 9l-3 1-2-2 1-3z"/>'
+  taller:'<path d="M15 4a5 5 0 0 0-4.6 6.9L4 17.3V20h2.7l6.4-6.4A5 5 0 0 0 20 9l-3 1-2-2 1-3z"/>',
+  carro:'<path d="M4 15l1.5-5a2 2 0 0 1 1.9-1.5h9.2a2 2 0 0 1 1.9 1.5L20 15"/><rect x="3" y="15" width="18" height="4" rx="1.5"/><circle cx="7.5" cy="19.5" r="1.5"/><circle cx="16.5" cy="19.5" r="1.5"/>',
+  moto:'<circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M6 17h5l3-6h3M14 11l-2-4H9M17 11l1 6"/>',
+  billetera:'<path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M4 7l11-3v3"/><circle cx="16" cy="13.5" r="1.2"/>',
+  animales:'<circle cx="8" cy="8" r="1.8"/><circle cx="16" cy="8" r="1.8"/><circle cx="5" cy="12.5" r="1.6"/><circle cx="19" cy="12.5" r="1.6"/><path d="M12 12c-3 0-5 3.5-5 5.5 0 1.5 1.5 2 2.5 1.6L12 18l2.5 1.1c1 .4 2.5-.1 2.5-1.6 0-2-2-5.5-5-5.5z"/>',
+  viajes:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 12h18"/>',
+  estudios:'<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1 3 3 6 3s6-2 6-3v-5M22 9v6"/>'
 };
+PICONS.negocio=PICONS.local;
+const PICON_OPTS=[["casa","Casa"],["negocio","Negocio"],["cultivo","Agrícola"],["taller","Reparación"],["carro","Carro"],["moto","Moto"],["billetera","Personal"],["animales","Animales"],["viajes","Viajes"],["estudios","Estudios"]];
+const ICON_ALIAS={edificio:"negocio",local:"negocio",terreno:"casa"};
 const I={
   plus:'<path d="M12 5v14M5 12h14"/>',minus:'<path d="M5 12h14"/>',x:'<path d="M6 6l12 12M18 6 6 18"/>',
   back:'<path d="M15 5l-7 7 7 7"/>',chevR:'<path d="M9 5l7 7-7 7"/>',chevL:'<path d="M15 5l-7 7 7 7"/>',
@@ -453,10 +471,11 @@ const I={
   up:'<path d="M6 15l6-6 6 6"/>',down:'<path d="M6 9l6 6 6-6"/>',edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>'
 };
 const CAT_IC={"Materiales":['<path d="M4 8h16v12H4zM8 8V5h8v3"/>',"c-mat"],"Mano de obra":[I.user,"c-mo"],"Herramientas y equipo":[PICONS.taller,"c-her"],"Transporte y fletes":['<path d="M3 6h11v10H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',"c-tr"],"Permisos y trámites":['<path d="M7 3h7l4 4v14H7z"/><path d="M10 12h5M10 16h5"/>',"c-per"],"Servicios (agua, luz)":['<path d="M13 3 5 14h6l-1 7 8-11h-6z"/>',"c-ser"],"Otros":[I.more,"c-otr"]};
+Object.assign(CAT_IC,{"Vivienda":['<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',"c-mat"],"Servicios básicos":['<path d="M13 3 5 14h6l-1 7 8-11h-6z"/>',"c-mo"],"Alimentación":['<path d="M4 6h2l2 10h10l2-7H7"/><circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/>',"c-tr"],"Transporte":['<path d="M4 15l1.5-5a2 2 0 0 1 1.9-1.5h9.2a2 2 0 0 1 1.9 1.5L20 15"/><rect x="3" y="15" width="18" height="4" rx="1.5"/>',"c-ser"],"Salud":['<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>',"c-per"],"Educación":['<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1 3 3 6 3s6-2 6-3v-5"/>',"c-mat"],"Deudas y cuotas":['<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>',"c-per"],"Entretenimiento":['<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M10 9l4 2-4 2z"/>',"c-mo"],"Ropa":['<path d="M8 4l4 2 4-2 4 4-3 3v9H7v-9L4 8z"/>',"c-her"]});
 const catIcon=c=>{const x=CAT_IC[c]||CAT_IC.Otros;return `<span class="li-ic ${x[1]}">${SV(x[0])}</span>`};
 
 /* ================= state ================= */
-const S={proyectos:new Map(),materiales:new Map(),proformas:new Map(),gastos:new Map(),config:new Map(),
+const S={proyectos:new Map(),materiales:new Map(),proformas:new Map(),gastos:new Map(),ingresos:new Map(),config:new Map(),perMonth:null,fijosTab:"gastos",
   view:"inicio",backTo:"inicio",proj:null,pfId:null,pfMode:"edit",matQ:"",gastoCat:"Todas",balMonth:null,chartSel:null,loaded:false};
 const IN_ARTIFACT=!!(window.claude&&window.claude.use);
 let db=null, downloads=null, assets=null, readOnly=false, migrated=false;
@@ -499,8 +518,10 @@ function setTheme(t){lsSet("costos:theme",t);applyTheme()}
 const proj=()=>S.proj&&S.proyectos.get(S.proj);
 const inProj=(col,pid=S.proj)=>[...S[col].entries()].filter(([,d])=>d.proyectoId===pid);
 const sortedProjects=()=>[...S.proyectos.entries()].sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
-const projColor=pid=>{const p=S.proyectos.get(pid);if(p&&p.color)return p.color;const i=sortedProjects().findIndex(([k])=>k===pid);return COLORS[(i<0?0:i)%COLORS.length]};
-const projIcon=pid=>{const p=S.proyectos.get(pid);return PICONS[(p&&p.icono)||"casa"]||PICONS.casa};
+const projColor=pid=>{const p=S.proyectos.get(pid);if(p&&p.color)return p.color;const i=sortedProjects().filter(([,x])=>x.tipo!=="mensual").findIndex(([k])=>k===pid);return COLORS[(i<0?0:i)%COLORS.length]};
+const projIcon=pid=>{const p=S.proyectos.get(pid);let k=(p&&p.icono)||"casa";k=ICON_ALIAS[k]||k;return PICONS[k]||PICONS.casa};
+const isMensual=(pid=S.proj)=>{const p=S.proyectos.get(pid);return !!p&&p.tipo==="mensual"};
+const catsFor=(pid=S.proj)=>isMensual(pid)?PERSONAL_CATS:GASTO_CATS;
 const projBadge=(pid,cls="proj-ic")=>`<span class="${cls}" style="background:${projColor(pid)};color:#fff">${SV(projIcon(pid))}</span>`;
 function pfTotals(p){
   const sub=round2((p.items||[]).reduce((a,it)=>a+num(it.cantidad)*num(it.precio),0));
@@ -650,7 +671,7 @@ function loadJsPDF(){
 }
 /* ================= header ================= */
 const TABS=["inicio","proyectos","gastos","precios"];
-const PARENT={proyecto:"proyectos",proformas:"proyecto",proforma:"proformas",doc:"proforma",etapas:"proyecto"};
+const PARENT={fijos:"proyecto",proyecto:"proyectos",proformas:"proyecto",proforma:"proformas",doc:"proforma",etapas:"proyecto"};
 const navTab=v=>TABS.includes(v)?v:"proyectos";
 function renderHeader(){
   const top=$("#top"),p=proj(),v=S.view;
@@ -658,9 +679,9 @@ function renderHeader(){
   let h;
   if(v==="inicio")h=`<div class="top-title"><small>Todos los proyectos</small><h1>Balance del mes</h1></div>`;
   else if(v==="proyectos")h=`<div class="top-title"><h1>Mis proyectos</h1></div>`;
-  else if(v==="proyecto"&&p)h=`${back}<div class="top-title"><small>Proyecto</small><h1>${esc(p.nombre)}</h1></div><button class="icon-btn" type="button" id="hd-edit" aria-label="Editar proyecto">${SV(I.edit)}</button>`;
+  else if(v==="proyecto"&&p)h=`${back}<div class="top-title"><small>${p.tipo==="mensual"?"Mensual":"Proyecto"}</small><h1>${esc(p.nombre)}</h1></div><button class="icon-btn" type="button" id="hd-edit" aria-label="Editar proyecto">${SV(I.edit)}</button>`;
   else if((v==="gastos"||v==="precios")&&p)h=`<button class="proj-btn" type="button" id="hd-proj" aria-label="Cambiar de proyecto">${projBadge(S.proj)}<span class="proj-txt"><small>Proyecto</small><b>${esc(p.nombre)} ▾</b></span></button>`;
-  else{const T={proformas:"Proformas",proforma:"Proforma",doc:"Proforma",etapas:"Avance por etapas"};h=`${back}<div class="top-title">${p?`<small>${esc(p.nombre)}</small>`:""}<h1>${T[v]||""}</h1></div>`}
+  else{const T={proformas:"Proformas",proforma:"Proforma",doc:"Proforma",etapas:"Avance por etapas",fijos:"Fijos e ingresos"};h=`${back}<div class="top-title">${p?`<small>${esc(p.nombre)}</small>`:""}<h1>${T[v]||""}</h1></div>`}
   top.innerHTML=h;
   const bk=$("#hd-back");if(bk)bk.onclick=goBack;
   const pj=$("#hd-proj");if(pj)pj.onclick=()=>setTab("proyectos");
@@ -688,6 +709,7 @@ function copyPrices(fromId,toId){
 }
 function openProjectForm(pid){
   const p=pid?S.proyectos.get(pid):{nombre:"",descripcion:""};
+  const mensual=!!pid&&isMensual(pid);
   let color=pid?projColor(pid):COLORS[S.proyectos.size%COLORS.length], icono=(p&&p.icono)||"casa";
   const others=sortedProjects().filter(([k])=>k!==pid&&inProj("materiales",k).length);
   const counts=pid?{g:inProj("gastos",pid).length,pf:inProj("proformas",pid).length,m:inProj("materiales",pid).length}:null;
@@ -695,18 +717,18 @@ function openProjectForm(pid){
     <label class="field full"><span>Nombre del proyecto</span><input class="inp" id="pj-n" value="${esc(p.nombre)}" placeholder="Ej. Casa Urdaneta, Local comercial"></label>
     <label class="field full"><span>Descripción (opcional)</span><input class="inp" id="pj-d" value="${esc(p.descripcion||"")}" placeholder="Ubicación, cliente, etapa…"></label>
     <div class="field full"><span>Color</span><div class="swatches" role="radiogroup" aria-label="Color">${COLORS.map(c=>`<button type="button" class="swatch" role="radio" aria-checked="${c===color}" aria-label="Color ${c}" data-c="${c}" style="background:${c}"></button>`).join("")}</div></div>
-    <div class="field full"><span>Ícono</span><div class="icons" role="radiogroup" aria-label="Ícono">${Object.keys(PICONS).map(k=>`<button type="button" class="icopt" role="radio" aria-checked="${k===icono}" aria-label="${k}" data-i="${k}">${SV(PICONS[k])}</button>`).join("")}</div></div>
+    <div class="field full"><span>Ícono</span><div class="icons2" role="radiogroup" aria-label="Ícono">${PICON_OPTS.map(([k,l])=>`<button type="button" class="icopt2" role="radio" aria-checked="${k===(ICON_ALIAS[icono]||icono)}" data-i="${k}"><span>${SV(PICONS[k])}</span>${l}</button>`).join("")}</div></div>
     ${!pid&&others.length?`<label class="field full"><span>Lista de precios</span><select class="inp" id="pj-copy"><option value="">Empezar con la lista vacía</option>${others.map(([k,o])=>`<option value="${k}">Copiar precios de “${esc(o.nombre)}” (${inProj("materiales",k).length})</option>`).join("")}</select></label>`:""}
-    ${pid?`<div class="field full"><span>Presupuesto</span><button type="button" class="btn" id="pj-bud" style="justify-content:space-between"><span>${manualBudget(pid)?"Monto fijo":"Según proformas aceptadas"}</span><span class="num">${budgetOf(pid)?money(budgetOf(pid)):"Sin definir"}</span></button></div>`:`<label class="field full"><span>Presupuesto total (opcional)</span><input class="inp num" id="pj-b" type="number" inputmode="decimal" step="any" min="0" placeholder="Déjalo vacío para usar tus proformas"></label>`}
+    ${mensual?`<p class="full" style="margin:0;font-size:13.5px;color:var(--ink-3)">Este es un proyecto mensual: su presupuesto son los ingresos de cada mes.</p>`:pid?`<div class="field full"><span>Presupuesto</span><button type="button" class="btn" id="pj-bud" style="justify-content:space-between"><span>${manualBudget(pid)?"Monto fijo":"Según proformas aceptadas"}</span><span class="num">${budgetOf(pid)?money(budgetOf(pid)):"Sin definir"}</span></button></div>`:`<label class="field full"><span>Presupuesto total (opcional)</span><input class="inp num" id="pj-b" type="number" inputmode="decimal" step="any" min="0" placeholder="Déjalo vacío para usar tus proformas"></label>`}
     <p class="full err" id="pj-err" hidden></p>
     <button class="btn primary full" type="submit">${pid?"Guardar cambios":"Crear proyecto"}</button>
-    ${pid?`<button class="btn danger full" type="button" id="pj-del">Eliminar proyecto</button><p class="full" style="margin:0;font-size:13px;color:var(--ink-3)">Se borrarán también sus ${counts.g} gastos, ${counts.pf} proformas y ${counts.m} precios. Esto no se puede deshacer; si quieres, descarga antes un respaldo.</p>`:""}
+    ${pid&&!mensual?`<button class="btn danger full" type="button" id="pj-del">Eliminar proyecto</button><p class="full" style="margin:0;font-size:13px;color:var(--ink-3)">Se borrarán también sus ${counts.g} gastos, ${counts.pf} proformas y ${counts.m} precios. Esto no se puede deshacer; si quieres, descarga antes un respaldo.</p>`:""}
   </form>`,s=>{
     if(!pid)$("#pj-n",s).focus();
     const pjb=$("#pj-bud",s);if(pjb)pjb.onclick=()=>{
       const cur={...S.proyectos.get(pid),nombre:$("#pj-n",s).value.trim()||p.nombre,descripcion:$("#pj-d",s).value.trim(),color,icono};put("proyectos",pid,cur);openBudgetForm(pid)};
     $$(".swatch",s).forEach(b=>b.onclick=()=>{color=b.dataset.c;$$(".swatch",s).forEach(x=>x.setAttribute("aria-checked",x===b))});
-    $$(".icopt",s).forEach(b=>b.onclick=()=>{icono=b.dataset.i;$$(".icopt",s).forEach(x=>x.setAttribute("aria-checked",x===b))});
+    $$(".icopt2",s).forEach(b=>b.onclick=()=>{icono=b.dataset.i;$$(".icopt2",s).forEach(x=>x.setAttribute("aria-checked",x===b))});
     $("#pjf",s).onsubmit=e=>{e.preventDefault();
       const nombre=$("#pj-n",s).value.trim();
       if(!nombre){const er=$("#pj-err",s);er.textContent="Escribe el nombre del proyecto.";er.hidden=false;return}
@@ -728,12 +750,21 @@ function openProjectForm(pid){
   });
 }
 function renderProyectos(){
-  const list=sortedProjects();
+  const list=sortedProjects().filter(([k,p])=>p.tipo!=="mensual"),mens=sortedProjects().filter(([k,p])=>p.tipo==="mensual"),mk=thisMonth();
   const lastBk=lsGet(LS+"lastBackup");
   const plural=(n,s,p)=>n+" "+(n===1?s:p);
   app.innerHTML=`<section class="view">
     <button class="btn primary block" id="pj-add" style="min-height:50px">${SV(I.plus,2.4)}Nuevo proyecto</button>
-    ${list.length?"":'<div class="empty"><b>Crea tu primer proyecto</b>Por ejemplo “Mi casa”, “Local comercial” o “Siembra de cacao”.</div>'}
+    ${mens.map(([k,p])=>{const st=monthStats(k,mk),pct=st.ing?Math.min(100,st.gas/st.ing*100):0;
+      return `<article class="card pcard" style="border:2px solid ${projColor(k)}">
+        <button class="pmain" type="button" data-open="${k}" aria-label="Abrir ${esc(p.nombre)}">
+          <span class="proj-top">${projBadge(k)}<span class="grow"><b>${esc(p.nombre)}</b><small>${MESES[+mk.slice(5)-1][0].toUpperCase()+MESES[+mk.slice(5)-1].slice(1)}${st.pend.length?` · <b style="color:var(--warn)">${st.pend.length} fijo${st.pend.length===1?"":"s"} por pagar</b>`:st.fj.length?" · fijos al día":""}</small></span></span>
+          ${st.ing?`<span class="meter${st.gas>st.ing?" over":""}"><i style="width:${pct}%;background:${st.gas>st.ing?"var(--bad)":projColor(k)}"></i></span>`:""}
+          <span class="between" style="font-size:13.5px;width:100%"><span><span class="num" style="font-weight:600">${money(st.gas)}</span> <span style="color:var(--ink-3)">gastado</span></span><span style="color:var(--ink-3)">${st.ing?"de <span class=\"num\">"+money(st.ing)+"</span> del mes":"sin ingresos este mes"}</span></span>
+        </button>
+        <span class="pedit" style="display:grid;place-items:center;color:${projColor(k)}" title="Fijo: siempre primero">${SV('<path d="M9 4h6l-1 6 3 3v2H7v-2l3-3z"/><path d="M12 15v6"/>',2,' width="20" height="20"')}</span>
+      </article>`}).join("")}
+    ${list.length?'<div class="label" style="padding:4px 2px 0">Proyectos</div>':'<div class="empty"><b>Crea tu primer proyecto</b>Por ejemplo “Mi casa”, “Local comercial” o “Siembra de cacao”.</div>'}
     <div class="projs">${list.map(([k,p])=>{const sp=spentOf(k),b=budgetOf(k),pct=b?Math.min(100,sp/b*100):0,ng=inProj("gastos",k).length,np=inProj("proformas",k).length;
       return `<article class="card pcard">
         <button class="pmain" type="button" data-open="${k}" aria-label="Abrir ${esc(p.nombre)}">
@@ -857,6 +888,7 @@ function etapaStats(pid=S.proj){
   });
 }
 function renderInicio(){
+  if(isMensual())return renderPersonal();
   const p=proj(),spent=spentOf(),budget=budgetOf(),acc=acceptedPf();
   const pct=budget?spent/budget*100:0,left=round2(budget-spent),C=339.29;
   const dash=Math.min(pct,100)/100*C;
@@ -924,37 +956,42 @@ function bindGastoRows(root){$$("[data-gasto]",root).forEach(b=>b.onclick=()=>op
 /* ================= GASTO FORM (keypad) ================= */
 function openGastoForm(gid,preset){
   if(!S.proj){toast("Primero crea un proyecto.");return}
-  const g=gid?S.gastos.get(gid):{fecha:today(),concepto:"",categoria:"Materiales",monto:"",proveedor:"",nota:"",proyectoId:S.proj,...(preset||{})};
-  const pid=g.proyectoId;
+  const basePid=(preset&&preset.proyectoId)||S.proj;
+  const g=gid?S.gastos.get(gid):{fecha:today(),concepto:"",categoria:isMensual(basePid)?"Alimentación":"Materiales",monto:"",proveedor:"",nota:"",proyectoId:basePid,...(preset||{})};
+  const pid=g.proyectoId,mens=isMensual(pid),CATS=catsFor(pid);
+  if(!CATS.includes(g.categoria)&&!gid)g.categoria=mens?"Alimentación":CATS[0];
+  const fijo=g.fijoId&&((S.proyectos.get(pid)||{}).fijos||[]).find(x=>x.id===g.fijoId);
   let amt=g.monto?String(round2(num(g.monto))):"";
-  let cat=g.categoria||"Materiales", etapa=g.etapaId||"", fecha=g.fecha||today();
+  let cat=g.categoria||CATS[0], etapa=g.etapaId||"", fecha=g.fecha||today();
   let newPhoto=null, removePhoto=false;
   const ets=etapasOf(pid), mats=inProj("materiales",pid).sort((a,b)=>a[1].nombre.localeCompare(b[1].nombre,"es"));
   const pf=g.proformaId&&S.proformas.get(g.proformaId);
   const provs=provList();
   $("#provs").innerHTML=provs.map(v=>`<option value="${esc(v)}">`).join("");
-  const s=openSheet(gid?"Editar gasto":(S.proyectos.size>1&&!pf?"Nuevo gasto":"Nuevo gasto · "+((S.proyectos.get(pid)||{}).nombre||"")),`<form id="gf" novalidate style="display:flex;flex-direction:column;gap:14px">
+  const s=openSheet(gid?"Editar gasto":fijo?"Pagar · "+fijo.nombre:(S.proyectos.size>1&&!pf?"Nuevo gasto":"Nuevo gasto · "+((S.proyectos.get(pid)||{}).nombre||"")),`<form id="gf" novalidate style="display:flex;flex-direction:column;gap:14px">
     ${pf?`<div class="notice info">${SV(I.doc)}<span>Pago de la proforma <b>${esc(pf.nombre)}</b></span></div>`:""}
-    ${!gid&&!pf&&S.proyectos.size>1?`<div class="field"><span>Proyecto</span>
+    ${fijo&&!gid?`<div class="notice info">${SV(I.info)}<span>Gasto fijo del día ${fijo.dia}. ${fijo.variable?"Monto estimado <b>"+money(fijo.monto)+"</b>: ajústalo si llegó distinto.":""}</span></div>`:""}
+    ${!gid&&!pf&&!fijo&&S.proyectos.size>1?`<div class="field"><span>Proyecto</span>
       <button type="button" class="pj-pick" id="gf-pj-btn" aria-expanded="false" aria-controls="gf-pj">${projBadge(pid,"pdot")}<span class="grow">${esc((S.proyectos.get(pid)||{}).nombre||"")}</span><span class="pj-chg">Cambiar ${SV(I.down,2.4)}</span></button>
       <div class="pj-menu card" id="gf-pj" hidden>
         ${S.proyectos.size>6?`<input class="inp" id="gf-pj-q" placeholder="Buscar proyecto…" aria-label="Buscar proyecto" autocomplete="off">`:""}
         <div class="list" id="gf-pj-list">${sortedProjects().map(([k,x])=>`<button type="button" class="li" data-pj="${k}" data-name="${esc(x.nombre.toLowerCase())}">${projBadge(k,"pdot")}<span class="li-main"><b>${esc(x.nombre)}</b></span>${k===pid?SV(I.check,2.6,' width="18" height="18" style="color:var(--accent)"'):""}</button>`).join("")}</div>
       </div></div>`:""}
     <div class="amount"><output id="gf-amt" class="${amt?"":"zero"}" aria-live="polite">${money(num(amt))}</output>
-      <label class="sr" for="gf-c">Concepto</label><input id="gf-c" value="${esc(g.concepto)}" placeholder="¿En qué gastaste? (ej. 20 sacos de cemento)" autocomplete="off"></div>
+      <label class="sr" for="gf-c">Concepto</label><input id="gf-c" value="${esc(g.concepto)}" placeholder="${mens?"¿En qué gastaste? (ej. supermercado)":"¿En qué gastaste? (ej. 20 sacos de cemento)"}" autocomplete="off"></div>
     <div class="keys" id="gf-keys">${["1","2","3","4","5","6","7","8","9",".","0"].map(k=>`<button type="button" data-k="${k}">${k}</button>`).join("")}<button type="button" data-k="del" aria-label="Borrar">${SV(I.backspace)}</button></div>
-    <div class="field"><span>Categoría</span><div class="chips wrapc" id="gf-cats">${GASTO_CATS.map(c=>`<button type="button" class="chip" data-c="${esc(c)}" aria-pressed="${c===cat}">${esc(CAT_SHORT[c])}</button>`).join("")}</div></div>
+    <div class="field"><span>Categoría</span><div class="chips wrapc" id="gf-cats">${[...new Set([...CATS,cat])].map(c=>`<button type="button" class="chip" data-c="${esc(c)}" aria-pressed="${c===cat}">${esc(CAT_SHORT[c]||c)}</button>`).join("")}</div></div>
     ${ets.length?`<div class="field"><span>Etapa</span><div class="chips wrapc" id="gf-ets"><button type="button" class="chip" data-e="" aria-pressed="${!etapa}">Sin etapa</button>${ets.map(e=>`<button type="button" class="chip" data-e="${e.id}" aria-pressed="${e.id===etapa}">${esc(e.nombre)}</button>`).join("")}</div></div>`:""}
     <div class="mini3" style="grid-template-columns:${canPhoto()?"1fr 1fr":"1fr"}">
       <label class="opt" id="gf-date-l">${SV(I.cal)}<span id="gf-date-t">${fdateShort(fecha)}</span><input type="date" id="gf-f" value="${esc(fecha)}" aria-label="Fecha del gasto"></label>
       ${canPhoto()?`<label class="opt${g.foto?" on":""}" id="gf-ph-l">${SV(I.camera)}<span id="gf-ph-t">${g.foto?"Factura ✓":"Foto factura"}</span><input type="file" id="gf-ph" accept="image/*" aria-label="Foto de la factura"></label>`:""}
     </div>
     <div id="gf-thumb" class="thumb" hidden></div>
-    <label class="field"><span>Pagado a</span><input class="inp" id="gf-p" list="provs" value="${esc(g.proveedor||"")}" placeholder="Ferretería, maestro, volquetero…" autocomplete="off"></label>
-    <details class="more"${g.materialId||g.nota?" open":""}><summary>Más detalles (material, cantidad, nota)</summary>
+    <label class="field"><span>Pagado a</span><input class="inp" id="gf-p" list="provs" value="${esc(g.proveedor||"")}" placeholder="${mens?"Supermercado, farmacia, empresa…":"Ferretería, maestro, volquetero…"}" autocomplete="off"></label>
+    ${fijo&&fijo.variable&&!gid?`<label for="gf-est" style="display:flex;align-items:center;gap:10px;min-height:44px;font-size:14.5px"><input id="gf-est" type="checkbox" checked style="width:20px;height:20px;accent-color:var(--accent)">Usar este monto como estimado del próximo mes</label>`:""}
+    <details class="more"${g.materialId||g.nota?" open":""}><summary>${mens?"Nota (opcional)":"Más detalles (material, cantidad, nota)"}</summary>
       <div class="form-grid">
-        ${mats.length?`<label class="field full"><span>Material de tu lista</span><select class="inp" id="gf-mat"><option value="">— Ninguno —</option>${mats.map(([k,m])=>`<option value="${k}"${k===g.materialId?" selected":""}>${esc(m.nombre)} (${esc(m.unidad||"u")})</option>`).join("")}</select></label>
+        ${mats.length&&!mens?`<label class="field full"><span>Material de tu lista</span><select class="inp" id="gf-mat"><option value="">— Ninguno —</option>${mats.map(([k,m])=>`<option value="${k}"${k===g.materialId?" selected":""}>${esc(m.nombre)} (${esc(m.unidad||"u")})</option>`).join("")}</select></label>
         <label class="field"><span>Cantidad comprada</span><input class="inp num" id="gf-q" type="number" inputmode="decimal" step="any" min="0" value="${esc(g.cantidad??"")}"></label>
         <p style="margin:0;font-size:12.5px;color:var(--ink-3);align-self:end">Sirve para controlar lo comprado contra la proforma.</p>`:""}
         <label class="field full"><span>Nota</span><input class="inp" id="gf-n" value="${esc(g.nota||"")}" placeholder="N° de factura, forma de pago…"></label>
@@ -1007,6 +1044,7 @@ function openGastoForm(gid,preset){
       else if(removePhoto){Photos.remove(g.foto);delete data.foto}
     }catch(err){toast("La foto no se pudo guardar; el gasto se guardó sin ella.")}
     put("gastos",gid||uid(),data);
+    const est=$("#gf-est",s);if(est&&est.checked&&fijo){const p=S.proyectos.get(pid);put("proyectos",pid,{...p,fijos:(p.fijos||[]).map(x=>x.id===fijo.id?{...x,monto}:x)})}
     closeSheet(true);render();
     const nm=(S.proyectos.get(pid)||{}).nombre;
     toast(gid?"Gasto actualizado":`Gasto de ${money(monto)} registrado en ${nm}`);
@@ -1020,11 +1058,11 @@ function renderGastos(){
   const list=S.gastoCat==="Todas"?all:all.filter(([,g])=>g.categoria===S.gastoCat);
   const sum=round2(list.reduce((a,[,g])=>a+num(g.monto),0));
   const months={};list.forEach(([k,g])=>{const key=(g.fecha||"").slice(0,7);(months[key]=months[key]||[]).push([k,g])});
-  const usedCats=GASTO_CATS.filter(c=>all.some(([,g])=>g.categoria===c));
+  const usedCats=[...new Set([...catsFor(),...GASTO_CATS,...PERSONAL_CATS])].filter(c=>all.some(([,g])=>g.categoria===c));
   app.innerHTML=`<section class="view">
     <div class="between" style="align-items:flex-end"><div><span class="label">${S.gastoCat==="Todas"?"Total gastado en el proyecto":esc(S.gastoCat)}</span><div class="num" style="font-size:30px;font-weight:600;line-height:1.1">${money(sum)}</div><small style="color:var(--ink-3)">${list.length} registro${list.length===1?"":"s"}</small></div>
     <button class="btn primary" id="g-add">+ Gasto</button></div>
-    ${usedCats.length>1?`<div class="chips">${["Todas",...usedCats].map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===S.gastoCat}">${esc(c==="Todas"?c:CAT_SHORT[c])}</button>`).join("")}</div>`:""}
+    ${usedCats.length>1?`<div class="chips">${["Todas",...usedCats].map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===S.gastoCat}">${esc(c==="Todas"?c:(CAT_SHORT[c]||c))}</button>`).join("")}</div>`:""}
     ${all.length?"":'<div class="empty"><b>Sin gastos registrados</b>Cada vez que pagues algo de este proyecto, regístralo con el botón +.</div>'}
     ${Object.keys(months).map(mk=>{const tot=round2(months[mk].reduce((a,[,g])=>a+num(g.monto),0));
       return `<div><div class="group-h"><span class="label">${mk?monthName(mk):"Sin fecha"}</span><span class="num">${money(tot)}</span></div>
@@ -1048,14 +1086,17 @@ function renderBalance(){
   const total=round2(gs.reduce((a,[,g])=>a+num(g.monto),0));
   const prevTotal=round2([...S.gastos.values()].filter(g=>(g.fecha||"").startsWith(prev)&&S.proyectos.has(g.proyectoId)).reduce((a,g)=>a+num(g.monto),0));
   const byProj=sortedProjects().map(([k,p])=>[k,p,round2(gs.filter(([,g])=>g.proyectoId===k).reduce((a,[,g])=>a+num(g.monto),0)),gs.filter(([,g])=>g.proyectoId===k).length]).filter(x=>x[2]>0).sort((a,b)=>b[2]-a[2]);
-  const byCat=GASTO_CATS.map(k=>[k,round2(gs.filter(([,g])=>g.categoria===k).reduce((a,[,g])=>a+num(g.monto),0))]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
+  const byCat=[...new Set(gs.map(([,g])=>g.categoria||"Otros"))].map(k=>[k,round2(gs.filter(([,g])=>(g.categoria||"Otros")===k).reduce((a,[,g])=>a+num(g.monto),0))]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
   const diff=round2(total-prevTotal);
+  const ingMes=round2([...S.ingresos.values()].filter(x=>(x.fecha||"").startsWith(mk)&&S.proyectos.has(x.proyectoId)).reduce((a,x)=>a+num(x.monto),0));
+  const queda=round2(ingMes-total);
   const isCur=mk===thisMonth();
   app.innerHTML=`<section class="view">
     <div class="monthnav"><button class="icon-btn" type="button" id="bm-prev" aria-label="Mes anterior">${SV(I.chevL,2.2)}</button><h2>${monthName(mk)}</h2><button class="icon-btn" type="button" id="bm-next" aria-label="Mes siguiente"${isCur?" disabled":""}>${SV(I.chevR,2.2)}</button></div>
     <div class="card bal-total"><span class="label">Gastado en todos los proyectos</span><span class="num">${money(total)}</span>
       <span class="delta">${gs.length} gasto${gs.length===1?"":"s"} · ${prevTotal||total?(diff===0?"igual que ":(diff>0?"+":"−")+money(Math.abs(diff)).slice(0)+" vs ")+MESES[+prev.slice(5)-1]:"sin gastos registrados"}</span>
-      ${isCur?'<span class="delta" style="color:var(--ink-3)">Mes en curso: se cierra el último día del mes.</span>':""}</div>
+      ${isCur?'<span class="delta" style="color:var(--ink-3)">Mes en curso: se cierra el último día del mes.</span>':""}
+      ${ingMes?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid var(--line);padding-top:12px;margin-top:6px"><div><span class="label">Ingresos</span><div class="num" style="font-size:18px;font-weight:600;color:var(--ok)">${money(ingMes)}</div></div><div><span class="label">${queda<0?"Faltante":"Te queda"}</span><div class="num" style="font-size:18px;font-weight:600;${queda<0?"color:var(--bad)":""}">${money(Math.abs(queda))}</div></div></div>`:""}</div>
     ${byProj.length?`<div><div class="group-h"><span class="label">Por proyecto</span></div><div class="card hbars">${byProj.map(([k,p,v,n])=>`<div class="hbar">${projBadge(k,"dot")}<span class="nm"><b>${esc(p.nombre)}</b> <small>· ${n} gasto${n===1?"":"s"}</small></span><span class="num">${money(v)} <small>${Math.round(v/total*100)}%</small></span><span class="track"><i style="width:${v/byProj[0][2]*100}%;background:${projColor(k)}"></i></span></div>`).join("")}</div></div>`:""}
     ${byCat.length?`<div><div class="group-h"><span class="label">Por categoría</span></div><div class="card hbars">${byCat.map(([k,v])=>`<div class="hbar"><span class="nm">${esc(k)}</span><span></span><span class="num">${money(v)} <small>${Math.round(v/total*100)}%</small></span><span class="track"><i style="width:${v/byCat[0][1]*100}%;background:var(--accent)"></i></span></div>`).join("")}</div></div>`:""}
     ${gs.length?`<div><div class="group-h"><span class="label">Detalle del mes</span></div><div class="card list">${gs.sort((a,b)=>(b[1].fecha||"").localeCompare(a[1].fecha||"")).map(([id,g])=>gastoRow(id,g,{proj:true})).join("")}</div></div>`
@@ -1066,7 +1107,7 @@ function renderBalance(){
   $("#bm-next").onclick=()=>{if(!isCur){S.balMonth=shiftMonth(mk,1);renderBalance()}};
   bindGastoRows(app);
   const cp=$("#bm-copy");if(cp)cp.onclick=()=>{
-    let t=`*Balance de ${monthName(mk)}*\nTotal: ${money(total)} (${gs.length} gastos)\n\n*Por proyecto*\n`;
+    let t=`*Balance de ${monthName(mk)}*\nTotal: ${money(total)} (${gs.length} gastos)\n${ingMes?`Ingresos: ${money(ingMes)} · ${queda<0?"Faltante":"Te queda"}: ${money(Math.abs(queda))}\n`:""}\n*Por proyecto*\n`;
     byProj.forEach(([,p,v])=>t+=`• ${p.nombre}: ${money(v)}\n`);
     t+=`\n*Por categoría*\n`;byCat.forEach(([k,v])=>t+=`• ${k}: ${money(v)}\n`);
     copyText(t.trim());
@@ -1426,6 +1467,7 @@ function openCopyPrices(){
   });
 }
 function renderPrecios(){
+  if(isMensual()){app.innerHTML=`<section class="view"><div class="empty"><b>${esc(proj().nombre)} no usa lista de precios</b>La lista de precios es para tus proyectos (obras, cultivos, vehículos…). Elige uno para ver sus precios.</div><button class="btn primary block" id="pr-pick">Elegir proyecto</button></section>`;$("#pr-pick").onclick=()=>setTab("proyectos");return}
   const term=S.matQ.trim().toLowerCase();
   const all=inProj("materiales");
   const mats=all.filter(([,m])=>!term||(m.nombre+" "+(m.categoria||"")+" "+(m.proveedor||"")).toLowerCase().includes(term));
@@ -1448,7 +1490,7 @@ function renderPrecios(){
 }
 
 /* ================= router ================= */
-const VIEWS={inicio:renderBalance,proyectos:renderProyectos,proyecto:renderInicio,proformas:renderPfList,proforma:renderProformas,gastos:renderGastos,precios:renderPrecios,etapas:renderEtapas,doc:renderPfDoc};
+const VIEWS={fijos:renderFijos,inicio:renderBalance,proyectos:renderProyectos,proyecto:renderInicio,proformas:renderPfList,proforma:renderProformas,gastos:renderGastos,precios:renderPrecios,etapas:renderEtapas,doc:renderPfDoc};
 function render(){
   if(!S.loaded){app.innerHTML='<section class="view"><div class="empty">Cargando tus datos…</div></section>';return}
   resolveProject();
@@ -1474,7 +1516,7 @@ try{const t=sessionStorage.getItem(LS+"tab");if(t&&TABS.includes(t))S.view=t}cat
 /* ================= boot ================= */
 applyTheme();
 render();
-function finishLoad(){S.loaded=true;migrate();render()}
+function finishLoad(){S.loaded=true;migrate();ensurePersonal();render()}
 async function boot(){
   if(IN_ARTIFACT){
     const safe=async n=>{try{return await window.claude.use(n)}catch(e){return null}};
@@ -1498,6 +1540,200 @@ async function boot(){
 }
 if(!IN_ARTIFACT&&"serviceWorker" in navigator&&location.protocol==="https:"){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 boot();
+/* ================= GASTOS PERSONALES (proyecto mensual) ================= */
+function ensurePersonal(){
+  if(S.proyectos.has(PERSONAL_ID)||readOnly)return;
+  put("proyectos",PERSONAL_ID,{nombre:"Gastos personales",descripcion:"",tipo:"mensual",fijo:true,color:"#7A55B0",icono:"billetera",fijos:[],ingresosFijos:[],limites:{},etapas:[],createdAt:0});
+}
+const fijosOf=(pid=S.proj)=>((S.proyectos.get(pid)||{}).fijos||[]).slice().sort((a,b)=>num(a.dia)-num(b.dia));
+const ingFijosOf=(pid=S.proj)=>((S.proyectos.get(pid)||{}).ingresosFijos||[]).slice().sort((a,b)=>num(a.dia)-num(b.dia));
+const limitesOf=(pid=S.proj)=>(S.proyectos.get(pid)||{}).limites||{};
+const inMonth=(col,pid,mk)=>inProj(col,pid).filter(([,x])=>(x.fecha||"").startsWith(mk));
+const sumOf=list=>round2(list.reduce((a,[,x])=>a+num(x.monto),0));
+const daysIn=mk=>{const [y,m]=mk.split("-").map(Number);return new Date(y,m,0).getDate()};
+const dayDate=(mk,dia)=>mk+"-"+pad(Math.min(Math.max(1,num(dia)||1),daysIn(mk)));
+const fijoPago=(pid,fid,mk)=>inMonth("gastos",pid,mk).find(([,g])=>g.fijoId===fid);
+const ingRecibido=(pid,fid,mk)=>inMonth("ingresos",pid,mk).find(([,x])=>x.ingresoFijoId===fid);
+function dueInfo(mk,dia){
+  const cur=thisMonth();
+  if(mk<cur)return {txt:"No se registró",cls:"bad"};
+  if(mk>cur)return {txt:"Vence el "+Math.min(num(dia),daysIn(mk)),cls:""};
+  const d=+today().slice(8),dd=Math.min(num(dia),daysIn(mk)),diff=dd-d;
+  if(diff<0)return {txt:"Vencido hace "+(-diff)+" día"+(diff===-1?"":"s"),cls:"bad"};
+  if(diff===0)return {txt:"Vence hoy",cls:"warn"};
+  if(diff<=3)return {txt:"Vence en "+diff+" día"+(diff===1?"":"s"),cls:"warn"};
+  return {txt:"Vence el "+dd,cls:""};
+}
+function monthStats(pid,mk){
+  const ing=sumOf(inMonth("ingresos",pid,mk)),gas=sumOf(inMonth("gastos",pid,mk));
+  const fj=fijosOf(pid),pend=fj.filter(f=>!fijoPago(pid,f.id,mk));
+  return {ing,gas,disp:round2(ing-gas),fj,pend,pendSum:round2(pend.reduce((a,f)=>a+num(f.monto),0))};
+}
+function renderPersonal(){
+  const pid=S.proj,mk=S.perMonth||thisMonth(),isCur=mk===thisMonth();
+  const st=monthStats(pid,mk),pct=st.ing?st.gas/st.ing*100:0,C=339.29,dash=Math.min(pct,100)/100*C;
+  const ings=inMonth("ingresos",pid,mk).sort((a,b)=>(a[1].fecha||"").localeCompare(b[1].fecha||""));
+  const ingPend=ingFijosOf(pid).filter(f=>!ingRecibido(pid,f.id,mk));
+  const fj=st.fj.map(f=>({f,pago:fijoPago(pid,f.id,mk)}));
+  const pendFirst=[...fj.filter(x=>!x.pago),...fj.filter(x=>x.pago)];
+  const lim=limitesOf(pid),gm=inMonth("gastos",pid,mk);
+  const limRows=PERSONAL_CATS.filter(c=>num(lim[c])>0).map(c=>{const v=sumOf(gm.filter(([,g])=>g.categoria===c));return {c,v,l:num(lim[c]),p:v/num(lim[c])*100}});
+  const recent=gm.sort((a,b)=>(b[1].fecha||"").localeCompare(a[1].fecha||"")||(b[1].createdAt||0)-(a[1].createdAt||0)).slice(0,5);
+  app.innerHTML=`<section class="view">
+    <div class="monthnav"><button class="icon-btn" type="button" id="pm-prev" aria-label="Mes anterior">${SV(I.chevL,2.2)}</button><h2>${monthName(mk)}</h2><button class="icon-btn" type="button" id="pm-next" aria-label="Mes siguiente"${isCur?" disabled":""}>${SV(I.chevR,2.2)}</button></div>
+    <div class="hero">
+      ${st.ing?`<div class="ring" role="img" aria-label="${Math.round(pct)}% del ingreso usado"><svg viewBox="0 0 128 128"><circle cx="64" cy="64" r="54" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="12"/><circle cx="64" cy="64" r="54" fill="none" stroke="${pct>100?"#FF8A80":"var(--ring)"}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${dash.toFixed(1)} ${C}" transform="rotate(-90 64 64)"/></svg><div><b>${Math.round(pct)}%</b><small>del ingreso</small></div></div>`:""}
+      <div class="hero-stats">
+        ${st.ing?`<div><div class="k">Ingresos</div><div class="v2" style="color:var(--hero-ink)">${money(st.ing)}</div></div>`:""}
+        <div><div class="k">Gastado</div><div class="v">${money(st.gas)}</div></div>
+        ${st.ing?`<div><div class="k">${st.disp<0?"Te pasaste":"Disponible"}</div><div class="v2${st.disp<0?" over":""}">${money(Math.abs(st.disp))}</div></div>`
+          :`<p>Registra tu sueldo u otros ingresos del mes para ver cuánto te queda.</p><button class="btn sm" id="pm-ing0" type="button" style="align-self:flex-start">${SV(I.plus,2.4)}Registrar ingreso</button>`}
+      </div>
+    </div>
+    <div class="quick">
+      <button type="button" class="main" id="pq-gasto">${SV(I.card)}Gasto</button>
+      <button type="button" id="pq-ing"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Ingreso</button>
+      <button type="button" id="pq-fijos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>Fijos</button>
+    </div>
+    ${fj.length?`<div class="card tile">
+      <div class="between"><span class="label">Fijos del mes</span><span style="font-size:13px;color:var(--ink-2)"><b>${fj.length-st.pend.length} de ${fj.length}</b> pagados${st.pend.length?` · faltan <b class="num">${money(st.pendSum)}</b>`:""}</span></div>
+      <div class="meter"><i style="width:${fj.length?(fj.length-st.pend.length)/fj.length*100:0}%;background:var(--ok)"></i></div>
+      <div class="list">${pendFirst.map(({f,pago})=>{const di=dueInfo(mk,f.dia);
+        return pago?`<button class="li" type="button" data-gasto="${pago[0]}" style="padding:9px 0"><span class="li-ic" style="background:var(--ok-soft);color:var(--ok);border-radius:50%">${SV(I.check,3)}</span><span class="li-main"><b style="color:var(--ink-2)">${esc(f.nombre)}</b><small style="color:var(--ok);font-weight:600">${fdateShort(pago[1].fecha)==="Hoy"?"Pagado hoy":"Pagado el "+fdateShort(pago[1].fecha)}</small></span><span class="li-amt" style="color:var(--ink-2)">${money(pago[1].monto)}</span></button>`
+        :`<div class="li" style="padding:9px 0">${catIcon(f.categoria)}<span class="li-main"><b>${esc(f.nombre)}</b><small style="${di.cls==="bad"?"color:var(--bad);font-weight:600":di.cls==="warn"?"color:var(--warn);font-weight:600":""}">${di.txt}</small></span><span class="li-amt" style="color:var(--ink-2)">${f.variable?"~":""}${money(f.monto)}</span><button class="btn sm ${di.cls?"markb":""}" type="button" data-pay="${f.id}">Pagar</button></div>`}).join("")}</div>
+    </div>`:`<button class="tile-link" type="button" id="pm-fijo0"><span class="tl-ic">${SV('<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/>')}</span><span class="grow"><b style="display:block">Agrega tus gastos fijos</b><small style="color:var(--ink-3)">Arriendo, luz, internet, cuotas… aparecerán cada mes para pagarlos con un toque</small></span><span class="chev">${SV(I.chevR,2,' width="18" height="18"')}</span></button>`}
+    ${ings.length||ingPend.length?`<div class="card tile">
+      <div class="between"><span class="label">Ingresos del mes</span><span class="num" style="font-weight:600;color:var(--ok)">${money(st.ing)}</span></div>
+      <div class="list">${ings.map(([id,x])=>`<button class="li" type="button" data-ing="${id}" style="padding:9px 0"><span class="li-ic" style="background:var(--ok-soft);color:var(--ok)">${SV('<path d="M12 19V5M6 11l6-6 6 6"/>',2.4)}</span><span class="li-main"><b>${esc(x.concepto)}</b><small>${fdateShort(x.fecha)}</small></span><span class="li-amt" style="color:var(--ok)">${money(x.monto)}</span></button>`).join("")}
+      ${ingPend.map(f=>`<div class="li" style="padding:9px 0"><span class="li-ic c-otr">${SV('<path d="M12 19V5M6 11l6-6 6 6"/>',2.4)}</span><span class="li-main"><b>${esc(f.nombre)}</b><small>Día ${Math.min(num(f.dia),daysIn(mk))} · por recibir</small></span><span class="li-amt" style="color:var(--ink-2)">${money(f.monto)}</span><button class="btn sm" type="button" data-recv="${f.id}">Recibir</button></div>`).join("")}</div>
+    </div>`:""}
+    ${limRows.length?`<div class="card tile"><div class="between"><span class="label">Límites por categoría</span><button class="btn ghost sm" type="button" id="pm-lim">Editar</button></div>
+      <div style="display:flex;flex-direction:column;gap:10px">${limRows.map(r=>`<div class="hbar" style="grid-template-columns:1fr auto"><span class="nm">${esc(r.c)}${r.p>100?' <b style="color:var(--bad);font-size:12px">· excedido</b>':""}</span><span class="num" style="font-size:13px${r.p>100?";color:var(--bad)":""}">${money(r.v)} <small>/ ${money(r.l)}</small></span><span class="track"><i style="width:${Math.min(100,r.p)}%;background:${r.p>100?"var(--bad)":r.p>=80?"var(--mark)":"var(--accent)"}"></i></span></div>`).join("")}</div></div>`
+      :`<button class="btn ghost" type="button" id="pm-lim" style="align-self:flex-start">Definir límites por categoría</button>`}
+    <div><div class="group-h"><span class="label">Gastos de ${MESES[+mk.slice(5)-1]}</span>${gm.length>5?'<button class="btn ghost sm" id="pm-all" type="button">Ver todos</button>':""}</div>
+      ${recent.length?`<div class="card list">${recent.map(([id,g])=>gastoRow(id,g)).join("")}</div>`:'<div class="empty">Sin gastos en este mes.</div>'}</div>
+  </section>`;
+  $("#pm-prev").onclick=()=>{S.perMonth=shiftMonth(mk,-1);renderPersonal()};
+  $("#pm-next").onclick=()=>{if(!isCur){S.perMonth=shiftMonth(mk,1);renderPersonal()}};
+  $("#pq-gasto").onclick=()=>openGastoForm(null,{proyectoId:pid,fecha:isCur?today():dayDate(mk,1)});
+  $("#pq-ing").onclick=()=>openIngresoForm(null,{fecha:isCur?today():dayDate(mk,1)});
+  $("#pq-fijos").onclick=()=>{S.fijosTab="gastos";openView("fijos")};
+  const i0=$("#pm-ing0");if(i0)i0.onclick=()=>openIngresoForm(null,{fecha:isCur?today():dayDate(mk,1)});
+  const f0=$("#pm-fijo0");if(f0)f0.onclick=()=>{S.fijosTab="gastos";openView("fijos")};
+  $("#pm-lim").onclick=()=>{S.fijosTab="limites";openView("fijos")};
+  const all=$("#pm-all");if(all)all.onclick=()=>setTab("gastos");
+  $$("[data-pay]",app).forEach(b=>b.onclick=()=>{const f=fijosOf(pid).find(x=>x.id===b.dataset.pay);if(f)payFijo(pid,f,mk)});
+  $$("[data-recv]",app).forEach(b=>b.onclick=()=>{const f=ingFijosOf(pid).find(x=>x.id===b.dataset.recv);if(f)openIngresoForm(null,{ingresoFijoId:f.id,concepto:f.nombre,monto:f.monto,fecha:isCur?today():dayDate(mk,f.dia)})});
+  $$("[data-ing]",app).forEach(b=>b.onclick=()=>openIngresoForm(b.dataset.ing));
+  bindGastoRows(app);
+}
+function payFijo(pid,f,mk){
+  openGastoForm(null,{proyectoId:pid,fijoId:f.id,concepto:f.nombre,categoria:f.categoria||"Servicios básicos",monto:num(f.monto)||"",proveedor:f.proveedor||"",fecha:mk===thisMonth()?today():dayDate(mk,f.dia)});
+}
+
+/* ---------- ingresos ---------- */
+function openIngresoForm(iid,preset){
+  const pid=S.proj;
+  const x=iid?S.ingresos.get(iid):{concepto:"",monto:"",fecha:today(),proyectoId:pid,...(preset||{})};
+  const fromFijo=!!x.ingresoFijoId;
+  openSheet(iid?"Editar ingreso":fromFijo?"Recibir · "+x.concepto:"Nuevo ingreso",`<form id="if" class="form-grid" novalidate>
+    <label class="field full"><span>Monto $</span><input class="inp num" id="if-m" type="number" inputmode="decimal" step="any" min="0" value="${esc(x.monto)}" placeholder="0.00" style="font-size:24px;font-weight:600;min-height:56px"></label>
+    <label class="field full"><span>Concepto</span><input class="inp" id="if-c" value="${esc(x.concepto)}" placeholder="Sueldo, trabajo extra, venta…" autocomplete="off"></label>
+    <label class="field full"><span>Fecha</span><input class="inp" id="if-f" type="date" value="${esc(x.fecha)}"></label>
+    ${!iid&&!fromFijo?`<label class="full" for="if-r" style="display:flex;align-items:center;gap:10px;min-height:44px;font-size:14.5px"><input id="if-r" type="checkbox" style="width:20px;height:20px;accent-color:var(--accent)">Se repite cada mes</label>
+    <label class="field full" id="if-dl" hidden><span>Día del mes en que lo recibes</span><input class="inp num" id="if-d" type="number" inputmode="numeric" min="1" max="31" value="${+x.fecha.slice(8)||1}"></label>`:""}
+    <p class="full err" id="if-err" hidden></p>
+    ${iid?'<button class="btn danger full" type="button" id="if-del">Eliminar ingreso</button>':""}
+    <button class="btn primary full" type="submit" style="min-height:52px">Guardar ingreso</button>
+  </form>`,s=>{
+    const m=$("#if-m",s);if(!iid&&!x.monto)m.focus();
+    const r=$("#if-r",s);if(r)r.onchange=()=>{$("#if-dl",s).hidden=!r.checked};
+    $("#if",s).onsubmit=e=>{e.preventDefault();
+      const monto=round2(num(m.value)),er=$("#if-err",s);
+      if(monto<=0){er.textContent="Escribe un monto mayor a 0.";er.hidden=false;return}
+      const concepto=$("#if-c",s).value.trim()||"Ingreso",fecha=$("#if-f",s).value||today();
+      const data={...(iid?S.ingresos.get(iid):{createdAt:Date.now(),proyectoId:pid}),...(iid?{}:preset||{}),concepto,monto,fecha};
+      if(r&&r.checked){const fid=uid();const p=S.proyectos.get(pid);put("proyectos",pid,{...p,ingresosFijos:[...(p.ingresosFijos||[]),{id:fid,nombre:concepto,monto,dia:Math.min(31,Math.max(1,num($("#if-d",s).value)||1))}]});data.ingresoFijoId=fid}
+      put("ingresos",iid||uid(),data);closeSheet(true);render();toast(iid?"Ingreso actualizado":"Ingreso de "+money(monto)+" registrado");
+    };
+    const d=$("#if-del",s);if(d)armDanger(d,"¿Eliminar? Toca otra vez",()=>{del("ingresos",iid);closeSheet(true);render();toast("Ingreso eliminado")});
+  });
+}
+
+/* ---------- fijos / ingresos fijos / límites ---------- */
+function saveProjArray(pid,key,list){const p=S.proyectos.get(pid);put("proyectos",pid,{...p,[key]:list})}
+function openFijoForm(fid){
+  const pid=S.proj,list=(S.proyectos.get(pid).fijos||[]);
+  const f=fid?list.find(x=>x.id===fid):{nombre:"",monto:"",dia:5,categoria:"Servicios básicos",proveedor:"",variable:false};
+  openSheet(fid?"Editar gasto fijo":"Nuevo gasto fijo",`<form id="ff" class="form-grid" novalidate>
+    <label class="field full"><span>Nombre</span><input class="inp" id="ff-n" value="${esc(f.nombre)}" placeholder="Arriendo, luz, internet, cuota del carro…" autocomplete="off"></label>
+    <label class="field"><span>Monto $</span><input class="inp num" id="ff-m" type="number" inputmode="decimal" step="any" min="0" value="${esc(f.monto)}" placeholder="0.00"></label>
+    <label class="field"><span>Día de pago</span><input class="inp num" id="ff-d" type="number" inputmode="numeric" min="1" max="31" value="${esc(f.dia)}"></label>
+    <label class="field full"><span>Categoría</span><select class="inp" id="ff-c">${PERSONAL_CATS.map(c=>`<option${c===f.categoria?" selected":""}>${c}</option>`).join("")}</select></label>
+    <label class="field full"><span>Pagado a (opcional)</span><input class="inp" id="ff-p" list="provs" value="${esc(f.proveedor||"")}" placeholder="Empresa eléctrica, arrendador…"></label>
+    <label class="full" for="ff-v" style="display:flex;align-items:center;gap:10px;min-height:44px;font-size:14.5px"><input id="ff-v" type="checkbox"${f.variable?" checked":""} style="width:20px;height:20px;accent-color:var(--accent)">El monto cambia cada mes (luz, agua)</label>
+    <p class="full err" id="ff-err" hidden></p>
+    ${fid?'<button class="btn danger full" type="button" id="ff-del">Eliminar gasto fijo</button><p class="full" style="margin:0;font-size:13px;color:var(--ink-3)">Los pagos ya registrados se quedan en tus gastos.</p>':""}
+    <button class="btn primary full" type="submit" style="min-height:52px">Guardar</button>
+  </form>`,s=>{
+    $("#provs").innerHTML=provList().map(v=>`<option value="${esc(v)}">`).join("");
+    if(!fid)$("#ff-n",s).focus();
+    $("#ff",s).onsubmit=e=>{e.preventDefault();
+      const nombre=$("#ff-n",s).value.trim(),monto=round2(num($("#ff-m",s).value)),er=$("#ff-err",s);
+      if(!nombre){er.textContent="Escribe el nombre del gasto fijo.";er.hidden=false;return}
+      if(monto<=0){er.textContent="Escribe el monto (si cambia cada mes, pon un valor aproximado).";er.hidden=false;return}
+      const item={id:fid||uid(),nombre,monto,dia:Math.min(31,Math.max(1,num($("#ff-d",s).value)||1)),categoria:$("#ff-c",s).value,proveedor:$("#ff-p",s).value.trim(),variable:$("#ff-v",s).checked};
+      saveProjArray(pid,"fijos",fid?list.map(x=>x.id===fid?item:x):[...list,item]);closeSheet(true);render();toast(fid?"Gasto fijo actualizado":"Gasto fijo agregado");
+    };
+    const d=$("#ff-del",s);if(d)armDanger(d,"¿Eliminar? Toca otra vez",()=>{saveProjArray(pid,"fijos",list.filter(x=>x.id!==fid));closeSheet(true);render();toast("Gasto fijo eliminado")});
+  });
+}
+function openIngFijoForm(fid){
+  const pid=S.proj,list=(S.proyectos.get(pid).ingresosFijos||[]);
+  const f=fid?list.find(x=>x.id===fid):{nombre:"",monto:"",dia:30};
+  openSheet(fid?"Editar ingreso fijo":"Nuevo ingreso fijo",`<form id="gff" class="form-grid" novalidate>
+    <label class="field full"><span>Nombre</span><input class="inp" id="gff-n" value="${esc(f.nombre)}" placeholder="Sueldo, arriendo que cobras…" autocomplete="off"></label>
+    <label class="field"><span>Monto $</span><input class="inp num" id="gff-m" type="number" inputmode="decimal" step="any" min="0" value="${esc(f.monto)}" placeholder="0.00"></label>
+    <label class="field"><span>Día que lo recibes</span><input class="inp num" id="gff-d" type="number" inputmode="numeric" min="1" max="31" value="${esc(f.dia)}"></label>
+    <p class="full err" id="gff-err" hidden></p>
+    ${fid?'<button class="btn danger full" type="button" id="gff-del">Eliminar ingreso fijo</button>':""}
+    <button class="btn primary full" type="submit" style="min-height:52px">Guardar</button>
+  </form>`,s=>{
+    if(!fid)$("#gff-n",s).focus();
+    $("#gff",s).onsubmit=e=>{e.preventDefault();
+      const nombre=$("#gff-n",s).value.trim(),monto=round2(num($("#gff-m",s).value)),er=$("#gff-err",s);
+      if(!nombre){er.textContent="Escribe el nombre del ingreso.";er.hidden=false;return}
+      if(monto<=0){er.textContent="Escribe un monto mayor a 0.";er.hidden=false;return}
+      const item={id:fid||uid(),nombre,monto,dia:Math.min(31,Math.max(1,num($("#gff-d",s).value)||1))};
+      saveProjArray(pid,"ingresosFijos",fid?list.map(x=>x.id===fid?item:x):[...list,item]);closeSheet(true);render();toast(fid?"Ingreso fijo actualizado":"Ingreso fijo agregado");
+    };
+    const d=$("#gff-del",s);if(d)armDanger(d,"¿Eliminar? Toca otra vez",()=>{saveProjArray(pid,"ingresosFijos",list.filter(x=>x.id!==fid));closeSheet(true);render();toast("Ingreso fijo eliminado")});
+  });
+}
+function renderFijos(){
+  const pid=S.proj,tab=S.fijosTab||"gastos",fj=fijosOf(pid),ifj=ingFijosOf(pid),lim=limitesOf(pid);
+  const tabs=[["gastos","Gastos fijos · "+fj.length],["ingresos","Ingresos · "+ifj.length],["limites","Límites"]];
+  let body="";
+  if(tab==="gastos")body=`<div class="between" style="padding:0 2px"><span class="label">Se repiten cada mes</span>${fj.length?`<span style="font-size:13px;color:var(--ink-2)">Total aprox. <b class="num" style="color:var(--ink)">${money(fj.reduce((a,f)=>a+num(f.monto),0))}</b></span>`:""}</div>
+    ${fj.length?`<div class="card list">${fj.map(f=>`<button class="li" type="button" data-fijo="${f.id}"><span class="num" style="width:34px;text-align:center;font-size:11px;color:var(--ink-3);line-height:1.1;flex:none">día<br><b style="font-size:16px;color:var(--ink)">${f.dia}</b></span><span class="li-main"><b>${esc(f.nombre)}${f.variable?' <span class="pill borrador" style="padding:1px 6px">Variable</span>':""}</b><small>${esc(f.categoria)}${f.proveedor?" · "+esc(f.proveedor):""}</small></span><span class="li-amt">${f.variable?"~":""}${money(f.monto)}</span></button>`).join("")}</div>`:'<div class="empty"><b>Sin gastos fijos</b>Agrega lo que pagas cada mes: arriendo, luz, agua, internet, plan celular, cuotas…</div>'}
+    <button class="btn dashed block" type="button" id="fx-add" style="min-height:48px">+ Agregar gasto fijo</button>`;
+  else if(tab==="ingresos")body=`<div class="between" style="padding:0 2px"><span class="label">Ingresos que recibes cada mes</span></div>
+    ${ifj.length?`<div class="card list">${ifj.map(f=>`<button class="li" type="button" data-ifijo="${f.id}"><span class="num" style="width:34px;text-align:center;font-size:11px;color:var(--ink-3);line-height:1.1;flex:none">día<br><b style="font-size:16px;color:var(--ink)">${f.dia}</b></span><span class="li-main"><b>${esc(f.nombre)}</b><small>Cada mes</small></span><span class="li-amt" style="color:var(--ok)">${money(f.monto)}</span></button>`).join("")}</div>`:'<div class="empty"><b>Sin ingresos fijos</b>Agrega tu sueldo u otro ingreso que recibas cada mes. Aparecerá para registrarlo con un toque.</div>'}
+    <button class="btn dashed block" type="button" id="fx-addi" style="min-height:48px">+ Agregar ingreso fijo</button>`;
+  else body=`<p style="margin:0;font-size:14px;color:var(--ink-2)">Pon un tope mensual a las categorías que quieras controlar. Déjalo vacío para no tener límite.</p>
+    <form id="lim-f" class="card list" novalidate>${PERSONAL_CATS.map((c,i)=>`<label class="li" for="lim-${i}" style="gap:10px">${catIcon(c)}<span class="li-main"><b>${esc(c)}</b></span><span style="display:flex;align-items:center;gap:4px;color:var(--ink-3)">$<input class="inp num" id="lim-${i}" data-c="${esc(c)}" type="number" inputmode="decimal" step="any" min="0" value="${num(lim[c])>0?num(lim[c]):""}" placeholder="—" style="width:104px;min-height:40px;text-align:right"></span></label>`).join("")}</form>
+    <button class="btn primary block" type="button" id="lim-save" style="min-height:50px">Guardar límites</button>`;
+  app.innerHTML=`<section class="view">
+    <div class="seg" role="tablist" aria-label="Secciones de fijos">${tabs.map(([k,l])=>`<button type="button" role="tab" data-tab-f="${k}" aria-checked="${k===tab}" aria-selected="${k===tab}">${l}</button>`).join("")}</div>
+    ${body}
+  </section>`;
+  $$("[data-tab-f]",app).forEach(b=>b.onclick=()=>{S.fijosTab=b.dataset.tabF;renderFijos()});
+  const a=$("#fx-add");if(a)a.onclick=()=>openFijoForm(null);
+  const ai=$("#fx-addi");if(ai)ai.onclick=()=>openIngFijoForm(null);
+  $$("[data-fijo]",app).forEach(b=>b.onclick=()=>openFijoForm(b.dataset.fijo));
+  $$("[data-ifijo]",app).forEach(b=>b.onclick=()=>openIngFijoForm(b.dataset.ifijo));
+  const ls=$("#lim-save");if(ls)ls.onclick=()=>{const o={};$$("#lim-f input",app).forEach(x=>{const v=round2(num(x.value));if(v>0)o[x.dataset.c]=v});const p=S.proyectos.get(pid);put("proyectos",pid,{...p,limites:o});toast("Límites guardados");openView("proyecto")};
+}
 
 })();
 </script>

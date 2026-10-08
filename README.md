@@ -4,8 +4,9 @@ App web para el celular que calcula costos de materiales y lleva el registro de 
 
 ## Qué hace
 
-- **Inicio:** balance del mes de todos los proyectos (por proyecto y por categoría), con meses anteriores y exportación a CSV.
+- **Inicio:** balance del mes de todos los proyectos y gastos personales (por proyecto y por categoría), con ingresos y lo que te queda, meses anteriores y exportación a CSV.
 - **Proyectos:** lista compacta; toca un proyecto para abrirlo y el lápiz para editarlo. Cada proyecto tiene su resumen (presupuesto fijo o por proformas aceptadas, disponible, gasto por mes), precios, proformas, gastos y etapas.
+- **Gastos personales:** viene creado y fijo arriba en Mis proyectos. Funciona por mes: registras tus ingresos (sueldo, extras), tus gastos fijos (arriendo, luz, internet…) aparecen cada mes para pagarlos con un toque y avisan cuando vencen, y puedes poner límites por categoría.
 - **Etapas:** divide un proyecto en las fases que tú definas y sigue el avance de cada etapa contra su presupuesto. Avisa si lo comprado no cuadra con la proforma.
 - **Precios:** lista de materiales y servicios con unidad y precio unitario. Puedes copiar la lista de otro proyecto.
 - **Proforma:** eliges materiales, ajustas cantidades con − y + y la app calcula el subtotal, el IVA (opcional, 15 % por defecto) y el total. Se puede **aceptar** (pasa a ser presupuesto) y **marcar como pagada**, en uno o varios pagos que se suman a los gastos. Se comparte por WhatsApp o se descarga en PDF o CSV.
