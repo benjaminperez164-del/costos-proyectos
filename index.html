@@ -71,7 +71,7 @@ html:root[data-app-theme="light"]{color-scheme:light}
 *{box-sizing:border-box}
 html,body{background:var(--bg)}
 body{color:var(--ink);font:16px/1.45 var(--f-body);-webkit-tap-highlight-color:transparent}
-.wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:0 calc(104px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:0 calc(92px + env(safe-area-inset-bottom,0px))}
 .num{font-family:var(--f-num);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
 h1,h2,h3{font-family:var(--f-display);font-weight:700;letter-spacing:.01em;margin:0;text-wrap:balance}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -96,17 +96,17 @@ a{color:var(--accent)}
 .sync{font-size:12px;color:var(--ink-3);margin:-4px 0 4px}
 
 /* Bottom nav */
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border:1px solid var(--line);border-bottom:0;border-radius:22px 22px 0 0;box-shadow:0 -6px 20px rgba(11,21,37,.08);padding-bottom:env(safe-area-inset-bottom,0px)}
 .nav-in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);align-items:center}
-.nav button{background:none;border:0;padding:8px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--ink-3);font-size:11.5px;font-weight:600}
-.nav .ic{display:grid;place-items:center;width:52px;height:30px;border-radius:15px}
-.nav .ic svg{width:22px;height:22px}
+.nav button{background:none;border:0;padding:5px 0 6px;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--ink-3);font-size:11px;font-weight:600}
+.nav .ic{display:grid;place-items:center;width:46px;height:26px;border-radius:13px}
+.nav .ic svg{width:20px;height:20px}
 .nav button[aria-current="true"]{color:var(--accent);font-weight:700}
 .nav button[aria-current="true"] .ic{background:var(--accent-soft)}
 .nav button:disabled{opacity:.4}
 .nav .fab-slot{display:flex;justify-content:center}
-.nav .fab{width:58px;height:58px;margin-top:-28px;border-radius:18px;border:4px solid var(--bg);background:var(--mark);color:var(--mark-ink);display:grid;place-items:center;box-shadow:var(--shadow)}
-.nav .fab svg{width:26px;height:26px}
+.nav .fab{width:50px;height:50px;margin-top:-22px;border-radius:17px;border:4px solid var(--bg);background:var(--mark);color:var(--mark-ink);display:grid;place-items:center;box-shadow:var(--shadow)}
+.nav .fab svg{width:24px;height:24px}
 
 /* Generic */
 section.view{display:flex;flex-direction:column;gap:14px;padding-top:4px}
@@ -244,7 +244,7 @@ select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50
 .x:hover{background:var(--bad-soft);color:var(--bad)}
 .stale{font-size:12px;color:var(--warn);font-weight:600}
 .locked .step,.locked .x{display:none}
-.totbar{position:sticky;bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:4;background:var(--hero);color:var(--hero-ink);border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow)}
+.totbar{position:sticky;bottom:calc(66px + env(safe-area-inset-bottom,0px));z-index:4;background:var(--hero);color:var(--hero-ink);border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow)}
 .totbar .tl{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13.5px}
 .totbar .tl .num{opacity:.9}
 .totbar .grand{border-top:1px solid rgba(255,255,255,.2);padding-top:8px}
@@ -388,7 +388,7 @@ details.more[open]{padding-bottom:12px}
 .thumb img{width:64px;height:64px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
 .photo-full{width:100%;border-radius:12px;border:1px solid var(--line)}
 
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;display:flex;gap:12px;align-items:center;font-size:14px;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(80px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;display:flex;gap:12px;align-items:center;font-size:14px;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
 .toast button{background:none;border:0;color:var(--mark);font-weight:700}
 
 @media (max-width:380px){
@@ -1176,6 +1176,200 @@ function openEtapasEditor(){
   $("#ee-add",s).onclick=()=>{list.push({id:uid(),nombre:"",hecha:false});draw();const ins=$$("#ee-list input",s);ins[ins.length-1].focus()};
   $("#ee-save",s).onclick=()=>{const clean=list.map(e=>({...e,nombre:e.nombre.trim()})).filter(e=>e.nombre);put("proyectos",S.proj,{...proj(),etapas:clean});closeSheet(true);render();toast("Etapas guardadas")};
 }
+/* ================= GASTOS PERSONALES (proyecto mensual) ================= */
+function ensurePersonal(){
+  if(S.proyectos.has(PERSONAL_ID)||readOnly)return;
+  put("proyectos",PERSONAL_ID,{nombre:"Gastos personales",descripcion:"",tipo:"mensual",fijo:true,color:"#7A55B0",icono:"billetera",fijos:[],ingresosFijos:[],limites:{},etapas:[],createdAt:0});
+}
+const fijosOf=(pid=S.proj)=>((S.proyectos.get(pid)||{}).fijos||[]).slice().sort((a,b)=>num(a.dia)-num(b.dia));
+const ingFijosOf=(pid=S.proj)=>((S.proyectos.get(pid)||{}).ingresosFijos||[]).slice().sort((a,b)=>num(a.dia)-num(b.dia));
+const limitesOf=(pid=S.proj)=>(S.proyectos.get(pid)||{}).limites||{};
+const inMonth=(col,pid,mk)=>inProj(col,pid).filter(([,x])=>(x.fecha||"").startsWith(mk));
+const sumOf=list=>round2(list.reduce((a,[,x])=>a+num(x.monto),0));
+const daysIn=mk=>{const [y,m]=mk.split("-").map(Number);return new Date(y,m,0).getDate()};
+const dayDate=(mk,dia)=>mk+"-"+pad(Math.min(Math.max(1,num(dia)||1),daysIn(mk)));
+const fijoPago=(pid,fid,mk)=>inMonth("gastos",pid,mk).find(([,g])=>g.fijoId===fid);
+const ingRecibido=(pid,fid,mk)=>inMonth("ingresos",pid,mk).find(([,x])=>x.ingresoFijoId===fid);
+function dueInfo(mk,dia){
+  const cur=thisMonth();
+  if(mk<cur)return {txt:"No se registró",cls:"bad"};
+  if(mk>cur)return {txt:"Vence el "+Math.min(num(dia),daysIn(mk)),cls:""};
+  const d=+today().slice(8),dd=Math.min(num(dia),daysIn(mk)),diff=dd-d;
+  if(diff<0)return {txt:"Vencido hace "+(-diff)+" día"+(diff===-1?"":"s"),cls:"bad"};
+  if(diff===0)return {txt:"Vence hoy",cls:"warn"};
+  if(diff<=3)return {txt:"Vence en "+diff+" día"+(diff===1?"":"s"),cls:"warn"};
+  return {txt:"Vence el "+dd,cls:""};
+}
+function monthStats(pid,mk){
+  const ing=sumOf(inMonth("ingresos",pid,mk)),gas=sumOf(inMonth("gastos",pid,mk));
+  const fj=fijosOf(pid),pend=fj.filter(f=>!fijoPago(pid,f.id,mk));
+  return {ing,gas,disp:round2(ing-gas),fj,pend,pendSum:round2(pend.reduce((a,f)=>a+num(f.monto),0))};
+}
+function renderPersonal(){
+  const pid=S.proj,mk=S.perMonth||thisMonth(),isCur=mk===thisMonth();
+  const st=monthStats(pid,mk),pct=st.ing?st.gas/st.ing*100:0,C=339.29,dash=Math.min(pct,100)/100*C;
+  const ings=inMonth("ingresos",pid,mk).sort((a,b)=>(a[1].fecha||"").localeCompare(b[1].fecha||""));
+  const ingPend=ingFijosOf(pid).filter(f=>!ingRecibido(pid,f.id,mk));
+  const fj=st.fj.map(f=>({f,pago:fijoPago(pid,f.id,mk)}));
+  const pendFirst=[...fj.filter(x=>!x.pago),...fj.filter(x=>x.pago)];
+  const lim=limitesOf(pid),gm=inMonth("gastos",pid,mk);
+  const limRows=PERSONAL_CATS.filter(c=>num(lim[c])>0).map(c=>{const v=sumOf(gm.filter(([,g])=>g.categoria===c));return {c,v,l:num(lim[c]),p:v/num(lim[c])*100}});
+  const recent=gm.sort((a,b)=>(b[1].fecha||"").localeCompare(a[1].fecha||"")||(b[1].createdAt||0)-(a[1].createdAt||0)).slice(0,5);
+  app.innerHTML=`<section class="view">
+    <div class="monthnav"><button class="icon-btn" type="button" id="pm-prev" aria-label="Mes anterior">${SV(I.chevL,2.2)}</button><h2>${monthName(mk)}</h2><button class="icon-btn" type="button" id="pm-next" aria-label="Mes siguiente"${isCur?" disabled":""}>${SV(I.chevR,2.2)}</button></div>
+    <div class="hero">
+      ${st.ing?`<div class="ring" role="img" aria-label="${Math.round(pct)}% del ingreso usado"><svg viewBox="0 0 128 128"><circle cx="64" cy="64" r="54" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="12"/><circle cx="64" cy="64" r="54" fill="none" stroke="${pct>100?"#FF8A80":"var(--ring)"}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${dash.toFixed(1)} ${C}" transform="rotate(-90 64 64)"/></svg><div><b>${Math.round(pct)}%</b><small>del ingreso</small></div></div>`:""}
+      <div class="hero-stats">
+        ${st.ing?`<div><div class="k">Ingresos</div><div class="v2" style="color:var(--hero-ink)">${money(st.ing)}</div></div>`:""}
+        <div><div class="k">Gastado</div><div class="v">${money(st.gas)}</div></div>
+        ${st.ing?`<div><div class="k">${st.disp<0?"Te pasaste":"Disponible"}</div><div class="v2${st.disp<0?" over":""}">${money(Math.abs(st.disp))}</div></div>`
+          :`<p>Registra tu sueldo u otros ingresos del mes para ver cuánto te queda.</p><button class="btn sm" id="pm-ing0" type="button" style="align-self:flex-start">${SV(I.plus,2.4)}Registrar ingreso</button>`}
+      </div>
+    </div>
+    <div class="quick">
+      <button type="button" class="main" id="pq-gasto">${SV(I.card)}Gasto</button>
+      <button type="button" id="pq-ing"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Ingreso</button>
+      <button type="button" id="pq-fijos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>Fijos</button>
+    </div>
+    ${fj.length?`<div class="card tile">
+      <div class="between"><span class="label">Fijos del mes</span><span style="font-size:13px;color:var(--ink-2)"><b>${fj.length-st.pend.length} de ${fj.length}</b> pagados${st.pend.length?` · faltan <b class="num">${money(st.pendSum)}</b>`:""}</span></div>
+      <div class="meter"><i style="width:${fj.length?(fj.length-st.pend.length)/fj.length*100:0}%;background:var(--ok)"></i></div>
+      <div class="list">${pendFirst.map(({f,pago})=>{const di=dueInfo(mk,f.dia);
+        return pago?`<button class="li" type="button" data-gasto="${pago[0]}" style="padding:9px 0"><span class="li-ic" style="background:var(--ok-soft);color:var(--ok);border-radius:50%">${SV(I.check,3)}</span><span class="li-main"><b style="color:var(--ink-2)">${esc(f.nombre)}</b><small style="color:var(--ok);font-weight:600">${fdateShort(pago[1].fecha)==="Hoy"?"Pagado hoy":"Pagado el "+fdateShort(pago[1].fecha)}</small></span><span class="li-amt" style="color:var(--ink-2)">${money(pago[1].monto)}</span></button>`
+        :`<div class="li" style="padding:9px 0">${catIcon(f.categoria)}<span class="li-main"><b>${esc(f.nombre)}</b><small style="${di.cls==="bad"?"color:var(--bad);font-weight:600":di.cls==="warn"?"color:var(--warn);font-weight:600":""}">${di.txt}</small></span><span class="li-amt" style="color:var(--ink-2)">${f.variable?"~":""}${money(f.monto)}</span><button class="btn sm ${di.cls?"markb":""}" type="button" data-pay="${f.id}">Pagar</button></div>`}).join("")}</div>
+    </div>`:`<button class="tile-link" type="button" id="pm-fijo0"><span class="tl-ic">${SV('<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/>')}</span><span class="grow"><b style="display:block">Agrega tus gastos fijos</b><small style="color:var(--ink-3)">Arriendo, luz, internet, cuotas… aparecerán cada mes para pagarlos con un toque</small></span><span class="chev">${SV(I.chevR,2,' width="18" height="18"')}</span></button>`}
+    ${ings.length||ingPend.length?`<div class="card tile">
+      <div class="between"><span class="label">Ingresos del mes</span><span class="num" style="font-weight:600;color:var(--ok)">${money(st.ing)}</span></div>
+      <div class="list">${ings.map(([id,x])=>`<button class="li" type="button" data-ing="${id}" style="padding:9px 0"><span class="li-ic" style="background:var(--ok-soft);color:var(--ok)">${SV('<path d="M12 19V5M6 11l6-6 6 6"/>',2.4)}</span><span class="li-main"><b>${esc(x.concepto)}</b><small>${fdateShort(x.fecha)}</small></span><span class="li-amt" style="color:var(--ok)">${money(x.monto)}</span></button>`).join("")}
+      ${ingPend.map(f=>`<div class="li" style="padding:9px 0"><span class="li-ic c-otr">${SV('<path d="M12 19V5M6 11l6-6 6 6"/>',2.4)}</span><span class="li-main"><b>${esc(f.nombre)}</b><small>Día ${Math.min(num(f.dia),daysIn(mk))} · por recibir</small></span><span class="li-amt" style="color:var(--ink-2)">${money(f.monto)}</span><button class="btn sm" type="button" data-recv="${f.id}">Recibir</button></div>`).join("")}</div>
+    </div>`:""}
+    ${limRows.length?`<div class="card tile"><div class="between"><span class="label">Límites por categoría</span><button class="btn ghost sm" type="button" id="pm-lim">Editar</button></div>
+      <div style="display:flex;flex-direction:column;gap:10px">${limRows.map(r=>`<div class="hbar" style="grid-template-columns:1fr auto"><span class="nm">${esc(r.c)}${r.p>100?' <b style="color:var(--bad);font-size:12px">· excedido</b>':""}</span><span class="num" style="font-size:13px${r.p>100?";color:var(--bad)":""}">${money(r.v)} <small>/ ${money(r.l)}</small></span><span class="track"><i style="width:${Math.min(100,r.p)}%;background:${r.p>100?"var(--bad)":r.p>=80?"var(--mark)":"var(--accent)"}"></i></span></div>`).join("")}</div></div>`
+      :`<button class="btn ghost" type="button" id="pm-lim" style="align-self:flex-start">Definir límites por categoría</button>`}
+    <div><div class="group-h"><span class="label">Gastos de ${MESES[+mk.slice(5)-1]}</span>${gm.length>5?'<button class="btn ghost sm" id="pm-all" type="button">Ver todos</button>':""}</div>
+      ${recent.length?`<div class="card list">${recent.map(([id,g])=>gastoRow(id,g)).join("")}</div>`:'<div class="empty">Sin gastos en este mes.</div>'}</div>
+  </section>`;
+  $("#pm-prev").onclick=()=>{S.perMonth=shiftMonth(mk,-1);renderPersonal()};
+  $("#pm-next").onclick=()=>{if(!isCur){S.perMonth=shiftMonth(mk,1);renderPersonal()}};
+  $("#pq-gasto").onclick=()=>openGastoForm(null,{proyectoId:pid,fecha:isCur?today():dayDate(mk,1)});
+  $("#pq-ing").onclick=()=>openIngresoForm(null,{fecha:isCur?today():dayDate(mk,1)});
+  $("#pq-fijos").onclick=()=>{S.fijosTab="gastos";openView("fijos")};
+  const i0=$("#pm-ing0");if(i0)i0.onclick=()=>openIngresoForm(null,{fecha:isCur?today():dayDate(mk,1)});
+  const f0=$("#pm-fijo0");if(f0)f0.onclick=()=>{S.fijosTab="gastos";openView("fijos")};
+  $("#pm-lim").onclick=()=>{S.fijosTab="limites";openView("fijos")};
+  const all=$("#pm-all");if(all)all.onclick=()=>setTab("gastos");
+  $$("[data-pay]",app).forEach(b=>b.onclick=()=>{const f=fijosOf(pid).find(x=>x.id===b.dataset.pay);if(f)payFijo(pid,f,mk)});
+  $$("[data-recv]",app).forEach(b=>b.onclick=()=>{const f=ingFijosOf(pid).find(x=>x.id===b.dataset.recv);if(f)openIngresoForm(null,{ingresoFijoId:f.id,concepto:f.nombre,monto:f.monto,fecha:isCur?today():dayDate(mk,f.dia)})});
+  $$("[data-ing]",app).forEach(b=>b.onclick=()=>openIngresoForm(b.dataset.ing));
+  bindGastoRows(app);
+}
+function payFijo(pid,f,mk){
+  openGastoForm(null,{proyectoId:pid,fijoId:f.id,concepto:f.nombre,categoria:f.categoria||"Servicios básicos",monto:num(f.monto)||"",proveedor:f.proveedor||"",fecha:mk===thisMonth()?today():dayDate(mk,f.dia)});
+}
+
+/* ---------- ingresos ---------- */
+function openIngresoForm(iid,preset){
+  const pid=S.proj;
+  const x=iid?S.ingresos.get(iid):{concepto:"",monto:"",fecha:today(),proyectoId:pid,...(preset||{})};
+  const fromFijo=!!x.ingresoFijoId;
+  openSheet(iid?"Editar ingreso":fromFijo?"Recibir · "+x.concepto:"Nuevo ingreso",`<form id="if" class="form-grid" novalidate>
+    <label class="field full"><span>Monto $</span><input class="inp num" id="if-m" type="number" inputmode="decimal" step="any" min="0" value="${esc(x.monto)}" placeholder="0.00" style="font-size:24px;font-weight:600;min-height:56px"></label>
+    <label class="field full"><span>Concepto</span><input class="inp" id="if-c" value="${esc(x.concepto)}" placeholder="Sueldo, trabajo extra, venta…" autocomplete="off"></label>
+    <label class="field full"><span>Fecha</span><input class="inp" id="if-f" type="date" value="${esc(x.fecha)}"></label>
+    ${!iid&&!fromFijo?`<label class="full" for="if-r" style="display:flex;align-items:center;gap:10px;min-height:44px;font-size:14.5px"><input id="if-r" type="checkbox" style="width:20px;height:20px;accent-color:var(--accent)">Se repite cada mes</label>
+    <label class="field full" id="if-dl" hidden><span>Día del mes en que lo recibes</span><input class="inp num" id="if-d" type="number" inputmode="numeric" min="1" max="31" value="${+x.fecha.slice(8)||1}"></label>`:""}
+    <p class="full err" id="if-err" hidden></p>
+    ${iid?'<button class="btn danger full" type="button" id="if-del">Eliminar ingreso</button>':""}
+    <button class="btn primary full" type="submit" style="min-height:52px">Guardar ingreso</button>
+  </form>`,s=>{
+    const m=$("#if-m",s);if(!iid&&!x.monto)m.focus();
+    const r=$("#if-r",s);if(r)r.onchange=()=>{$("#if-dl",s).hidden=!r.checked};
+    $("#if",s).onsubmit=e=>{e.preventDefault();
+      const monto=round2(num(m.value)),er=$("#if-err",s);
+      if(monto<=0){er.textContent="Escribe un monto mayor a 0.";er.hidden=false;return}
+      const concepto=$("#if-c",s).value.trim()||"Ingreso",fecha=$("#if-f",s).value||today();
+      const data={...(iid?S.ingresos.get(iid):{createdAt:Date.now(),proyectoId:pid}),...(iid?{}:preset||{}),concepto,monto,fecha};
+      if(r&&r.checked){const fid=uid();const p=S.proyectos.get(pid);put("proyectos",pid,{...p,ingresosFijos:[...(p.ingresosFijos||[]),{id:fid,nombre:concepto,monto,dia:Math.min(31,Math.max(1,num($("#if-d",s).value)||1))}]});data.ingresoFijoId=fid}
+      put("ingresos",iid||uid(),data);closeSheet(true);render();toast(iid?"Ingreso actualizado":"Ingreso de "+money(monto)+" registrado");
+    };
+    const d=$("#if-del",s);if(d)armDanger(d,"¿Eliminar? Toca otra vez",()=>{del("ingresos",iid);closeSheet(true);render();toast("Ingreso eliminado")});
+  });
+}
+
+/* ---------- fijos / ingresos fijos / límites ---------- */
+function saveProjArray(pid,key,list){const p=S.proyectos.get(pid);put("proyectos",pid,{...p,[key]:list})}
+function openFijoForm(fid){
+  const pid=S.proj,list=(S.proyectos.get(pid).fijos||[]);
+  const f=fid?list.find(x=>x.id===fid):{nombre:"",monto:"",dia:5,categoria:"Servicios básicos",proveedor:"",variable:false};
+  openSheet(fid?"Editar gasto fijo":"Nuevo gasto fijo",`<form id="ff" class="form-grid" novalidate>
+    <label class="field full"><span>Nombre</span><input class="inp" id="ff-n" value="${esc(f.nombre)}" placeholder="Arriendo, luz, internet, cuota del carro…" autocomplete="off"></label>
+    <label class="field"><span>Monto $</span><input class="inp num" id="ff-m" type="number" inputmode="decimal" step="any" min="0" value="${esc(f.monto)}" placeholder="0.00"></label>
+    <label class="field"><span>Día de pago</span><input class="inp num" id="ff-d" type="number" inputmode="numeric" min="1" max="31" value="${esc(f.dia)}"></label>
+    <label class="field full"><span>Categoría</span><select class="inp" id="ff-c">${PERSONAL_CATS.map(c=>`<option${c===f.categoria?" selected":""}>${c}</option>`).join("")}</select></label>
+    <label class="field full"><span>Pagado a (opcional)</span><input class="inp" id="ff-p" list="provs" value="${esc(f.proveedor||"")}" placeholder="Empresa eléctrica, arrendador…"></label>
+    <label class="full" for="ff-v" style="display:flex;align-items:center;gap:10px;min-height:44px;font-size:14.5px"><input id="ff-v" type="checkbox"${f.variable?" checked":""} style="width:20px;height:20px;accent-color:var(--accent)">El monto cambia cada mes (luz, agua)</label>
+    <p class="full err" id="ff-err" hidden></p>
+    ${fid?'<button class="btn danger full" type="button" id="ff-del">Eliminar gasto fijo</button><p class="full" style="margin:0;font-size:13px;color:var(--ink-3)">Los pagos ya registrados se quedan en tus gastos.</p>':""}
+    <button class="btn primary full" type="submit" style="min-height:52px">Guardar</button>
+  </form>`,s=>{
+    $("#provs").innerHTML=provList().map(v=>`<option value="${esc(v)}">`).join("");
+    if(!fid)$("#ff-n",s).focus();
+    $("#ff",s).onsubmit=e=>{e.preventDefault();
+      const nombre=$("#ff-n",s).value.trim(),monto=round2(num($("#ff-m",s).value)),er=$("#ff-err",s);
+      if(!nombre){er.textContent="Escribe el nombre del gasto fijo.";er.hidden=false;return}
+      if(monto<=0){er.textContent="Escribe el monto (si cambia cada mes, pon un valor aproximado).";er.hidden=false;return}
+      const item={id:fid||uid(),nombre,monto,dia:Math.min(31,Math.max(1,num($("#ff-d",s).value)||1)),categoria:$("#ff-c",s).value,proveedor:$("#ff-p",s).value.trim(),variable:$("#ff-v",s).checked};
+      saveProjArray(pid,"fijos",fid?list.map(x=>x.id===fid?item:x):[...list,item]);closeSheet(true);render();toast(fid?"Gasto fijo actualizado":"Gasto fijo agregado");
+    };
+    const d=$("#ff-del",s);if(d)armDanger(d,"¿Eliminar? Toca otra vez",()=>{saveProjArray(pid,"fijos",list.filter(x=>x.id!==fid));closeSheet(true);render();toast("Gasto fijo eliminado")});
+  });
+}
+function openIngFijoForm(fid){
+  const pid=S.proj,list=(S.proyectos.get(pid).ingresosFijos||[]);
+  const f=fid?list.find(x=>x.id===fid):{nombre:"",monto:"",dia:30};
+  openSheet(fid?"Editar ingreso fijo":"Nuevo ingreso fijo",`<form id="gff" class="form-grid" novalidate>
+    <label class="field full"><span>Nombre</span><input class="inp" id="gff-n" value="${esc(f.nombre)}" placeholder="Sueldo, arriendo que cobras…" autocomplete="off"></label>
+    <label class="field"><span>Monto $</span><input class="inp num" id="gff-m" type="number" inputmode="decimal" step="any" min="0" value="${esc(f.monto)}" placeholder="0.00"></label>
+    <label class="field"><span>Día que lo recibes</span><input class="inp num" id="gff-d" type="number" inputmode="numeric" min="1" max="31" value="${esc(f.dia)}"></label>
+    <p class="full err" id="gff-err" hidden></p>
+    ${fid?'<button class="btn danger full" type="button" id="gff-del">Eliminar ingreso fijo</button>':""}
+    <button class="btn primary full" type="submit" style="min-height:52px">Guardar</button>
+  </form>`,s=>{
+    if(!fid)$("#gff-n",s).focus();
+    $("#gff",s).onsubmit=e=>{e.preventDefault();
+      const nombre=$("#gff-n",s).value.trim(),monto=round2(num($("#gff-m",s).value)),er=$("#gff-err",s);
+      if(!nombre){er.textContent="Escribe el nombre del ingreso.";er.hidden=false;return}
+      if(monto<=0){er.textContent="Escribe un monto mayor a 0.";er.hidden=false;return}
+      const item={id:fid||uid(),nombre,monto,dia:Math.min(31,Math.max(1,num($("#gff-d",s).value)||1))};
+      saveProjArray(pid,"ingresosFijos",fid?list.map(x=>x.id===fid?item:x):[...list,item]);closeSheet(true);render();toast(fid?"Ingreso fijo actualizado":"Ingreso fijo agregado");
+    };
+    const d=$("#gff-del",s);if(d)armDanger(d,"¿Eliminar? Toca otra vez",()=>{saveProjArray(pid,"ingresosFijos",list.filter(x=>x.id!==fid));closeSheet(true);render();toast("Ingreso fijo eliminado")});
+  });
+}
+function renderFijos(){
+  const pid=S.proj,tab=S.fijosTab||"gastos",fj=fijosOf(pid),ifj=ingFijosOf(pid),lim=limitesOf(pid);
+  const tabs=[["gastos","Gastos fijos · "+fj.length],["ingresos","Ingresos · "+ifj.length],["limites","Límites"]];
+  let body="";
+  if(tab==="gastos")body=`<div class="between" style="padding:0 2px"><span class="label">Se repiten cada mes</span>${fj.length?`<span style="font-size:13px;color:var(--ink-2)">Total aprox. <b class="num" style="color:var(--ink)">${money(fj.reduce((a,f)=>a+num(f.monto),0))}</b></span>`:""}</div>
+    ${fj.length?`<div class="card list">${fj.map(f=>`<button class="li" type="button" data-fijo="${f.id}"><span class="num" style="width:34px;text-align:center;font-size:11px;color:var(--ink-3);line-height:1.1;flex:none">día<br><b style="font-size:16px;color:var(--ink)">${f.dia}</b></span><span class="li-main"><b>${esc(f.nombre)}${f.variable?' <span class="pill borrador" style="padding:1px 6px">Variable</span>':""}</b><small>${esc(f.categoria)}${f.proveedor?" · "+esc(f.proveedor):""}</small></span><span class="li-amt">${f.variable?"~":""}${money(f.monto)}</span></button>`).join("")}</div>`:'<div class="empty"><b>Sin gastos fijos</b>Agrega lo que pagas cada mes: arriendo, luz, agua, internet, plan celular, cuotas…</div>'}
+    <button class="btn dashed block" type="button" id="fx-add" style="min-height:48px">+ Agregar gasto fijo</button>`;
+  else if(tab==="ingresos")body=`<div class="between" style="padding:0 2px"><span class="label">Ingresos que recibes cada mes</span></div>
+    ${ifj.length?`<div class="card list">${ifj.map(f=>`<button class="li" type="button" data-ifijo="${f.id}"><span class="num" style="width:34px;text-align:center;font-size:11px;color:var(--ink-3);line-height:1.1;flex:none">día<br><b style="font-size:16px;color:var(--ink)">${f.dia}</b></span><span class="li-main"><b>${esc(f.nombre)}</b><small>Cada mes</small></span><span class="li-amt" style="color:var(--ok)">${money(f.monto)}</span></button>`).join("")}</div>`:'<div class="empty"><b>Sin ingresos fijos</b>Agrega tu sueldo u otro ingreso que recibas cada mes. Aparecerá para registrarlo con un toque.</div>'}
+    <button class="btn dashed block" type="button" id="fx-addi" style="min-height:48px">+ Agregar ingreso fijo</button>`;
+  else body=`<p style="margin:0;font-size:14px;color:var(--ink-2)">Pon un tope mensual a las categorías que quieras controlar. Déjalo vacío para no tener límite.</p>
+    <form id="lim-f" class="card list" novalidate>${PERSONAL_CATS.map((c,i)=>`<label class="li" for="lim-${i}" style="gap:10px">${catIcon(c)}<span class="li-main"><b>${esc(c)}</b></span><span style="display:flex;align-items:center;gap:4px;color:var(--ink-3)">$<input class="inp num" id="lim-${i}" data-c="${esc(c)}" type="number" inputmode="decimal" step="any" min="0" value="${num(lim[c])>0?num(lim[c]):""}" placeholder="—" style="width:104px;min-height:40px;text-align:right"></span></label>`).join("")}</form>
+    <button class="btn primary block" type="button" id="lim-save" style="min-height:50px">Guardar límites</button>`;
+  app.innerHTML=`<section class="view">
+    <div class="seg" role="tablist" aria-label="Secciones de fijos">${tabs.map(([k,l])=>`<button type="button" role="tab" data-tab-f="${k}" aria-checked="${k===tab}" aria-selected="${k===tab}">${l}</button>`).join("")}</div>
+    ${body}
+  </section>`;
+  $$("[data-tab-f]",app).forEach(b=>b.onclick=()=>{S.fijosTab=b.dataset.tabF;renderFijos()});
+  const a=$("#fx-add");if(a)a.onclick=()=>openFijoForm(null);
+  const ai=$("#fx-addi");if(ai)ai.onclick=()=>openIngFijoForm(null);
+  $$("[data-fijo]",app).forEach(b=>b.onclick=()=>openFijoForm(b.dataset.fijo));
+  $$("[data-ifijo]",app).forEach(b=>b.onclick=()=>openIngFijoForm(b.dataset.ifijo));
+  const ls=$("#lim-save");if(ls)ls.onclick=()=>{const o={};$$("#lim-f input",app).forEach(x=>{const v=round2(num(x.value));if(v>0)o[x.dataset.c]=v});const p=S.proyectos.get(pid);put("proyectos",pid,{...p,limites:o});toast("Límites guardados");openView("proyecto")};
+}
 /* ================= PROFORMAS ================= */
 function currentPf(){
   if(S.pfId&&S.proformas.has(S.pfId)&&S.proformas.get(S.pfId).proyectoId===S.proj)return S.pfId;
@@ -1540,200 +1734,6 @@ async function boot(){
 }
 if(!IN_ARTIFACT&&"serviceWorker" in navigator&&location.protocol==="https:"){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 boot();
-/* ================= GASTOS PERSONALES (proyecto mensual) ================= */
-function ensurePersonal(){
-  if(S.proyectos.has(PERSONAL_ID)||readOnly)return;
-  put("proyectos",PERSONAL_ID,{nombre:"Gastos personales",descripcion:"",tipo:"mensual",fijo:true,color:"#7A55B0",icono:"billetera",fijos:[],ingresosFijos:[],limites:{},etapas:[],createdAt:0});
-}
-const fijosOf=(pid=S.proj)=>((S.proyectos.get(pid)||{}).fijos||[]).slice().sort((a,b)=>num(a.dia)-num(b.dia));
-const ingFijosOf=(pid=S.proj)=>((S.proyectos.get(pid)||{}).ingresosFijos||[]).slice().sort((a,b)=>num(a.dia)-num(b.dia));
-const limitesOf=(pid=S.proj)=>(S.proyectos.get(pid)||{}).limites||{};
-const inMonth=(col,pid,mk)=>inProj(col,pid).filter(([,x])=>(x.fecha||"").startsWith(mk));
-const sumOf=list=>round2(list.reduce((a,[,x])=>a+num(x.monto),0));
-const daysIn=mk=>{const [y,m]=mk.split("-").map(Number);return new Date(y,m,0).getDate()};
-const dayDate=(mk,dia)=>mk+"-"+pad(Math.min(Math.max(1,num(dia)||1),daysIn(mk)));
-const fijoPago=(pid,fid,mk)=>inMonth("gastos",pid,mk).find(([,g])=>g.fijoId===fid);
-const ingRecibido=(pid,fid,mk)=>inMonth("ingresos",pid,mk).find(([,x])=>x.ingresoFijoId===fid);
-function dueInfo(mk,dia){
-  const cur=thisMonth();
-  if(mk<cur)return {txt:"No se registró",cls:"bad"};
-  if(mk>cur)return {txt:"Vence el "+Math.min(num(dia),daysIn(mk)),cls:""};
-  const d=+today().slice(8),dd=Math.min(num(dia),daysIn(mk)),diff=dd-d;
-  if(diff<0)return {txt:"Vencido hace "+(-diff)+" día"+(diff===-1?"":"s"),cls:"bad"};
-  if(diff===0)return {txt:"Vence hoy",cls:"warn"};
-  if(diff<=3)return {txt:"Vence en "+diff+" día"+(diff===1?"":"s"),cls:"warn"};
-  return {txt:"Vence el "+dd,cls:""};
-}
-function monthStats(pid,mk){
-  const ing=sumOf(inMonth("ingresos",pid,mk)),gas=sumOf(inMonth("gastos",pid,mk));
-  const fj=fijosOf(pid),pend=fj.filter(f=>!fijoPago(pid,f.id,mk));
-  return {ing,gas,disp:round2(ing-gas),fj,pend,pendSum:round2(pend.reduce((a,f)=>a+num(f.monto),0))};
-}
-function renderPersonal(){
-  const pid=S.proj,mk=S.perMonth||thisMonth(),isCur=mk===thisMonth();
-  const st=monthStats(pid,mk),pct=st.ing?st.gas/st.ing*100:0,C=339.29,dash=Math.min(pct,100)/100*C;
-  const ings=inMonth("ingresos",pid,mk).sort((a,b)=>(a[1].fecha||"").localeCompare(b[1].fecha||""));
-  const ingPend=ingFijosOf(pid).filter(f=>!ingRecibido(pid,f.id,mk));
-  const fj=st.fj.map(f=>({f,pago:fijoPago(pid,f.id,mk)}));
-  const pendFirst=[...fj.filter(x=>!x.pago),...fj.filter(x=>x.pago)];
-  const lim=limitesOf(pid),gm=inMonth("gastos",pid,mk);
-  const limRows=PERSONAL_CATS.filter(c=>num(lim[c])>0).map(c=>{const v=sumOf(gm.filter(([,g])=>g.categoria===c));return {c,v,l:num(lim[c]),p:v/num(lim[c])*100}});
-  const recent=gm.sort((a,b)=>(b[1].fecha||"").localeCompare(a[1].fecha||"")||(b[1].createdAt||0)-(a[1].createdAt||0)).slice(0,5);
-  app.innerHTML=`<section class="view">
-    <div class="monthnav"><button class="icon-btn" type="button" id="pm-prev" aria-label="Mes anterior">${SV(I.chevL,2.2)}</button><h2>${monthName(mk)}</h2><button class="icon-btn" type="button" id="pm-next" aria-label="Mes siguiente"${isCur?" disabled":""}>${SV(I.chevR,2.2)}</button></div>
-    <div class="hero">
-      ${st.ing?`<div class="ring" role="img" aria-label="${Math.round(pct)}% del ingreso usado"><svg viewBox="0 0 128 128"><circle cx="64" cy="64" r="54" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="12"/><circle cx="64" cy="64" r="54" fill="none" stroke="${pct>100?"#FF8A80":"var(--ring)"}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${dash.toFixed(1)} ${C}" transform="rotate(-90 64 64)"/></svg><div><b>${Math.round(pct)}%</b><small>del ingreso</small></div></div>`:""}
-      <div class="hero-stats">
-        ${st.ing?`<div><div class="k">Ingresos</div><div class="v2" style="color:var(--hero-ink)">${money(st.ing)}</div></div>`:""}
-        <div><div class="k">Gastado</div><div class="v">${money(st.gas)}</div></div>
-        ${st.ing?`<div><div class="k">${st.disp<0?"Te pasaste":"Disponible"}</div><div class="v2${st.disp<0?" over":""}">${money(Math.abs(st.disp))}</div></div>`
-          :`<p>Registra tu sueldo u otros ingresos del mes para ver cuánto te queda.</p><button class="btn sm" id="pm-ing0" type="button" style="align-self:flex-start">${SV(I.plus,2.4)}Registrar ingreso</button>`}
-      </div>
-    </div>
-    <div class="quick">
-      <button type="button" class="main" id="pq-gasto">${SV(I.card)}Gasto</button>
-      <button type="button" id="pq-ing"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Ingreso</button>
-      <button type="button" id="pq-fijos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>Fijos</button>
-    </div>
-    ${fj.length?`<div class="card tile">
-      <div class="between"><span class="label">Fijos del mes</span><span style="font-size:13px;color:var(--ink-2)"><b>${fj.length-st.pend.length} de ${fj.length}</b> pagados${st.pend.length?` · faltan <b class="num">${money(st.pendSum)}</b>`:""}</span></div>
-      <div class="meter"><i style="width:${fj.length?(fj.length-st.pend.length)/fj.length*100:0}%;background:var(--ok)"></i></div>
-      <div class="list">${pendFirst.map(({f,pago})=>{const di=dueInfo(mk,f.dia);
-        return pago?`<button class="li" type="button" data-gasto="${pago[0]}" style="padding:9px 0"><span class="li-ic" style="background:var(--ok-soft);color:var(--ok);border-radius:50%">${SV(I.check,3)}</span><span class="li-main"><b style="color:var(--ink-2)">${esc(f.nombre)}</b><small style="color:var(--ok);font-weight:600">${fdateShort(pago[1].fecha)==="Hoy"?"Pagado hoy":"Pagado el "+fdateShort(pago[1].fecha)}</small></span><span class="li-amt" style="color:var(--ink-2)">${money(pago[1].monto)}</span></button>`
-        :`<div class="li" style="padding:9px 0">${catIcon(f.categoria)}<span class="li-main"><b>${esc(f.nombre)}</b><small style="${di.cls==="bad"?"color:var(--bad);font-weight:600":di.cls==="warn"?"color:var(--warn);font-weight:600":""}">${di.txt}</small></span><span class="li-amt" style="color:var(--ink-2)">${f.variable?"~":""}${money(f.monto)}</span><button class="btn sm ${di.cls?"markb":""}" type="button" data-pay="${f.id}">Pagar</button></div>`}).join("")}</div>
-    </div>`:`<button class="tile-link" type="button" id="pm-fijo0"><span class="tl-ic">${SV('<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/>')}</span><span class="grow"><b style="display:block">Agrega tus gastos fijos</b><small style="color:var(--ink-3)">Arriendo, luz, internet, cuotas… aparecerán cada mes para pagarlos con un toque</small></span><span class="chev">${SV(I.chevR,2,' width="18" height="18"')}</span></button>`}
-    ${ings.length||ingPend.length?`<div class="card tile">
-      <div class="between"><span class="label">Ingresos del mes</span><span class="num" style="font-weight:600;color:var(--ok)">${money(st.ing)}</span></div>
-      <div class="list">${ings.map(([id,x])=>`<button class="li" type="button" data-ing="${id}" style="padding:9px 0"><span class="li-ic" style="background:var(--ok-soft);color:var(--ok)">${SV('<path d="M12 19V5M6 11l6-6 6 6"/>',2.4)}</span><span class="li-main"><b>${esc(x.concepto)}</b><small>${fdateShort(x.fecha)}</small></span><span class="li-amt" style="color:var(--ok)">${money(x.monto)}</span></button>`).join("")}
-      ${ingPend.map(f=>`<div class="li" style="padding:9px 0"><span class="li-ic c-otr">${SV('<path d="M12 19V5M6 11l6-6 6 6"/>',2.4)}</span><span class="li-main"><b>${esc(f.nombre)}</b><small>Día ${Math.min(num(f.dia),daysIn(mk))} · por recibir</small></span><span class="li-amt" style="color:var(--ink-2)">${money(f.monto)}</span><button class="btn sm" type="button" data-recv="${f.id}">Recibir</button></div>`).join("")}</div>
-    </div>`:""}
-    ${limRows.length?`<div class="card tile"><div class="between"><span class="label">Límites por categoría</span><button class="btn ghost sm" type="button" id="pm-lim">Editar</button></div>
-      <div style="display:flex;flex-direction:column;gap:10px">${limRows.map(r=>`<div class="hbar" style="grid-template-columns:1fr auto"><span class="nm">${esc(r.c)}${r.p>100?' <b style="color:var(--bad);font-size:12px">· excedido</b>':""}</span><span class="num" style="font-size:13px${r.p>100?";color:var(--bad)":""}">${money(r.v)} <small>/ ${money(r.l)}</small></span><span class="track"><i style="width:${Math.min(100,r.p)}%;background:${r.p>100?"var(--bad)":r.p>=80?"var(--mark)":"var(--accent)"}"></i></span></div>`).join("")}</div></div>`
-      :`<button class="btn ghost" type="button" id="pm-lim" style="align-self:flex-start">Definir límites por categoría</button>`}
-    <div><div class="group-h"><span class="label">Gastos de ${MESES[+mk.slice(5)-1]}</span>${gm.length>5?'<button class="btn ghost sm" id="pm-all" type="button">Ver todos</button>':""}</div>
-      ${recent.length?`<div class="card list">${recent.map(([id,g])=>gastoRow(id,g)).join("")}</div>`:'<div class="empty">Sin gastos en este mes.</div>'}</div>
-  </section>`;
-  $("#pm-prev").onclick=()=>{S.perMonth=shiftMonth(mk,-1);renderPersonal()};
-  $("#pm-next").onclick=()=>{if(!isCur){S.perMonth=shiftMonth(mk,1);renderPersonal()}};
-  $("#pq-gasto").onclick=()=>openGastoForm(null,{proyectoId:pid,fecha:isCur?today():dayDate(mk,1)});
-  $("#pq-ing").onclick=()=>openIngresoForm(null,{fecha:isCur?today():dayDate(mk,1)});
-  $("#pq-fijos").onclick=()=>{S.fijosTab="gastos";openView("fijos")};
-  const i0=$("#pm-ing0");if(i0)i0.onclick=()=>openIngresoForm(null,{fecha:isCur?today():dayDate(mk,1)});
-  const f0=$("#pm-fijo0");if(f0)f0.onclick=()=>{S.fijosTab="gastos";openView("fijos")};
-  $("#pm-lim").onclick=()=>{S.fijosTab="limites";openView("fijos")};
-  const all=$("#pm-all");if(all)all.onclick=()=>setTab("gastos");
-  $$("[data-pay]",app).forEach(b=>b.onclick=()=>{const f=fijosOf(pid).find(x=>x.id===b.dataset.pay);if(f)payFijo(pid,f,mk)});
-  $$("[data-recv]",app).forEach(b=>b.onclick=()=>{const f=ingFijosOf(pid).find(x=>x.id===b.dataset.recv);if(f)openIngresoForm(null,{ingresoFijoId:f.id,concepto:f.nombre,monto:f.monto,fecha:isCur?today():dayDate(mk,f.dia)})});
-  $$("[data-ing]",app).forEach(b=>b.onclick=()=>openIngresoForm(b.dataset.ing));
-  bindGastoRows(app);
-}
-function payFijo(pid,f,mk){
-  openGastoForm(null,{proyectoId:pid,fijoId:f.id,concepto:f.nombre,categoria:f.categoria||"Servicios básicos",monto:num(f.monto)||"",proveedor:f.proveedor||"",fecha:mk===thisMonth()?today():dayDate(mk,f.dia)});
-}
-
-/* ---------- ingresos ---------- */
-function openIngresoForm(iid,preset){
-  const pid=S.proj;
-  const x=iid?S.ingresos.get(iid):{concepto:"",monto:"",fecha:today(),proyectoId:pid,...(preset||{})};
-  const fromFijo=!!x.ingresoFijoId;
-  openSheet(iid?"Editar ingreso":fromFijo?"Recibir · "+x.concepto:"Nuevo ingreso",`<form id="if" class="form-grid" novalidate>
-    <label class="field full"><span>Monto $</span><input class="inp num" id="if-m" type="number" inputmode="decimal" step="any" min="0" value="${esc(x.monto)}" placeholder="0.00" style="font-size:24px;font-weight:600;min-height:56px"></label>
-    <label class="field full"><span>Concepto</span><input class="inp" id="if-c" value="${esc(x.concepto)}" placeholder="Sueldo, trabajo extra, venta…" autocomplete="off"></label>
-    <label class="field full"><span>Fecha</span><input class="inp" id="if-f" type="date" value="${esc(x.fecha)}"></label>
-    ${!iid&&!fromFijo?`<label class="full" for="if-r" style="display:flex;align-items:center;gap:10px;min-height:44px;font-size:14.5px"><input id="if-r" type="checkbox" style="width:20px;height:20px;accent-color:var(--accent)">Se repite cada mes</label>
-    <label class="field full" id="if-dl" hidden><span>Día del mes en que lo recibes</span><input class="inp num" id="if-d" type="number" inputmode="numeric" min="1" max="31" value="${+x.fecha.slice(8)||1}"></label>`:""}
-    <p class="full err" id="if-err" hidden></p>
-    ${iid?'<button class="btn danger full" type="button" id="if-del">Eliminar ingreso</button>':""}
-    <button class="btn primary full" type="submit" style="min-height:52px">Guardar ingreso</button>
-  </form>`,s=>{
-    const m=$("#if-m",s);if(!iid&&!x.monto)m.focus();
-    const r=$("#if-r",s);if(r)r.onchange=()=>{$("#if-dl",s).hidden=!r.checked};
-    $("#if",s).onsubmit=e=>{e.preventDefault();
-      const monto=round2(num(m.value)),er=$("#if-err",s);
-      if(monto<=0){er.textContent="Escribe un monto mayor a 0.";er.hidden=false;return}
-      const concepto=$("#if-c",s).value.trim()||"Ingreso",fecha=$("#if-f",s).value||today();
-      const data={...(iid?S.ingresos.get(iid):{createdAt:Date.now(),proyectoId:pid}),...(iid?{}:preset||{}),concepto,monto,fecha};
-      if(r&&r.checked){const fid=uid();const p=S.proyectos.get(pid);put("proyectos",pid,{...p,ingresosFijos:[...(p.ingresosFijos||[]),{id:fid,nombre:concepto,monto,dia:Math.min(31,Math.max(1,num($("#if-d",s).value)||1))}]});data.ingresoFijoId=fid}
-      put("ingresos",iid||uid(),data);closeSheet(true);render();toast(iid?"Ingreso actualizado":"Ingreso de "+money(monto)+" registrado");
-    };
-    const d=$("#if-del",s);if(d)armDanger(d,"¿Eliminar? Toca otra vez",()=>{del("ingresos",iid);closeSheet(true);render();toast("Ingreso eliminado")});
-  });
-}
-
-/* ---------- fijos / ingresos fijos / límites ---------- */
-function saveProjArray(pid,key,list){const p=S.proyectos.get(pid);put("proyectos",pid,{...p,[key]:list})}
-function openFijoForm(fid){
-  const pid=S.proj,list=(S.proyectos.get(pid).fijos||[]);
-  const f=fid?list.find(x=>x.id===fid):{nombre:"",monto:"",dia:5,categoria:"Servicios básicos",proveedor:"",variable:false};
-  openSheet(fid?"Editar gasto fijo":"Nuevo gasto fijo",`<form id="ff" class="form-grid" novalidate>
-    <label class="field full"><span>Nombre</span><input class="inp" id="ff-n" value="${esc(f.nombre)}" placeholder="Arriendo, luz, internet, cuota del carro…" autocomplete="off"></label>
-    <label class="field"><span>Monto $</span><input class="inp num" id="ff-m" type="number" inputmode="decimal" step="any" min="0" value="${esc(f.monto)}" placeholder="0.00"></label>
-    <label class="field"><span>Día de pago</span><input class="inp num" id="ff-d" type="number" inputmode="numeric" min="1" max="31" value="${esc(f.dia)}"></label>
-    <label class="field full"><span>Categoría</span><select class="inp" id="ff-c">${PERSONAL_CATS.map(c=>`<option${c===f.categoria?" selected":""}>${c}</option>`).join("")}</select></label>
-    <label class="field full"><span>Pagado a (opcional)</span><input class="inp" id="ff-p" list="provs" value="${esc(f.proveedor||"")}" placeholder="Empresa eléctrica, arrendador…"></label>
-    <label class="full" for="ff-v" style="display:flex;align-items:center;gap:10px;min-height:44px;font-size:14.5px"><input id="ff-v" type="checkbox"${f.variable?" checked":""} style="width:20px;height:20px;accent-color:var(--accent)">El monto cambia cada mes (luz, agua)</label>
-    <p class="full err" id="ff-err" hidden></p>
-    ${fid?'<button class="btn danger full" type="button" id="ff-del">Eliminar gasto fijo</button><p class="full" style="margin:0;font-size:13px;color:var(--ink-3)">Los pagos ya registrados se quedan en tus gastos.</p>':""}
-    <button class="btn primary full" type="submit" style="min-height:52px">Guardar</button>
-  </form>`,s=>{
-    $("#provs").innerHTML=provList().map(v=>`<option value="${esc(v)}">`).join("");
-    if(!fid)$("#ff-n",s).focus();
-    $("#ff",s).onsubmit=e=>{e.preventDefault();
-      const nombre=$("#ff-n",s).value.trim(),monto=round2(num($("#ff-m",s).value)),er=$("#ff-err",s);
-      if(!nombre){er.textContent="Escribe el nombre del gasto fijo.";er.hidden=false;return}
-      if(monto<=0){er.textContent="Escribe el monto (si cambia cada mes, pon un valor aproximado).";er.hidden=false;return}
-      const item={id:fid||uid(),nombre,monto,dia:Math.min(31,Math.max(1,num($("#ff-d",s).value)||1)),categoria:$("#ff-c",s).value,proveedor:$("#ff-p",s).value.trim(),variable:$("#ff-v",s).checked};
-      saveProjArray(pid,"fijos",fid?list.map(x=>x.id===fid?item:x):[...list,item]);closeSheet(true);render();toast(fid?"Gasto fijo actualizado":"Gasto fijo agregado");
-    };
-    const d=$("#ff-del",s);if(d)armDanger(d,"¿Eliminar? Toca otra vez",()=>{saveProjArray(pid,"fijos",list.filter(x=>x.id!==fid));closeSheet(true);render();toast("Gasto fijo eliminado")});
-  });
-}
-function openIngFijoForm(fid){
-  const pid=S.proj,list=(S.proyectos.get(pid).ingresosFijos||[]);
-  const f=fid?list.find(x=>x.id===fid):{nombre:"",monto:"",dia:30};
-  openSheet(fid?"Editar ingreso fijo":"Nuevo ingreso fijo",`<form id="gff" class="form-grid" novalidate>
-    <label class="field full"><span>Nombre</span><input class="inp" id="gff-n" value="${esc(f.nombre)}" placeholder="Sueldo, arriendo que cobras…" autocomplete="off"></label>
-    <label class="field"><span>Monto $</span><input class="inp num" id="gff-m" type="number" inputmode="decimal" step="any" min="0" value="${esc(f.monto)}" placeholder="0.00"></label>
-    <label class="field"><span>Día que lo recibes</span><input class="inp num" id="gff-d" type="number" inputmode="numeric" min="1" max="31" value="${esc(f.dia)}"></label>
-    <p class="full err" id="gff-err" hidden></p>
-    ${fid?'<button class="btn danger full" type="button" id="gff-del">Eliminar ingreso fijo</button>':""}
-    <button class="btn primary full" type="submit" style="min-height:52px">Guardar</button>
-  </form>`,s=>{
-    if(!fid)$("#gff-n",s).focus();
-    $("#gff",s).onsubmit=e=>{e.preventDefault();
-      const nombre=$("#gff-n",s).value.trim(),monto=round2(num($("#gff-m",s).value)),er=$("#gff-err",s);
-      if(!nombre){er.textContent="Escribe el nombre del ingreso.";er.hidden=false;return}
-      if(monto<=0){er.textContent="Escribe un monto mayor a 0.";er.hidden=false;return}
-      const item={id:fid||uid(),nombre,monto,dia:Math.min(31,Math.max(1,num($("#gff-d",s).value)||1))};
-      saveProjArray(pid,"ingresosFijos",fid?list.map(x=>x.id===fid?item:x):[...list,item]);closeSheet(true);render();toast(fid?"Ingreso fijo actualizado":"Ingreso fijo agregado");
-    };
-    const d=$("#gff-del",s);if(d)armDanger(d,"¿Eliminar? Toca otra vez",()=>{saveProjArray(pid,"ingresosFijos",list.filter(x=>x.id!==fid));closeSheet(true);render();toast("Ingreso fijo eliminado")});
-  });
-}
-function renderFijos(){
-  const pid=S.proj,tab=S.fijosTab||"gastos",fj=fijosOf(pid),ifj=ingFijosOf(pid),lim=limitesOf(pid);
-  const tabs=[["gastos","Gastos fijos · "+fj.length],["ingresos","Ingresos · "+ifj.length],["limites","Límites"]];
-  let body="";
-  if(tab==="gastos")body=`<div class="between" style="padding:0 2px"><span class="label">Se repiten cada mes</span>${fj.length?`<span style="font-size:13px;color:var(--ink-2)">Total aprox. <b class="num" style="color:var(--ink)">${money(fj.reduce((a,f)=>a+num(f.monto),0))}</b></span>`:""}</div>
-    ${fj.length?`<div class="card list">${fj.map(f=>`<button class="li" type="button" data-fijo="${f.id}"><span class="num" style="width:34px;text-align:center;font-size:11px;color:var(--ink-3);line-height:1.1;flex:none">día<br><b style="font-size:16px;color:var(--ink)">${f.dia}</b></span><span class="li-main"><b>${esc(f.nombre)}${f.variable?' <span class="pill borrador" style="padding:1px 6px">Variable</span>':""}</b><small>${esc(f.categoria)}${f.proveedor?" · "+esc(f.proveedor):""}</small></span><span class="li-amt">${f.variable?"~":""}${money(f.monto)}</span></button>`).join("")}</div>`:'<div class="empty"><b>Sin gastos fijos</b>Agrega lo que pagas cada mes: arriendo, luz, agua, internet, plan celular, cuotas…</div>'}
-    <button class="btn dashed block" type="button" id="fx-add" style="min-height:48px">+ Agregar gasto fijo</button>`;
-  else if(tab==="ingresos")body=`<div class="between" style="padding:0 2px"><span class="label">Ingresos que recibes cada mes</span></div>
-    ${ifj.length?`<div class="card list">${ifj.map(f=>`<button class="li" type="button" data-ifijo="${f.id}"><span class="num" style="width:34px;text-align:center;font-size:11px;color:var(--ink-3);line-height:1.1;flex:none">día<br><b style="font-size:16px;color:var(--ink)">${f.dia}</b></span><span class="li-main"><b>${esc(f.nombre)}</b><small>Cada mes</small></span><span class="li-amt" style="color:var(--ok)">${money(f.monto)}</span></button>`).join("")}</div>`:'<div class="empty"><b>Sin ingresos fijos</b>Agrega tu sueldo u otro ingreso que recibas cada mes. Aparecerá para registrarlo con un toque.</div>'}
-    <button class="btn dashed block" type="button" id="fx-addi" style="min-height:48px">+ Agregar ingreso fijo</button>`;
-  else body=`<p style="margin:0;font-size:14px;color:var(--ink-2)">Pon un tope mensual a las categorías que quieras controlar. Déjalo vacío para no tener límite.</p>
-    <form id="lim-f" class="card list" novalidate>${PERSONAL_CATS.map((c,i)=>`<label class="li" for="lim-${i}" style="gap:10px">${catIcon(c)}<span class="li-main"><b>${esc(c)}</b></span><span style="display:flex;align-items:center;gap:4px;color:var(--ink-3)">$<input class="inp num" id="lim-${i}" data-c="${esc(c)}" type="number" inputmode="decimal" step="any" min="0" value="${num(lim[c])>0?num(lim[c]):""}" placeholder="—" style="width:104px;min-height:40px;text-align:right"></span></label>`).join("")}</form>
-    <button class="btn primary block" type="button" id="lim-save" style="min-height:50px">Guardar límites</button>`;
-  app.innerHTML=`<section class="view">
-    <div class="seg" role="tablist" aria-label="Secciones de fijos">${tabs.map(([k,l])=>`<button type="button" role="tab" data-tab-f="${k}" aria-checked="${k===tab}" aria-selected="${k===tab}">${l}</button>`).join("")}</div>
-    ${body}
-  </section>`;
-  $$("[data-tab-f]",app).forEach(b=>b.onclick=()=>{S.fijosTab=b.dataset.tabF;renderFijos()});
-  const a=$("#fx-add");if(a)a.onclick=()=>openFijoForm(null);
-  const ai=$("#fx-addi");if(ai)ai.onclick=()=>openIngFijoForm(null);
-  $$("[data-fijo]",app).forEach(b=>b.onclick=()=>openFijoForm(b.dataset.fijo));
-  $$("[data-ifijo]",app).forEach(b=>b.onclick=()=>openIngFijoForm(b.dataset.ifijo));
-  const ls=$("#lim-save");if(ls)ls.onclick=()=>{const o={};$$("#lim-f input",app).forEach(x=>{const v=round2(num(x.value));if(v>0)o[x.dataset.c]=v});const p=S.proyectos.get(pid);put("proyectos",pid,{...p,limites:o});toast("Límites guardados");openView("proyecto")};
-}
 
 })();
 </script>
