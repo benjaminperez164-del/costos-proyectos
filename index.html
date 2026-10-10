@@ -467,6 +467,41 @@ details.more[open]{padding-bottom:12px}
 .wname{background:none;border:0;padding:0;text-align:left;color:var(--ink);font:inherit;min-width:0;min-height:32px}
 .wpen{color:var(--accent);vertical-align:-1px}
 .jseg button[aria-disabled="true"],.jadj[aria-disabled="true"]{opacity:.55}
+/* jornales v2: celdas */
+:root{--jink:#FFFFFF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-app-theme]){--jink:#0B1525}}
+:root[data-theme="dark"]:not([data-app-theme]),html:root[data-app-theme="dark"]{--jink:#0B1525}
+.jg{grid-template-columns:minmax(76px,88px) repeat(7,minmax(0,1fr));gap:3px}
+.jrow{padding-top:7px}
+.jgrid-card{gap:7px;padding:10px 10px 12px}
+.jday{min-height:34px;font-size:11px;line-height:1.1}
+.jname{min-height:36px}.jname b{font-size:13.5px}.jname small{font-size:11px}
+.jc{height:40px;width:100%;border-radius:7px;position:relative;overflow:hidden;border:0;padding:0;display:block;color:var(--jink);box-sizing:border-box}
+.jc.emp{background:transparent;border:1.5px dashed var(--line-strong)}
+.jc.on{background:var(--accent)}.jc.pd{background:var(--ok)}.jc.ow{background:var(--own)}
+.jc.half.on{background:var(--accent-soft)}.jc.half.pd{background:var(--ok-soft)}.jc.half.ow{background:var(--own-soft)}
+.jc .jt{position:absolute;top:0;left:0;right:0;height:50%}
+.jc.half.on .jt{background:var(--accent)}.jc.half.pd .jt{background:var(--ok)}.jc.half.ow .jt{background:var(--own)}
+.jc .hf{position:absolute;top:0;left:0;right:0;height:50%;display:grid;place-items:center;font-weight:700;font-size:11px;color:var(--jink);z-index:1}
+.jc .wd{position:absolute;inset:0;z-index:1}
+.jc .wd i{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-50deg);font-style:normal;font-weight:700;font-size:7px;letter-spacing:-.01em;white-space:nowrap;color:var(--jink)}
+.jc .jck{position:absolute;left:50%;top:50%;width:14px;height:14px;transform:translate(-50%,-50%);color:var(--jink)}
+.jc.fx{background:var(--bad-soft);border:1.5px solid var(--bad);color:var(--bad);font-weight:700;font-size:11px;display:grid;place-items:center}
+.jc.x::before{content:"";position:absolute;top:0;left:0;width:0;height:0;border-top:13px solid var(--mark);border-right:13px solid transparent;z-index:2}
+.jc.x::after{display:none}
+details.jleg{display:block;border-top:1px solid var(--surface-2);padding-top:8px}
+details.jleg summary{font-size:12.5px;font-weight:700;color:var(--accent);cursor:pointer;min-height:28px;display:flex;align-items:center}
+.jleg-g{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;font-size:12.5px;color:var(--ink-2);margin:6px 0}
+.jleg-g>span{display:flex;align-items:center;gap:8px}
+.jleg-g .jc{width:30px;height:36px;flex:none}
+details.jleg small{color:var(--ink-3);font-size:12px}
+.jsum{flex-direction:row;align-items:center;gap:10px;padding:12px 14px;border-radius:16px}
+.jsum .jsum-v{font-size:22px}
+.jsum .btn{min-height:44px;border-radius:12px;padding:0 14px;font-size:14.5px;white-space:nowrap;flex:none}
+.icon-btn.jghost{background:transparent;border-color:rgba(255,255,255,.4);color:var(--hero-ink)}
+.jlast summary{font-size:13px;font-weight:600;color:var(--accent);cursor:pointer;min-height:32px;display:flex;align-items:center}
+.jlast-r{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--surface-2)}
+.jlast-r b{display:block;font-size:13.5px}.jlast-r small{font-size:12px;color:var(--ink-3)}
 </style>
 </head>
 <body>
@@ -1074,7 +1109,8 @@ function openGastoForm(gid,preset){
       </div>
     </details>
     <p class="err" id="gf-err" hidden></p>
-    ${gid?'<button class="btn danger block" type="button" id="gf-del">Eliminar gasto</button>':""}
+    ${gid&&g.jornal?`<p style="margin:0;font-size:13px;color:var(--ink-3)">${g.jornal.t==="adelanto"?"Si anulas este adelanto, ya no se descontará del próximo pago.":"Si anulas este pago, sus días vuelven a quedar por pagar en Jornales."}</p>`:""}
+    ${gid?`<button class="btn danger block" type="button" id="gf-del">${g.jornal?(g.jornal.t==="adelanto"?"Anular adelanto":"Anular pago"):"Eliminar gasto"}</button>`:""}
     <div class="sticky-save"><button class="btn primary block" type="submit" style="min-height:54px;font-size:17px">Guardar gasto</button></div>
   </form>`);
   const pjb=$("#gf-pj-btn",s);if(pjb)pjb.onclick=()=>{const m=$("#gf-pj",s),open=m.hidden;m.hidden=!open;pjb.setAttribute("aria-expanded",String(open));const q=$("#gf-pj-q",s);if(open&&q)q.focus()};
@@ -1125,7 +1161,7 @@ function openGastoForm(gid,preset){
     const nm=(S.proyectos.get(pid)||{}).nombre;
     toast(gid?"Gasto actualizado":`Gasto de ${money(monto)} registrado en ${nm}`);
   };
-  const d=$("#gf-del",s);if(d)armDanger(d,"¿Eliminar? Toca otra vez",()=>{const old=S.gastos.get(gid);if(old&&old.foto)Photos.remove(old.foto);del("gastos",gid);closeSheet(true);render();toast("Gasto eliminado")});
+  const d=$("#gf-del",s);if(d)armDanger(d,g.jornal?"¿Anular? Toca otra vez":"¿Eliminar? Toca otra vez",()=>{const old=S.gastos.get(gid);if(old&&old.jornal){anularPago(gid);closeSheet(true);render();toast(old.jornal.t==="adelanto"?"Adelanto anulado":"Pago anulado: los días volvieron a Por pagar");return}if(old&&old.foto)Photos.remove(old.foto);del("gastos",gid);closeSheet(true);render();toast("Gasto eliminado")});
 }
 
 /* ================= GASTOS TAB ================= */
@@ -1500,7 +1536,7 @@ const fmtDias=n=>{const w=Math.floor(n),h=n-w>0.001;return (w||!h?String(w):"")+
 function saveWorkers(pid,list){const p=S.proyectos.get(pid);put("proyectos",pid,{...p,trabajadores:list})}
 
 /* set or clear one day record */
-function paidMsg(j){toast("Ese día ya está pagado. Para cambiarlo, primero elimina ese pago.",{label:"Ver pago",fn:()=>openGastoForm(j.pagoId)})}
+function paidMsg(j){toast("Ese día ya está pagado. Para cambiarlo, primero anula ese pago.",{label:"Ver pago",fn:()=>openGastoForm(j.pagoId)})}
 function setJornada(wid,fecha,tipo,patch){
   const id=jId(wid,fecha),old=S.jornales.get(id),w=workerOf(wid);
   if(old&&jPaid(old)){paidMsg(old);return false}
@@ -1539,21 +1575,31 @@ function jWeekHTML(){
   const ws=workersOf().filter(w=>w.activo!==false||jList().some(([,j])=>j.trabajadorId===w.id&&j.fecha>=mon&&j.fecha<=end));
   const st=weekStats(S.proj,mon),owed=totalOwed();
   const adelAll=round2(workersOf().reduce((a,w)=>a+owedOf(w.id).ad,0));
-  const cell=(w,f)=>{const j=jOf(w.id,f);let c="emp",t="–",l="sin registro";
-    if(j){if(j.tipo==="f"){c="f";t="F";l="faltó"}else if(w.propio){c="own";t=j.tipo==="m"?"½":"1";l="trabajo propio"}else if(jPaid(j)){c="paid";t="✓";l="pagado"}else if(j.tipo==="m"){c="half";t="½";l="medio día"}else{c="full";t="1";l="día completo"}}
-    return `<button type="button" class="jc ${c}${j&&jAdj(j)?" x":""}" data-day="${f}" aria-label="${esc(w.nombre)}, ${dLong(f)}: ${l}${j&&jAdj(j)?", ajustado":""}">${t}</button>`};
+  const cell=(w,f)=>{const j=jOf(w.id,f),x=j&&j.tipo!=="f"&&jAdj(j)?" x":"";
+    const lb=`${esc(w.nombre)}, ${dLong(f)}: `;
+    if(!j)return `<button type="button" class="jc emp" data-day="${f}" aria-label="${lb}sin registro"></button>`;
+    if(j.tipo==="f")return `<button type="button" class="jc fx" data-day="${f}" aria-label="${lb}faltó">F</button>`;
+    const k=w.propio?"ow":jPaid(j)?"pd":"on",nm=w.propio?"trabajo propio":jPaid(j)?"pagado":"";
+    if(j.tipo==="m")return `<button type="button" class="jc half ${k}${x}" data-day="${f}" aria-label="${lb}media jornada ${nm}${x?", con ajuste":""}"><span class="jt"></span><span class="hf">½</span></button>`;
+    return `<button type="button" class="jc ${k}${x}" data-day="${f}" aria-label="${lb}completa ${nm}${x?", con ajuste":""}">${k==="pd"?SV(I.check,3.2,' class="jck"'):'<span class="wd"><i>COMPLETA</i></span>'}</button>`};
   return `<div class="jnav"><button class="icon-btn" type="button" id="jw-prev" aria-label="Semana anterior">${SV(I.chevL,2.2)}</button><b>${rangeTxt(mon,end)} ${end.slice(0,4)}</b><button class="icon-btn" type="button" id="jw-next" aria-label="Semana siguiente"${mon>=curMon?" disabled":""}>${SV(I.chevR,2.2)}</button></div>
     <div class="card jgrid-card">
-      <div class="jg"><span class="jg-hint">Toca un día para registrar ↓</span>${days.map((f,i)=>`<button type="button" class="jday${f===td?" t":""}" data-day="${f}" aria-label="Registrar ${dLong(f)}">${DIAS3[i]}<br>${+f.slice(8)}</button>`).join("")}</div>
+      <div class="jg"><span class="jg-hint">Toca un día ↓</span>${days.map((f,i)=>`<button type="button" class="jday${f===td?" t":""}" data-day="${f}" aria-label="Registrar ${dLong(f)}">${DIAS3[i]}<br>${+f.slice(8)}</button>`).join("")}</div>
       ${ws.map(w=>{const n=days.reduce((a,f)=>a+jDias(jOf(w.id,f)||{}),0);
-        return `<div class="jg jrow"><button type="button" class="jname" data-wedit="${w.id}" aria-label="Editar a ${esc(w.nombre)}"><b>${esc(w.nombre)} ${SV(I.edit,2,' width="13" height="13" class="wpen"')}</b><small${w.propio?' class="own-t"':""}>${w.propio?"Propio":esc(w.oficio||"Trabajador")+" · "+fmtDias(n)+" d"}</small></button>${days.map(f=>cell(w,f)).join("")}</div>`}).join("")}
-      <div class="jleg"><span><i style="background:var(--accent)"></i>Día</span><span><i style="background:linear-gradient(90deg,var(--accent) 50%,var(--accent-soft) 50%)"></i>½</span><span><i style="background:var(--bad-soft);border:1px solid var(--bad)"></i>Faltó</span><span><i style="background:var(--ok-soft);border:1px solid var(--ok)"></i>Pagado</span><span><i style="background:var(--mark);border-radius:50%"></i>Horas extra / otro valor</span></div>
+        return `<div class="jg jrow"><button type="button" class="jname" data-wedit="${w.id}" aria-label="Editar a ${esc(w.nombre)}"><b>${esc(w.nombre)}</b><small${w.propio?' class="own-t"':""}>${w.propio?"propio · "+fmtDias(n)+" d":fmtDias(n)+" d · "+money(days.reduce((a,f)=>a+jValor(jOf(w.id,f)),0)).replace(".00","")}</small></button>${days.map(f=>cell(w,f)).join("")}</div>`}).join("")}
+      <details class="jleg"><summary>Cómo leer cada día</summary><div class="jleg-g">
+        <span><b class="jc on"><span class="wd"><i>COMPLETA</i></span></b>Completa</span>
+        <span><b class="jc half on"><span class="jt"></span><span class="hf">½</span></b>Media jornada</span>
+        <span><b class="jc on x"><span class="wd"><i>COMPLETA</i></span></b>Horas extra u otro valor</span>
+        <span><b class="jc pd">${SV(I.check,3.2,' class="jck"')}</b>Pagado</span>
+        <span><b class="jc fx">F</b>Faltó</span>
+        <span><b class="jc ow"><span class="wd"><i>COMPLETA</i></span></b>Trabajo propio</span>
+      </div><small>Toca el nombre para editar al trabajador.</small></details>
     </div>
     <div class="jsum">
-      <div style="font-size:13.5px;opacity:.85">Semana · ${fmtDias(st.dias)} día${st.dias===1?"":"s"} trabajado${st.dias===1?"":"s"}</div>
-      <div class="between" style="align-items:baseline"><span class="jsum-k">POR PAGAR</span><span class="num jsum-v">${money(owed)}</span></div>
-      ${adelAll>0?`<div style="font-size:12.5px;opacity:.8">Ya descontados ${money(adelAll)} de adelantos</div>`:""}
-      <div class="jsum-b"><button type="button" class="btn markb" id="j-all"${owed>0?"":" disabled"}>Pagar a todos</button><button type="button" class="btn jghost" id="j-pend">Por trabajador</button></div>
+      <div class="grow"><div style="font-size:12.5px;opacity:.8">Por pagar · ${fmtDias(st.dias)} d esta semana${adelAll>0?" · −"+money(adelAll)+" adel.":""}</div><div class="num jsum-v">${money(owed)}</div></div>
+      <button type="button" class="btn markb" id="j-all"${owed>0?"":" disabled"}>Pagar a todos</button>
+      <button type="button" class="icon-btn jghost" id="j-pend" aria-label="Ver por trabajador">${SV(I.users)}</button>
     </div>`;
 }
 function bindWeek(){
@@ -1602,10 +1648,10 @@ function bindDay(){
   $("#j-add").onclick=()=>openWorkerForm(null);
   $("#j-pend").onclick=()=>openView("jpagar");
   const pb=$("#jd-pay");if(pb)pb.onclick=()=>{
-    const f=S.jDay;let n=0,tot=0;
+    const f=S.jDay;let n=0,tot=0;const ids=[];
     workersOf().forEach(w=>{const j=jOf(w.id,f);if(!j||jPaid(j)||w.propio||w.modo!=="dia")return;const v=jValor(j);if(v<=0)return;
-      registrarPago(w,[jId(w.id,f)],[],v,today(),null,"");n++;tot+=v});
-    renderJornales();toast(n===1?`Pago de ${money(tot)} registrado como Mano de obra`:`${n} pagos registrados · ${money(tot)}`);
+      ids.push(registrarPago(w,[jId(w.id,f)],[],v,today(),null,""));n++;tot+=v});
+    renderJornales();undoToast(n===1?`Pago de ${money(tot)} registrado`:`${n} pagos registrados · ${money(tot)}`,ids);
   };
 }
 
@@ -1698,6 +1744,12 @@ function openWorkerForm(wid){
 }
 
 /* ---------- pagos ---------- */
+function anularPago(gid){
+  const g=S.gastos.get(gid);if(!g)return;
+  jList(g.proyectoId).forEach(([k,j])=>{if(j.pagoId===gid){const d={...j};delete d.pagoId;put("jornales",k,d)}});
+  if(g.foto)Photos.remove(g.foto);del("gastos",gid);
+}
+function undoToast(msg,ids){toast(msg,{label:"Deshacer",fn:()=>{ids.forEach(anularPago);render();toast(ids.length>1?"Pagos anulados":"Pago anulado")}})}
 function registrarPago(w,dayIds,adelIds,monto,fecha,etapaId,nota){
   const fs=dayIds.map(id=>S.jornales.get(id)).filter(Boolean).map(j=>j.fecha).sort();
   const n=dayIds.reduce((a,id)=>a+jDias(S.jornales.get(id)||{}),0);
@@ -1749,8 +1801,8 @@ function openPagoJornal(wid){
     const et=$("#pj-et",s);if(et)et.onclick=e=>{const b=e.target.closest("[data-e]");if(!b)return;etapa=b.dataset.e;$$("#pj-et .chip",s).forEach(x=>x.setAttribute("aria-pressed",x===b))};
     calc();
     $("#pj",s).onsubmit=e=>{e.preventDefault();const m=round2(num(mi.value));if(!selD.size||m<=0)return;
-      registrarPago(w,[...selD],[...selA].filter(k=>o.adel.some(([x])=>x===k)),m,fecha,etapa,"");
-      closeSheet(true);render();toast(`Pago de ${money(m)} a ${w.nombre} registrado como Mano de obra`);
+      const gid=registrarPago(w,[...selD],[...selA].filter(k=>o.adel.some(([x])=>x===k)),m,fecha,etapa,"");
+      closeSheet(true);render();undoToast(`Pago de ${money(m)} a ${w.nombre} registrado`,[gid]);
     };
   });
 }
@@ -1784,8 +1836,8 @@ function openPayAll(){
     <p style="margin:0;font-size:13px;color:var(--ink-3)">Se registra un gasto de Mano de obra por cada trabajador, con fecha de hoy. Si necesitas cambiar un monto, usa “Registrar pago” en cada uno.</p>
     <button class="btn primary block" type="button" id="pa-go" style="min-height:54px;font-size:17px">Registrar ${list.length} pago${list.length===1?"":"s"} · ${money(tot)}</button>
   </div>`,s=>{
-    $("#pa-go",s).onclick=()=>{list.forEach(([w,o])=>registrarPago(w,o.days.map(([k])=>k),o.adel.map(([k])=>k),o.neto,today(),null,""));
-      closeSheet(true);render();toast(`${list.length} pago${list.length===1?"":"s"} registrado${list.length===1?"":"s"} · ${money(tot)}`)};
+    $("#pa-go",s).onclick=()=>{const ids=list.map(([w,o])=>registrarPago(w,o.days.map(([k])=>k),o.adel.map(([k])=>k),o.neto,today(),null,""));
+      closeSheet(true);render();undoToast(`${list.length} pago${list.length===1?"":"s"} registrado${list.length===1?"":"s"} · ${money(tot)}`,ids)};
   });
 }
 
@@ -1806,6 +1858,8 @@ function renderJPagar(){
       ${o.days.length?`<div class="between jln"><span>${diasTxt(n)} sin pagar (${rangeTxt(fs[0],fs[fs.length-1])})</span><span class="num">${money(o.bruto)}</span></div>`:`<div class="jln">Sin días pendientes</div>`}
       ${o.adel.map(([,g])=>`<div class="between jln"><span>Adelanto del ${dShort(g.fecha)}</span><span class="num" style="color:var(--bad)">−${money(g.monto)}</span></div>`).join("")}
       ${paid.length?`<div class="between jln" style="color:var(--ok)"><span>${diasTxt(paid.reduce((a,[,j])=>a+jDias(j),0))} ya pagado${paid.length===1?"":"s"} esta semana</span><span class="num">${money(paid.reduce((a,[,j])=>a+jValor(j),0))}</span></div>`:""}
+      ${(()=>{const ps=inProj("gastos").filter(([,g])=>g.jornal&&g.jornal.w===w.id).sort((a,b)=>(b[1].fecha||"").localeCompare(a[1].fecha||"")||(b[1].createdAt||0)-(a[1].createdAt||0)).slice(0,3);
+        return ps.length?`<details class="jlast"><summary>Últimos pagos (${ps.length})</summary>${ps.map(([k,g])=>`<div class="jlast-r"><span class="grow"><b>${esc(g.concepto)}</b><small>${fdateShort(g.fecha)} · <span class="num">${money(g.monto)}</span></small></span><button type="button" class="btn sm danger" data-anular="${k}">Anular</button></div>`).join("")}</details>`:""})()}
       <div class="between" style="border-top:1px solid var(--surface-2);padding-top:8px;gap:8px"><span><small style="color:var(--ink-3)">Por pagar</small><br><b class="num" style="font-size:19px">${money(Math.max(0,o.neto))}</b></span>
         <span style="display:flex;gap:6px"><button type="button" class="btn sm" data-adel="${w.id}">Adelanto</button><button type="button" class="btn sm markb" data-pay="${w.id}"${o.days.length?"":" disabled"}>Registrar pago</button></span></div>
     </article>`};
@@ -1819,6 +1873,7 @@ function renderJPagar(){
   $$("[data-edit]",app).forEach(b=>b.onclick=()=>openWorkerForm(b.dataset.edit));
   $$("[data-pay]",app).forEach(b=>b.onclick=()=>openPagoJornal(b.dataset.pay));
   $$("[data-adel]",app).forEach(b=>b.onclick=()=>openAdelanto(b.dataset.adel));
+  $$("[data-anular]",app).forEach(b=>armDanger(b,"¿Anular?",()=>{const g=S.gastos.get(b.dataset.anular);anularPago(b.dataset.anular);render();toast(g&&g.jornal&&g.jornal.t==="adelanto"?"Adelanto anulado":"Pago anulado: los días volvieron a Por pagar")}));
   $$("[data-react]",app).forEach(b=>b.onclick=()=>{saveWorkers(S.proj,workersOf().map(x=>x.id===b.dataset.react?{...x,activo:true}:x));render()});
 }
 
